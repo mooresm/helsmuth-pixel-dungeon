@@ -1,4 +1,5 @@
 apply plugin: 'java-library'
+apply plugin: 'jacoco'  // Add JaCoCo for code coverage
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 java.sourceCompatibility = java.targetCompatibility = appJavaCompatibility
@@ -6,4 +7,61 @@ java.sourceCompatibility = java.targetCompatibility = appJavaCompatibility
 dependencies {
     api project(':SPD-classes')
     implementation project(':services')
+    
+    // JUnit 4.13.2 for unit testing
+    testImplementation 'junit:junit:4.13.2'
+    
+    // Mockito for mocking (optional, but useful for complex tests)
+    testImplementation 'org.mockito:mockito-core:4.11.0'
 }
+
+// Configure JaCoCo code coverage
+jacoco {
+    toolVersion = "0.8.11"
+}
+
+// Configure test task
+test {
+    // Use JUnit platform
+    useJUnit()
+    
+    // Show test output
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat "full"
+        showStandardStreams = true
+    }
+    
+    // Generate coverage report after tests
+    finalizedBy jacocoTestReport
+}
+
+// Configure JaCoCo test report
+jacocoTestReport {
+    dependsOn test
+    
+    reports {
+        xml.required = true
+        html.required = true
+        csv.required = false
+    }
+    
+    // Optional: Set coverage thresholds
+    doLast {
+        println "Coverage report generated at: ${reports.html.outputLocation}/index.html"
+    }
+}
+
+// Optional: Add coverage verification (fails build if coverage < 40%)
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.40  // 40% minimum coverage
+            }
+        }
+    }
+}
+
+// Optional: Make 'check' task verify coverage
+check.dependsOn jacocoTestCoverageVerification
