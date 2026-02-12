@@ -13,6 +13,7 @@
 - **Core D&D mechanics:** Ability scores, d20 combat, AC, BAB, DR 5/bludgeoning
 
 **Estimated effort:** 60-80 hours (1.5-2 months part-time)
+**Optional Phase 10 (Branding):** +4 hours if preparing for public distribution
 
 ---
 
@@ -487,6 +488,102 @@ core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/
 
 ---
 
+### Phase 10: Project Branding & Distribution Prep (4 hours)
+
+**Note:** This phase is **OPTIONAL** and should only be completed **AFTER** the PoC is successful and you're preparing for public distribution.
+
+**Files to modify:**
+
+24. **`build.gradle` (root)** - Application identity
+    - Change: `appName = "Your D&D Pixel Dungeon"` (or your chosen name)
+    - Change: `appPackageName = "com.yourname.yourproject"` (must be unique)
+    - Update: `appVersionName = "0.1.0-alpha"` (or your versioning scheme)
+    - Keep: `appVersionCode` at Shattered's current value or higher (don't decrement)
+    - Note: If setting version code to 1, review compatibility code in ShatteredPixelDungeon.java
+
+25. **`core/src/main/assets/interfaces/banners.png`** - Title screen graphics
+    - Replace: Main title graphic with your game's name/logo
+    - Replace: Glow layer for title effect
+    - Maintain: Same image dimensions and format
+
+26. **Application Icons** - Replace all platform icons
+    - `android/src/debug/res/` - Android debug icons (mipmap-*/ic_launcher.png, multiple sizes)
+    - `android/src/main/res/` - Android release icons (mipmap-*/ic_launcher.png, multiple sizes)
+    - `desktop/src/main/assets/icons/` - Desktop application icons
+    - `ios/assets/Assets.xcassets/` - iOS icons (if targeting iOS)
+
+27. **`core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/AboutScene.java`** - Credits
+    - Add: Your name and role to credits section
+    - Maintain: All existing Shattered Pixel Dungeon credits (GPLv3 requirement)
+    - Add: Link to your project repository
+    - Note: Cannot remove existing credits per GPLv3 license
+
+28. **`core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/SupporterScene.java`** - Supporter links
+    - Update: Links to your own support platform (if desired)
+    - Or: Disable entirely if not seeking support
+
+29. **`core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/TitleScene.java`** - UI buttons
+    - Option A: Disable supporter button by commenting out `add(btnSupport);`
+    - Option B: Disable news button by commenting out `add(btnNews);`
+    - Warning: Google Play prohibits Patreon mentions - remove if releasing there
+
+30. **`core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndSupportPrompt.java`** - Support prompt
+    - Update: Text and links for your project
+    - Or: Disable entirely if not seeking support
+
+31. **`core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/keys/WornKey.java`** - Prompt trigger
+    - Disable: Support prompt trigger if not using
+
+32. **`desktop/build.gradle`** - Desktop update notifications
+    - Change: `:services:updates:githubUpdates` to `:services:updates:debugUpdates` (disables updates)
+    - Or: Keep githubUpdates and modify GitHubUpdates.java to point to your repo
+
+33. **`android/build.gradle`** - Android update notifications
+    - Change: `:services:updates:githubUpdates` to `:services:updates:debugUpdates` (disables updates)
+    - Or: Keep githubUpdates and modify GitHubUpdates.java to point to your repo
+
+34. **`services/updates/githubUpdates/src/main/java/.../GitHubUpdates.java`** (optional)
+    - Update: URL to your GitHub releases API:
+      ```java
+      httpGet.setUrl("https://api.github.com/repos/yourusername/yourrepo/releases");
+      ```
+    - Note: Requires specific release format (title, body with `---`, `internal version number: #`)
+
+35. **`services/news/shatteredNews/src/main/java/.../ShatteredNews.java`** (optional)
+    - Update: URLs to point to your atom/xml news feed
+    - Adjust: Parsing logic if your feed format differs
+
+36. **`core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/messages/Languages.java`** - Translations
+    - Option A (Remove all non-English): Delete all enum constants except ENGLISH
+    - Option B (Keep some): Remove only unwanted language enums
+    - Option C (Change base language): Remove English enums, rename your language files
+
+37. **`core/src/main/assets/messages/`** - Translation resource files
+    - Option A: Remove all `*_XX.properties` files (XX = language code like ru, es, zh)
+    - Option B: Keep only desired language files
+    - Note: Keep base `*.properties` files (no underscore+code)
+
+38. **`core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndSettings.java`** - Language picker
+    - If removing translations: Comment out `add( langs );` and `add( langsTab );`
+    - If keeping translations: Leave language picker enabled
+
+**Validation:**
+- [ ] Game compiles and builds for all target platforms
+- [ ] New app name and icon appear correctly
+- [ ] Credits display correctly with your attribution
+- [ ] Update notifications don't point to Shattered's repository
+- [ ] Language settings match your translation strategy
+- [ ] GPLv3 compliance: Original credits intact, source code available
+
+**Distribution Prep:**
+- [ ] Create public GitHub repository for your fork
+- [ ] Add comprehensive README explaining D&D conversion
+- [ ] Include LICENSE file (GPLv3)
+- [ ] Document build instructions
+- [ ] Create initial release/tag if appropriate
+
+---
+
 ## Complete Test Suite
 
 ### Test Files to Create (16 tests total)
@@ -802,7 +899,12 @@ open core/build/reports/jacoco/test/html/index.html
 13. ✅ Phase 9: Starting equipment (2h)
 14. ✅ Integration testing (10h)
 
-**Total: 80 hours (2 months at 10 hours/week)**
+**PoC Total: 80 hours (2 months at 10 hours/week)**
+
+### Post-PoC (Optional)
+15. ⚠️ Phase 10: Project branding & distribution prep (4h) - **Only if preparing for public release**
+
+**Total with Branding: 84 hours**
 
 ---
 
@@ -837,7 +939,9 @@ Once this ultra-minimal PoC works, expand in this order:
 
 ## Files Modified Summary
 
-**Total files to modify: 23 files**
+**PoC Total: 23 files**
+**Phase 10 (Branding) Total: +15 files**
+**Grand Total with Phase 10: 38 files**
 
 ### Core Combat (8 files)
 1. Char.java - Abilities, AC, d20 combat
@@ -878,6 +982,27 @@ Once this ultra-minimal PoC works, expand in this order:
 24. ArmorTest.java
 25. RatTest.java
 26. SkeletonTest.java
+
+### Phase 10: Branding & Distribution (15 files) - *Optional*
+27. build.gradle (root) - App name, package, version
+28. ShatteredPixelDungeon.java - Version code handling (if needed)
+29. banners.png - Title screen graphics
+30. android/src/debug/res - Debug icons
+31. android/src/main/res - Release icons
+32. desktop icons - Desktop application icons
+33. iOS icons - iOS assets (if targeting iOS)
+34. AboutScene.java - Credits and attribution
+35. SupporterScene.java - Supporter links
+36. TitleScene.java - Button visibility
+37. WndSupportPrompt.java - Support prompt window
+38. WornKey.java - Prompt triggers
+39. desktop/build.gradle - Update service configuration
+40. android/build.gradle - Update service configuration
+41. GitHubUpdates.java - Release notifications (optional)
+42. ShatteredNews.java - News feed (optional)
+43. Languages.java - Translation management
+44. messages/*.properties - Translation files
+45. WndSettings.java - Language picker
 
 ---
 
@@ -938,8 +1063,9 @@ GLog.i("Attack: d20=" + d20 + " bonus=" + attackBonus +
 1. **Playtest thoroughly** - Ensure skeleton DR is noticeable
 2. **Gather feedback** - Does d20 combat feel D&D-like?
 3. **Document lessons learned** - What worked? What didn't?
-4. **Plan Iteration 1** - Add level 3, more monsters
-5. **Consider platform expansion** - Desktop build for easier testing?
+4. **Phase 10 (Optional)** - Complete project branding if preparing for public distribution
+5. **Plan Iteration 1** - Add level 3, more monsters
+6. **Consider platform expansion** - Desktop build for easier testing?
 
 ---
 
@@ -959,5 +1085,8 @@ This ultra-minimal PoC proves the core D&D 3.5 mechanics (ability scores, d20 co
 - Core D&D mechanics proven
 - Foundation for expansion
 - Achievable timeline (2 months part-time)
+- Optional Phase 10 available for project branding and distribution prep (+4 hours)
 
 Once this works, expanding to full D&D 3.5 with all classes, monsters, and features becomes a matter of content creation rather than system validation.
+
+**Note on Phase 10:** If you plan to publicly distribute your D&D conversion, complete Phase 10 to rebrand the application, update credits, and prepare for distribution. This is optional and should only be done after the PoC succeeds.
