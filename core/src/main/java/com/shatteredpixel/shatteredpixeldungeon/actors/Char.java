@@ -170,7 +170,13 @@ public abstract class Char extends Actor {
 	
 	public int HT;
 	public int HP;
-	
+	public int STR;
+	public int DEX;
+	public int CON;
+	public int INT;
+	public int WIS;
+	public int CHA;
+
 	protected float baseSpeed	= 1;
 	protected PathFinder.Path path;
 
@@ -332,6 +338,13 @@ public abstract class Char extends Actor {
 	protected static final String TAG_HP    = "HP";
 	protected static final String TAG_HT    = "HT";
 	protected static final String TAG_SHLD  = "SHLD";
+	protected static final String STRENGTH	= "STR";
+	protected static final String DEXTERITY	= "DEX";
+	protected static final String CONSTITUTION	= "CON";
+	protected static final String INTELLIGENCE	= "INT";
+	protected static final String WISDOM	= "WIS";
+	protected static final String CHARISMA	= "CHA";
+
 	protected static final String BUFFS	    = "buffs";
 	
 	@Override
@@ -342,6 +355,12 @@ public abstract class Char extends Actor {
 		bundle.put( POS, pos );
 		bundle.put( TAG_HP, HP );
 		bundle.put( TAG_HT, HT );
+		bundle.put( STRENGTH, STR );
+		bundle.put( DEXTERITY, DEX );
+		bundle.put( CONSTITUTION, CON );
+		bundle.put( INTELLIGENCE, INT );
+		bundle.put( WISDOM, WIS );
+		bundle.put( CHARISMA, CHA );
 		bundle.put( BUFFS, buffs );
 	}
 	
@@ -353,7 +372,13 @@ public abstract class Char extends Actor {
 		pos = bundle.getInt( POS );
 		HP = bundle.getInt( TAG_HP );
 		HT = bundle.getInt( TAG_HT );
-		
+		STR = bundle.getInt( STRENGTH );
+		DEX = bundle.getInt( DEXTERITY );
+		CON = bundle.getInt( CONSTITUTION );
+		INT = bundle.getInt( INTELLIGENCE );
+		WIS = bundle.getInt( WISDOM );
+		CHA = bundle.getInt( CHARISMA );
+
 		for (Bundlable b : bundle.getCollection( BUFFS )) {
 			if (b != null) {
 				((Buff)b).attachTo( this );
@@ -616,6 +641,10 @@ public abstract class Char extends Actor {
 
 	public static int INFINITE_ACCURACY = 1_000_000;
 	public static int INFINITE_EVASION = 1_000_000;
+
+	final public static int statBonus( int  stat ) {
+		return stat >= 10 ? (stat - 10)/2 : (stat - 11)/2;
+	}
 
 	final public static boolean hit( Char attacker, Char defender, boolean magic ) {
 		return hit(attacker, defender, magic ? 2f : 1f, magic);

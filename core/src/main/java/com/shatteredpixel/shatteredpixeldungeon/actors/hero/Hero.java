@@ -224,9 +224,7 @@ public class Hero extends Char {
 	public boolean resting = false;
 	
 	public Belongings belongings;
-	
-	public int STR;
-	
+
 	public float awareness;
 	
 	public int lvl = 1;
@@ -291,7 +289,6 @@ public class Hero extends Char {
 
 	private static final String ATTACK		= "attackSkill";
 	private static final String DEFENSE		= "defenseSkill";
-	private static final String STRENGTH	= "STR";
 	private static final String LEVEL		= "lvl";
 	private static final String EXPERIENCE	= "exp";
 	private static final String HTBOOST     = "htboost";
@@ -308,9 +305,7 @@ public class Hero extends Char {
 		
 		bundle.put( ATTACK, attackSkill );
 		bundle.put( DEFENSE, defenseSkill );
-		
-		bundle.put( STRENGTH, STR );
-		
+
 		bundle.put( LEVEL, lvl );
 		bundle.put( EXPERIENCE, exp );
 		

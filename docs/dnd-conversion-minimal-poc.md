@@ -1,14 +1,14 @@
-# D&D 3.5 Ultra-Minimal PoC - Shattered Pixel Dungeon
+# Ultra-Minimal Proof of Concept
 
 ## Overview
 
-**Goal:** Prove D&D 3.5 core mechanics work in Shattered Pixel Dungeon with absolute minimum content.
+**Goal:** Prove [D&D 3.5 core mechanics](https://www.d20srd.org/index.htm) work in [Shattered Pixel Dungeon](https://shatteredpixel.com/shatteredpd/) with a bare minimum of content.
 
 **Scope:**
-- **1 class:** Warrior → D&D Fighter (no subclasses, no talents)
+- **1 class:** Warrior → D&D Fighter (no subclasses, no talents/feats/skills)
 - **2 monsters:** Dire Rat + Skeleton (both CR 1/3)
-- **2 levels:** Level 1 (combat) + Level 2 (amulet/victory)
-- **3 weapons:** Dagger (1d4 piercing), Longsword (1d8 slashing), Mace (1d8 bludgeoning)
+- **2 levels:** Level 1 (combat tutorial) + Level 2 (amulet/victory)
+- **3 weapons:** Dagger (1d4 piercing), Longsword (1d8 slashing), Heavy Mace (1d8 bludgeoning)
 - **2 armor types:** Leather armor (+2 AC), Scale mail (+4 AC)
 - **Core D&D mechanics:** Ability scores, d20 combat, AC, BAB, DR 5/bludgeoning
 
@@ -55,9 +55,9 @@
 
 1. **Dagger** (1d4, piercing) - Starting weapon option, weak but fast
 2. **Longsword** (1d8, slashing) - Classic Fighter weapon, good damage
-3. **Mace** (1d8, bludgeoning) - Same damage as longsword, but bypasses skeleton DR
+3. **Heavy Mace** (1d8, bludgeoning) - Same damage as longsword, but bypasses skeleton DR
 
-**Player discovers:** Longsword does 1-8 damage to rats, but skeletons reduce it by 5 (DR). Mace does full damage to both.
+**Player discovers:** Longsword does 1-8 damage to rats, but skeletons reduce it by 5 (DR). Heavy mace does full damage to both.
 
 ### Why 2 Armor Types?
 

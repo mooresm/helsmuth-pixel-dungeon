@@ -8,7 +8,7 @@
 
 ## Progress Overview
 
-- [ ] Phase 0: Build Setup (2 hours)
+- [x] Phase 0: Build Setup (2 hours)
 - [ ] Phase 1: Ability Scores (6 hours)
 - [ ] Phase 2: Fighter Initialization (8 hours)
 - [ ] Phase 3: D&D Combat System (12 hours)
@@ -26,40 +26,38 @@
 ## Phase 0: Build Setup (2 hours)
 
 ### Build Configuration
-- [ ] Modify `core/build.gradle` - Add JUnit 4.13.2 and Mockito 4.11.0
-- [ ] Add JaCoCo plugin for code coverage
-- [ ] Configure test task with logging
-- [ ] Add coverage verification (40% minimum)
-- [ ] Update `.gitignore` - Add test output directories
+- [x] Modify `core/build.gradle` - Add JUnit 4.13.2 and Mockito 4.11.0
+- [x] Add JaCoCo plugin for code coverage
+- [x] Configure test task with logging
+- [x] Add coverage verification (40% minimum)
+- [x] Update `.gitignore` - Add test output directories
 
 ### Test Directory Structure
-- [ ] Create `core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/`
-- [ ] Create `actors/` subdirectory
-- [ ] Create `combat/` subdirectory
-- [ ] Create `items/weapon/` subdirectory
+- [x] Create `core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/`
+- [x] Create `actors/hero` subdirectory
+- [x] Create minimal `HeroTest` for `STR()` getter
 
 ### Validation
-- [ ] Run `./gradlew test` to verify test infrastructure works
+- [x] Run `./gradlew test` to verify test infrastructure works
 
 ---
 
 ## Phase 1: Ability Scores (6 hours)
 
 ### Core Files
-- [ ] **Char.java** - Add 6 ability score fields (STR, DEX, CON, INT, WIS, CHA)
-- [ ] **Char.java** - Add modifier methods (strMod(), dexMod(), conMod(), etc.)
-- [ ] **Hero.java** - Add ability score fields if needed
-- [ ] **Hero.java** - Update storeInBundle() to save abilities
-- [ ] **Hero.java** - Update restoreFromBundle() to load abilities
+- [x] **Char.java** - Add 6 ability score fields (STR, DEX, CON, INT, WIS, CHA)
+- [x] **Char.java** - Add static modifier method statBonus(int stat)
+- [x] **Hero.java** - Update storeInBundle() to save abilities
+- [x] **Hero.java** - Update restoreFromBundle() to load abilities
 
 ### Tests
-- [ ] Create `CharTest.java`
-- [ ] Test ability modifier calculation (10-11 = +0, 12-13 = +1, etc.)
-- [ ] Test edge cases (3 = -4, 18 = +4)
+- [x] Create `CharTest.java`
+- [x] Test ability modifier calculation (10-11 = +0, 12-13 = +1, etc.)
+- [x] Test edge cases (3 = -4, 18 = +4)
 
 ### Validation
-- [ ] All CharTest tests pass
-- [ ] Ability modifiers calculate correctly
+- [x] All CharTest tests pass
+- [x] Ability modifiers calculate correctly
 
 ---
 
