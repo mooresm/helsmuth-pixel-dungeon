@@ -14,6 +14,16 @@ processResources {
 
 def osName = System.getProperty('os.name').toLowerCase(Locale.ROOT)
 
+run {
+    systemProperty 'Specification-Title', appName
+    systemProperty 'Implementation-Title', appPackageName
+    systemProperty 'Specification-Version', appVersionName
+    systemProperty 'Implementation-Version', appVersionCode
+
+    if (osName.contains('mac')) {
+        jvmArgs '-XstartOnFirstThread'
+    }
+}
 tasks.register('debug', JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     ignoreExitValue = true

@@ -9,7 +9,7 @@
 ## Progress Overview
 
 - [x] Phase 0: Build Setup (2 hours)
-- [ ] Phase 1: Ability Scores (6 hours)
+- [x] Phase 1: Ability Scores (6 hours)
 - [ ] Phase 2: Fighter Initialization (8 hours)
 - [ ] Phase 3: D&D Combat System (12 hours)
 - [ ] Phase 4: Weapon System (10 hours)
