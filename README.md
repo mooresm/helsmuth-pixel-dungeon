@@ -1,23 +1,13 @@
-# Shattered Pixel Dungeon
+# Helsmuth Dungeon
 
-[Shattered Pixel Dungeon](https://shatteredpixel.com/shatteredpd/) is an open-source traditional roguelike dungeon crawler with randomized levels and enemies, and hundreds of items to collect and use. It's based on the [source code of Pixel Dungeon](https://github.com/00-Evan/pixel-dungeon-gradle), by [Watabou](https://watabou.itch.io/).
+A minimal proof-of-concept conversion of [Shattered Pixel Dungeon](https://shatteredpixel.com/shatteredpd/) to use [D&D 3.5 core mechanics](https://www.d20srd.org/index.htm). 
+This project demonstrates that classic tabletop RPG systems can work in a roguelike dungeon crawler.
 
-Shattered Pixel Dungeon currently compiles for Android, iOS, and Desktop platforms. You can find official releases of the game on:
+**Status:** Proof of Concept - Ultra-Minimal Implementation  
+**Estimated Completion:** 80 hours (3-5 completed)  
+**Based on:** Shattered Pixel Dungeon by Evan Debenham ([00-Evan](https://github.com/00-Evan)) and the original [Pixel Dungeon](https://github.com/00-Evan/pixel-dungeon-gradle), by [Watabou](https://watabou.itch.io/).
 
-[![Get it on Google Play](https://shatteredpixel.com/assets/images/badges/gplay.png)](https://play.google.com/store/apps/details?id=com.shatteredpixel.shatteredpixeldungeon)
-[![Download on the App Store](https://shatteredpixel.com/assets/images/badges/appstore.png)](https://apps.apple.com/app/shattered-pixel-dungeon/id1563121109)
-[![Steam](https://shatteredpixel.com/assets/images/badges/steam.png)](https://store.steampowered.com/app/1769170/Shattered_Pixel_Dungeon/)<br>
-[![GOG.com](https://shatteredpixel.com/assets/images/badges/gog.png)](https://www.gog.com/game/shattered_pixel_dungeon)
-[![Itch.io](https://shatteredpixel.com/assets/images/badges/itch.png)](https://shattered-pixel.itch.io/shattered-pixel-dungeon)
-[![Github Releases](https://shatteredpixel.com/assets/images/badges/github.png)](https://github.com/00-Evan/shattered-pixel-dungeon/releases)
-
-If you like this game, please consider [supporting me on Patreon](https://www.patreon.com/ShatteredPixel)!
-
-There is an official blog for this project at [ShatteredPixel.com](https://www.shatteredpixel.com/blog/).
-
-The game also has a translation project hosted on [Transifex](https://explore.transifex.com/shattered-pixel/shattered-pixel-dungeon/).
-
-Note that **this repository does not accept pull requests!** The code here is provided in hopes that others may find it useful for their own projects, not to allow community contribution. Issue reports of all kinds (bug reports, feature requests, etc.) are welcome.
+Helsmuth Dungeon currently compiles for Android, iOS, and Desktop platforms (Windows, Linux and macOS).
 
 If you'd like to work with the code, you can find the following guides in `/docs`:
 - [Compiling for Android.](docs/getting-started-android.md)
@@ -25,3 +15,36 @@ If you'd like to work with the code, you can find the following guides in `/docs
 - [Compiling for desktop platforms.](docs/getting-started-desktop.md)
 - [Compiling for iOS.](docs/getting-started-ios.md)
 - [Recommended changes for making your own version.](docs/recommended-changes.md)
+
+### Core D&D Features Implemented
+- ✅ **Ability Scores** (STR, DEX, CON, INT, WIS, CHA) with standard modifiers
+- ✅ **d20 Combat System** - Attack rolls using 1d20 + modifiers vs AC
+- ✅ **Armor Class (AC)** - Replaces the original evasion system
+- ✅ **Base Attack Bonus (BAB)** - Increases with character level
+- ✅ **Weapon Damage Types** - Slashing, piercing, and bludgeoning matter
+- ✅ **Damage Reduction (DR)** - Skeletons have DR 5/bludgeoning
+- ✅ **Hit Dice** - Fighters roll d10 for HP on level up
+
+### What's Included (Ultra-Minimal PoC)
+- **1 Class:** Fighter (D&D 3.5 stats: STR 16, DEX 13, CON 14, INT 10, WIS 12, CHA 8)
+- **2 Levels:** Combat tutorial + victory level with amulet
+- **2 Monsters:** Dire Rat (CR 1/3) and Skeleton (CR 1/3, DR 5/bludgeoning)
+- **3 Weapons:** Dagger (1d4 piercing), Longsword (1d8 slashing), Heavy Mace (1d8 bludgeoning)
+- **2 Armor Types:** Leather armor (+2 AC), Scale mail (+4 AC)
+
+## Project Status & Roadmap
+
+### Current Phase: Proof of Concept (Weeks 1-8)
+- [x] Phase 0: Build setup with JUnit testing (2h)
+- [x] Phase 1: Ability scores and modifiers (6h)
+- [ ] Phase 2: Fighter initialization (8h)
+- [ ] Phase 3: D&D combat system (d20, AC, BAB) (12h)
+- [ ] Phase 4: Weapon damage types (10h)
+- [ ] Phase 5: Armor AC system (4h)
+- [ ] Phase 6: Monster implementation (Dire Rat, Skeleton) (12h)
+- [ ] Phase 7: 2-level dungeon (8h)
+- [ ] Phase 8: UI updates (ability scores, AC display) (6h)
+- [ ] Phase 9: Starting equipment (2h)
+- [ ] Integration testing (10h)
+
+**PoC Total:** 80 hours (~2 months at 10 hours/week)
