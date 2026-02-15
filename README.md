@@ -1,6 +1,6 @@
 # Helsmuth Dungeon
 
-A minimal proof-of-concept conversion of [Shattered Pixel Dungeon](https://shatteredpixel.com/shatteredpd/) to use [D&D 3.5 core mechanics](https://www.d20srd.org/index.htm). 
+A minimal proof-of-concept conversion of [Shattered Pixel Dungeon](https://shatteredpixel.com/shatteredpd/) to use [d20 System Compatible mechanics](https://www.d20srd.org/index.htm). 
 This project demonstrates that classic tabletop RPG systems can work in a roguelike dungeon crawler.
 
 **Status:** Proof of Concept - Ultra-Minimal Implementation  
@@ -16,7 +16,7 @@ If you'd like to work with the code, you can find the following guides in `/docs
 - [Compiling for iOS.](docs/getting-started-ios.md)
 - [Recommended changes for making your own version.](docs/recommended-changes.md)
 
-### Core D&D Features Implemented
+### d20 System Compatible Features Implemented
 - ✅ **Ability Scores** (STR, DEX, CON, INT, WIS, CHA) with standard modifiers
 - ✅ **d20 Combat System** - Attack rolls using 1d20 + modifiers vs AC
 - ✅ **Armor Class (AC)** - Replaces the original evasion system
@@ -38,7 +38,7 @@ If you'd like to work with the code, you can find the following guides in `/docs
 - [x] Phase 0: Build setup with JUnit testing (2h)
 - [x] Phase 1: Ability scores and modifiers (6h)
 - [ ] Phase 2: Fighter initialization (8h)
-- [ ] Phase 3: D&D combat system (d20, AC, BAB) (12h)
+- [ ] Phase 3: d20 combat system (d20, AC, BAB) (12h)
 - [ ] Phase 4: Weapon damage types (10h)
 - [ ] Phase 5: Armor AC system (4h)
 - [ ] Phase 6: Monster implementation (Dire Rat, Skeleton) (12h)
