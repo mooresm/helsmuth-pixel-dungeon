@@ -7,8 +7,6 @@ import static org.junit.Assert.*;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 
 /**
- * Unit tests for D&D ability score system in Hero.java
- * 
  * Tests the ability modifier calculation: modifier = (ability - 10) / 2
  */
 public class HeroTest {

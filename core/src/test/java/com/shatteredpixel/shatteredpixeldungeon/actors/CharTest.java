@@ -1,12 +1,10 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors;
 
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * Unit tests for D&D ability score system
- * 
+ * Unit tests for D&D ability score system:
  * Tests the ability modifier calculation and stat system integration
  */
 public class CharTest {
@@ -88,7 +86,6 @@ public class CharTest {
         // Ensure the formula always returns valid integers
         for (int stat = 0; stat <= 30; stat++) {
             int bonus = Char.statBonus(stat);
-            assertFalse("Bonus should never be NaN", Double.isNaN(bonus));
             assertTrue("Bonus should be finite", Double.isFinite(bonus));
         }
     }
