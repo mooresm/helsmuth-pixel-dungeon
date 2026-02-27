@@ -13,6 +13,13 @@ apply plugin: "robovm"
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 java.sourceCompatibility = java.targetCompatibility = appJavaCompatibility
 
+// Read local.properties for machine-specific signing config
+def localProps = new Properties()
+def localPropsFile = rootProject.file('local.properties')
+if (localPropsFile.exists()) {
+    localPropsFile.withInputStream { localProps.load(it) }
+}
+
 task updateRoboVMProps(){
     def props = new Properties()
     
@@ -25,8 +32,13 @@ task updateRoboVMProps(){
     //parse out just #.#.# from version name, this is an apple requirement
     props.setProperty ('appShortVersionName', (appVersionName =~ /\d+\.\d+\.\d+/)[0])
 
-    props.setProperty ('appMainclass', appPackageName + ".ios.IOSLauncher")
+    props.setProperty('appMainclass', 'com.shatteredpixel.shatteredpixeldungeon.ios.IOSLauncher')
     props.setProperty ('appExecutable', "IOSLauncher")
+
+    if (localProps.getProperty('iosSignIdentity')) {
+        props.setProperty('iosSignIdentity', localProps.getProperty('iosSignIdentity'))
+    }
+    props.setProperty ('iosProvisioningProfile', appPackageName + ".apple")
 
     file("robovm.properties").withWriter { props.store(it, "Dynamically generated, do not commit to version control!") }
 }

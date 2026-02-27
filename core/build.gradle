@@ -48,7 +48,7 @@ jacocoTestReport {
     
     // Optional: Set coverage thresholds
     doLast {
-        println "Coverage report generated at: ${reports.html.outputLocation}/index.html"
+        println "Coverage report generated at: ${reports.html.outputLocation.get()}/index.html"
     }
 }
 
