@@ -90,37 +90,38 @@ The v1.x era focused on polish and platform expansion. **v1.2.0** (2022) added f
 
 ## Contributor Summary
 
-| Author | Commits | Role |
-|---|---|---|
-| **Evan Debenham** | 8,691 | Primary developer of Shattered Pixel Dungeon |
-| **mooresm** | 12 | Fork owner — D&D OGL 3.5 conversion project |
-| **Watabou** | 10 | Original Pixel Dungeon creator (foundational commits carried into the fork) |
+| Author            | Commits | Role                                                                        |
+|-------------------|---|-----------------------------------------------------------------------------|
+| **Watabou**       | 10 | Original Pixel Dungeon creator (foundational commits carried into the fork) |
+| **00-Evan** | 8,691 | Primary developer of Shattered Pixel Dungeon                                |
+| **mooresm**   | 12 | Fork owner — d20 OGL 3.5 conversion project                                 |
 
 ---
 
 ## Key Milestones at a Glance
 
-| Version | Year | Who | Highlight |
-|---|---|---|---|
-| v0.5 (orig.) | 2013 | Watabou | Demon Halls, final boss, game now winnable |
+| Version | Year | Who     | Highlight                                           |
+|---|---|---------|-----------------------------------------------------|
+| v0.5 (orig.) | 2013 | Watabou | Demon Halls, final boss, game now winnable          |
 | v1.6.3 (orig.) | 2014 | Watabou | Journal, non-rectangular rooms, round field of view |
-| v1.7.0 (orig.) | 2014 | Watabou | Dungeon can be exited after winning; new tiles |
-| v1.7.4 (orig.) | 2014 | Watabou | Degradation system introduced (controversial) |
-| Open-source | Jul 2014 | Watabou | Source published to GitHub; Evan forks immediately |
-| v0.1.0 | Aug 2014 | Evan | First Shattered release; balance and polish |
-| v0.2.0 | Sep 2014 | Evan | Artifacts system introduced |
-| v0.2.1 | Oct 2014 | Evan | Ghost Quest overhaul; new boss monsters |
-| v1.7.5 (orig.) | 2014 | Watabou | Wand merging, new enchantment system |
-| v0.3.0 | 2015 | Evan | Wand system overhaul |
-| v1.8.0 (orig.) | 2015 | Watabou | New quests; Tome of Remastery |
-| v1.9.2 (orig.) | Dec 2015 | Watabou | Final original game update |
-| v0.4.0 | 2016 | Evan | Desktop/PC platform support |
-| v0.6.0 | 2017 | Evan | New room types; glyph overhaul |
-| v0.7.5 | 2019 | Evan | Tengu boss fight overhauled |
-| v0.8.0 | 2020 | Evan | Yog-Dzewa boss fight overhauled |
-| v0.9.0 | 2020 | Evan | Talent system introduced |
-| v1.2.0 | 2022 | Evan | Full keyboard/keybind support |
-| v2.0.0 | 2022 | Evan | Duelist — 5th hero class added |
-| v3.0.0 | 2025 | Evan | Cleric — 6th hero class added |
-| v3.2.0 | 2025 | Evan | Thrown weapons rebuilt as upgradeable sets |
-| v3.3.5 | Feb 2026 | Evan | Latest upstream release |
+| v1.7.0 (orig.) | 2014 | Watabou | Dungeon can be exited after winning; new tiles      |
+| v1.7.4 (orig.) | 2014 | Watabou | Degradation system introduced (controversial)       |
+| Open-source | Jul 2014 | Watabou | Source published to GitHub; Evan forks immediately  |
+| v0.1.0 | Aug 2014 | Evan    | First Shattered release; balance and polish         |
+| v0.2.0 | Sep 2014 | Evan    | Artifacts system introduced                         |
+| v0.2.1 | Oct 2014 | Evan    | Ghost Quest overhaul; new boss monsters             |
+| v1.7.5 (orig.) | 2014 | Watabou | Wand merging, new enchantment system                |
+| v0.3.0 | 2015 | Evan    | Wand system overhaul                                |
+| v1.8.0 (orig.) | 2015 | Watabou | New quests; Tome of Remastery                       |
+| v1.9.2 (orig.) | Dec 2015 | Watabou | Final original game update                          |
+| v0.4.0 | 2016 | Evan    | Desktop/PC platform support                         |
+| v0.6.0 | 2017 | Evan    | New room types; glyph overhaul                      |
+| v0.7.5 | 2019 | Evan    | Tengu boss fight overhauled                         |
+| v0.8.0 | 2020 | Evan    | Yog-Dzewa boss fight overhauled                     |
+| v0.9.0 | 2020 | Evan    | Talent system introduced                            |
+| v1.2.0 | 2022 | Evan    | Full keyboard/keybind support                       |
+| v2.0.0 | 2022 | Evan    | Duelist — 5th hero class added                      |
+| v3.0.0 | 2025 | Evan    | Cleric — 6th hero class added                       |
+| v3.2.0 | 2025 | Evan    | Thrown weapons rebuilt as upgradeable sets          |
+| v3.3.5 | Feb 2026 | Evan    | Latest upstream release                             |
+|  | Feb 2026 | Matt    | New fork for d20 System Compatible mechanics        |

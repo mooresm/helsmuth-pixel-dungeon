@@ -1,6 +1,6 @@
 # D&D 3.5 Ultra-Minimal PoC - Implementation Tasks
 
-**Goal:** Convert Shattered Pixel Dungeon to D&D 3.5 core mechanics with minimal content (1 class, 2 monsters, 2 levels)
+**Goal:** Convert Shattered Pixel Dungeon to D&D 3.5 core mechanics with minimal content (1 class, 4 monsters, 2 levels)
 
 **Estimated Total Time:** 60-80 hours (1.5-2 months part-time)
 
@@ -130,6 +130,8 @@
 - [ ] **Dagger.java** - Set damageType = PIERCING
 - [ ] **Longsword.java** - Set min() = 1, max() = 8 (1d8)
 - [ ] **Longsword.java** - Set damageType = SLASHING
+- [ ] **Club.java** - Set min() = 1, max() = 6 (1d6)
+- [ ] **Club.java** - Set damageType = BLUDGEONING
 - [ ] **Mace.java** - Set min() = 1, max() = 8 (1d8)
 - [ ] **Mace.java** - Set damageType = BLUDGEONING
 
@@ -137,6 +139,7 @@
 - [ ] Create `WeaponTest.java`
 - [ ] Test Dagger damage range (1-4)
 - [ ] Test Longsword damage range (1-8)
+- [ ] Test Club damage range (1-6)
 - [ ] Test Mace damage range (1-8)
 - [ ] Test damage types are set correctly
 
@@ -167,7 +170,7 @@
 
 ---
 
-## Phase 6: Monster Conversions (12 hours)
+## Phase 6: Monster Conversions (18 hours)
 
 ### Dire Rat Conversion
 - [ ] **Rat.java** - Update name to "dire rat"
@@ -189,7 +192,34 @@
 - [ ] **Skeleton.java** - Check attacker's weapon type
 - [ ] **Skeleton.java** - Return 0 DR for bludgeoning weapons
 - [ ] **Skeleton.java** - Return 5 DR for non-bludgeoning
+- [ ] **Skeleton.java** - Print "Your weapon glances off the bones!" in game log when DR negates all damage
 - [ ] **Skeleton.java** - Add loot drop: Dagger (20% chance)
+
+### Kobold Conversion
+- [ ] **Kobold.java** (new file, or repurpose Gnoll.java) - Set name to "kobold"
+- [ ] **Kobold.java** - Set HP = HT = 4 (1d8)
+- [ ] **Kobold.java** - Set abilities: STR 9, DEX 13, CON 10, INT 10, WIS 9, CHA 8
+- [ ] **Kobold.java** - Add armorClass() = 15 (10 + 1 DEX + 1 natural + 1 armor + 2 size)
+- [ ] **Kobold.java** - Add attackSkill() = BAB 0 + DEX 1 = +1
+- [ ] **Kobold.java** - Update damageRoll() = 1d3 (dagger, STR -1 penalty, min 1)
+- [ ] **Kobold.java** - Add dr(Char attacker) = 0 (no DR)
+- [ ] **Kobold.java** - Add loot drop: Dagger (15% chance), Gold (25% chance)
+
+### Tiny Viper Conversion
+- [ ] **Snake.java** (or new TinyViper.java) - Set name to "tiny viper"
+- [ ] **Snake.java** - Set HP = HT = 2 (1d4)
+- [ ] **Snake.java** - Set abilities: STR 4, DEX 17, CON 11, INT 1, WIS 12, CHA 2
+- [ ] **Snake.java** - Add armorClass() = 17 (10 + 3 DEX + 2 natural + 2 size)
+- [ ] **Snake.java** - Add attackSkill() = +5 (finesse, size bonus)
+- [ ] **Snake.java** - Update damageRoll() = 1 (bite, STR -3 penalty, min 1)
+- [ ] **Snake.java** - Implement simplified poison: on hit, apply Poison buff (1 extra damage next turn)
+- [ ] **Snake.java** - Print "You feel the venom!" in game log when poison is applied
+- [ ] **Snake.java** - Add dr(Char attacker) = 0 (no DR)
+- [ ] **Snake.java** - Add loot drop: Antidote (20% chance)
+
+### Guaranteed Club Drop (Skeleton balancing)
+- [ ] **SewerLevel.java** (or level generation) - Guarantee one Club spawns in a chest or room on Depth 1
+- [ ] This ensures the player always has access to a bludgeoning weapon if they explore
 
 ### Tests
 - [ ] Create `RatTest.java` - Test Dire Rat stats, AC, damage
@@ -197,10 +227,20 @@
 - [ ] Test DR = 5 against slashing weapons
 - [ ] Test DR = 0 against bludgeoning weapons
 - [ ] Test DR = 0 for unarmed attacks
+- [ ] Test "glances off" log message fires when DR negates all damage
+- [ ] Create `KoboldTest.java` - Test Kobold stats, AC, damage
+- [ ] Test Kobold minimum damage = 1 (STR penalty)
+- [ ] Create `TinyViperTest.java` - Test Tiny Viper stats, AC, poison, loot
+- [ ] Test poison buff applied on hit
+- [ ] Test viper damage minimum = 1
+- [ ] Test Antidote drops at 20% chance
 
 ### Validation
 - [ ] All monster tests pass
 - [ ] Skeleton DR works correctly
+- [ ] Kobold deals minimum 1 damage despite STR penalty
+- [ ] Tiny Viper poison buff applies correctly
+- [ ] Club guaranteed to appear on Depth 1
 
 ---
 
@@ -215,13 +255,13 @@
 
 ### Monster Spawning
 - [ ] **Bestiary.java** - Update mobClass() for 2-level system
-- [ ] **Bestiary.java** - Depth 1: 60% Rats, 40% Skeletons
+- [ ] **Bestiary.java** - Depth 1: 50% Rats, 30% Kobolds, 15% Tiny Vipers, 5% Skeletons
 - [ ] **Bestiary.java** - Depth 2: No spawns (null)
 - [ ] **Bestiary.java** - Set isBoss() = false
 
 ### Tests
 - [ ] Create `DungeonDepthTest.java` - Test 2-level cap
-- [ ] Create `BestiaryTest.java` - Test spawn rates
+- [ ] Create `BestiaryTest.java` - Test spawn rates (50/30/15/5)
 
 ### Validation
 - [ ] Dungeon stops at depth 2
@@ -258,16 +298,27 @@
 
 ### Fighter Starting Gear
 - [ ] **HeroClass.java** - Give Longsword as starting weapon
-- [ ] **HeroClass.java** - Give Leather armor as starting armor
-- [ ] **HeroClass.java** - Add Mace to starting inventory
+- [ ] **HeroClass.java** - Give Leather Armor as starting armor
+- [ ] **HeroClass.java** - Add 1x PotionOfHealing to starting inventory
 - [ ] **HeroClass.java** - Add standard Food rations
+- [ ] **Note:** No starting bludgeoning weapon — player must find Club through exploration
+
+### Dungeon Loot Configuration
+- [ ] **SewerLevel.java** (or level generator) - Add Healing Potions to chest/room drop pool
+- [ ] **SewerLevel.java** - Add Antidotes to chest/room drop pool (lower weight than Healing Potions)
+- [ ] **SewerLevel.java** - Add weapons (Longsword, Club, Mace) to chest/room drop pool
+- [ ] **SewerLevel.java** - Add armor (Leather Armor, Scale Mail) to chest/room drop pool
+- [ ] **SewerLevel.java** - Guarantee exactly one Club spawns on Depth 1
 
 ### Validation
 - [ ] Start new game as Warrior
 - [ ] Verify Longsword equipped
-- [ ] Verify Leather armor equipped
-- [ ] Verify Mace in inventory
+- [ ] Verify Leather Armor equipped
+- [ ] Verify 1x Healing Potion in inventory
 - [ ] Verify Food in inventory
+- [ ] Verify Club appears somewhere on Depth 1
+- [ ] Verify Healing Potions appear in chests/rooms
+- [ ] Verify Antidotes appear in chests/rooms (less frequent than Healing Potions)
 
 ---
 
@@ -285,7 +336,7 @@
 - [ ] Character creation shows Warrior
 - [ ] Starting stats: STR 16, DEX 13, CON 14, INT 10, WIS 12, CHA 8
 - [ ] Starting HP: 12 (10 + 2 CON mod)
-- [ ] Starting equipment: Longsword, Leather armor, Mace (in inventory), Food
+- [ ] Starting equipment: Longsword, Leather Armor, 1x Healing Potion, Food
 
 #### 2. Hero Info Window
 - [ ] All 6 ability scores displayed
@@ -301,37 +352,51 @@
 - [ ] Kill rat, gain XP
 - [ ] Rat sometimes drops Mystery Meat (33% chance)
 
-#### 4. Combat - Skeleton with Longsword
+#### 4. Combat - Kobold
+- [ ] Attack with longsword: d20 + 4 vs AC 15
+- [ ] Kobold attacks back: d20 + 1 vs your AC 13
+- [ ] Kobold damage: 1 (minimum, STR penalty)
+- [ ] Kill kobold, check for Gold or Dagger drop
+
+#### 5. Combat - Tiny Viper
+- [ ] Viper attacks: d20 + 5 vs your AC 13
+- [ ] On hit: "You feel the venom!" appears in game log
+- [ ] Poison deals 1 extra damage next turn
+- [ ] Viper dies quickly (2 HP)
+- [ ] Viper sometimes drops Antidote (20% chance)
+- [ ] Test using Antidote clears poison buff
+
+#### 6. Combat - Skeleton with Longsword
 - [ ] Attack with longsword: d20 + 4 vs AC 15
 - [ ] Hit: Damage reduced by 5 (DR)
 - [ ] Example: Roll 6 damage → only 1 damage to skeleton (6-5=1)
-- [ ] If damage ≤ 5, skeleton takes 0 damage
-- [ ] Skeleton feels tanky/ineffective to kill
+- [ ] If damage ≤ 5: "Your weapon glances off the bones!" in game log, 0 damage
+- [ ] Skeleton feels extremely tanky without bludgeoning weapon
 
-#### 5. Combat - Skeleton with Mace
-- [ ] Swap to mace (bludgeoning weapon)
-- [ ] Attack with mace: d20 + 4 vs AC 15
+#### 7. Combat - Skeleton with Club (found via exploration)
+- [ ] Find Club in chest or room drop
+- [ ] Swap to Club (bludgeoning)
+- [ ] Attack with club: d20 + 4 vs AC 15
 - [ ] Hit: Damage NOT reduced (DR bypassed!)
-- [ ] Example: Roll 6 damage → full 6 damage to skeleton
-- [ ] Skeleton dies much faster with mace
+- [ ] Skeleton dies much faster
 
-#### 6. Level Up
+#### 8. Level Up
 - [ ] Reach level 2 (after killing ~3-4 enemies)
 - [ ] HP increases by 1d10 + 2 (CON mod)
 - [ ] BAB increases to +2
 - [ ] Attack bonus now: +5 (BAB 2 + STR 3)
 
-#### 7. Find Scale Mail
+#### 9. Find Scale Mail
 - [ ] Locate scale mail on level 1 (check if it spawns naturally or needs to be added)
 - [ ] Equip scale mail
 - [ ] AC increases to 15 (10 base + 1 DEX + 4 scale)
 
-#### 8. Descend to Level 2
+#### 10. Descend to Level 2
 - [ ] Find stairs down
 - [ ] Level 2 loads (LastLevel)
 - [ ] No enemies spawn
 
-#### 9. Victory Condition
+#### 11. Victory Condition
 - [ ] Find Amulet of Yendor on pedestal
 - [ ] Collect amulet
 - [ ] Return to entrance stairs
@@ -449,7 +514,7 @@
 ## Success Criteria
 
 ### Technical Success
-- [ ] All unit tests pass (16+ tests)
+- [ ] All unit tests pass (22+ tests)
 - [ ] 40%+ code coverage on core combat
 - [ ] Game compiles and runs on Android
 - [ ] No crashes during 2-level playthrough
@@ -458,7 +523,9 @@
 - [ ] d20 combat feels different from original
 - [ ] Player notices AC system
 - [ ] Player understands ability score modifiers
-- [ ] **Player discovers mace is better vs skeletons**
+- [ ] **Player discovers club/mace is better vs skeletons**
+- [ ] **"Glances off the bones!" message appears when hitting skeleton without bludgeoning weapon**
+- [ ] **Tiny Viper poison provides "oh no" moment without being unfair**
 - [ ] Game is winnable in 5-10 minutes
 - [ ] Victory condition works (collect amulet)
 
@@ -472,8 +539,8 @@
 
 ## Files Modified Summary
 
-**PoC Total: 23 files + 7 test files = 30 files**
-**Phase 10 (Branding) Total: +15 files = 45 files total if doing distribution**
+**PoC Total: 28 files + 9 test files = 37 files**
+**Phase 10 (Branding) Total: +15 files = 52 files total if doing distribution**
 
 ### Core Combat (8 files)
 1. Char.java
@@ -485,9 +552,11 @@
 7. Mace.java
 8. Armor.java
 
-### Monsters (2 files)
+### Monsters (4 files)
 9. Rat.java
 10. Skeleton.java
+11. Kobold.java (new, or repurposed Gnoll.java)
+12. Snake.java / TinyViper.java
 
 ### Level System (2 files)
 11. Dungeon.java
@@ -506,7 +575,7 @@
 18. core/build.gradle
 19. .gitignore
 
-### Test Files (7 files)
+### Test Files (9 files)
 20. CharTest.java
 21. HeroTest.java
 22. D20CombatTest.java
@@ -514,6 +583,8 @@
 24. ArmorTest.java
 25. RatTest.java
 26. SkeletonTest.java
+27. KoboldTest.java
+28. TinyViperTest.java
 
 ### Phase 10: Branding & Distribution (15 files) - *Optional*
 27. build.gradle (root) - App name, package, version

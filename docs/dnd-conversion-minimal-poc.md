@@ -6,10 +6,11 @@
 
 **Scope:**
 - **1 class:** Warrior → D&D Fighter (no subclasses, no talents/feats/skills)
-- **2 monsters:** Dire Rat + Skeleton (both CR 1/3)
+- **4 monsters:** Dire Rat (CR 1/3), Skeleton (CR 1/3), Kobold (CR 1/4), Tiny Viper (CR 1/8)
 - **2 levels:** Level 1 (combat tutorial) + Level 2 (amulet/victory)
-- **3 weapons:** Dagger (1d4 piercing), Longsword (1d8 slashing), Heavy Mace (1d8 bludgeoning)
-- **2 armor types:** Leather armor (+2 AC), Scale mail (+4 AC)
+- **3 weapons:** Dagger (1d4 piercing), Longsword (1d8 slashing), Club (1d6 bludgeoning)
+- **3 armor types:** Cloth (+0 AC), Leather armor (+2 AC), Scale mail (+4 AC)
+- **2 consumables:** Healing Potion (reuses SPD's PotionOfHealing), Antidote (reuses SPD's existing antidote/cure poison potion)
 - **Core D&D mechanics:** Ability scores, d20 combat, AC, BAB, DR 5/bludgeoning
 
 **Estimated effort:** 60-80 hours (1.5-2 months part-time)
@@ -22,9 +23,10 @@
 ### Why 2 Levels?
 
 **Level 1: Combat Tutorial**
-- Spawns: Dire Rats (60%) + Skeletons (40%)
-- Both are CR 1/3, appropriate for level 1 Fighter
-- Teaches: Basic combat, weapon choice matters (DR 5/bludgeoning)
+- Spawns: Dire Rats (50%) + Kobolds (30%) + Tiny Vipers (15%) + Skeletons (5%)
+- All CR 1/4–1/3, appropriate for level 1 Fighter
+- Sewer theme: Rats dominate, kobolds lurk, vipers hide in corners, rare skeleton is a nasty surprise
+- Teaches: Basic combat, weapon choice matters (DR 5/bludgeoning), poison awareness
 - Fighter starts at level 1, reaches level 2 by end
 
 **Level 2: Victory**
@@ -40,24 +42,57 @@
 - Tests: Basic d20 combat, AC 15, DEX-based enemy
 - **Drops:** Mystery Meat (33% chance) - raw food for healing
 
+**Kobold (CR 1/4):**
+- Slightly weaker than a dire rat, great filler enemy
+- Low STR (9), relies on DEX — teaches player that small enemies can still be annoying
+- **Drops:** Dagger (15% chance), Gold (25% chance), Leather armor (15% chance)
+- Thematic fit: Kobolds infesting sewers is classic D&D
+
+**Tiny Viper (CR 1/8):**
+- Very low HP (2), dies fast but dangerous if ignored
+- Poison bite: deals 1 extra damage next turn (simplified Fort save mechanic)
+- Game log prints *"You feel the venom!"* on a poisoned hit
+- **Drops:** Mystery Meat (33% chance) - raw food for healing
+
 **Skeleton (CR 1/3):**
 - DR 5/bludgeoning mechanic (critical D&D feature)
-- Same CR as Dire Rat (balanced for level 1)
-- Tests: Weapon damage types, slashing vs bludgeoning choice
+- Rare spawn (5%) — a scary surprise, not a routine fight
+- Without a bludgeoning weapon, the player deals 0 damage most turns
+- Game log prints *"Your weapon glances off the bones!"* when DR negates all damage
+- A Club is guaranteed to appear somewhere on Depth 1 (chest/room drop) to reward exploration
 - **Equipped with:** Dagger (1d4+1 piercing damage)
-- **Drops:** Dagger (20% chance) - demonstrates piercing weapons
+- **Drops:** Dagger (20% chance)
 
-**Key teaching moment:** Player learns bludgeoning weapons bypass skeleton DR.
+**Key teaching moments:**
+- Kobolds: Even weak enemies in numbers are a threat
+- Vipers: Don't ignore small enemies — poison hurts, and antidotes are worth picking up
+- Skeleton: The right tool matters; exploration is rewarded (find the Club!)
+
+### Dungeon Loot (Chests + Random Room Drops)
+
+Depth 1 rooms and chests can contain any of the following, weighted toward consumables early:
+
+| Item | Notes |
+|---|---|
+| Healing Potion (`PotionOfHealing`) | Primary health recovery; multiple per run |
+| Antidote (SPD cure poison potion) | Counters viper poison; less common than Healing Potion |
+| Club (1d6, bludgeoning) | **Guaranteed once** on Depth 1 — key to fighting skeletons |
+| Longsword (1d8, slashing) | Random weapon upgrade |
+| Heavy Mace (1d8, bludgeoning) | Random weapon upgrade; best vs skeletons |
+| Leather Armor (+2 AC) | Random armor find |
+| Scale Mail (+4 AC) | Random armor upgrade |
+
+Healing Potions are more common than Antidotes since all enemies chip HP, but only vipers poison. The guaranteed Club ensures no run is unwinnable.
 
 ### Why These Weapons?
 
-**3 weapons = 3 damage types:**
+**3 weapons = 3 damage types + accessible bludgeoning:**
 
 1. **Dagger** (1d4, piercing) - Starting weapon option, weak but fast
 2. **Longsword** (1d8, slashing) - Classic Fighter weapon, good damage
-3. **Heavy Mace** (1d8, bludgeoning) - Same damage as longsword, but bypasses skeleton DR
+3. **Club** (1d6, bludgeoning) - Simple, findable in the dungeon; the key to fighting skeletons
 
-**Player discovers:** Longsword does 1-8 damage to rats, but skeletons reduce it by 5 (DR). Heavy mace does full damage to both.
+**Player discovers:** Slashing/piercing weapons are reduced by skeleton DR. The Club bypass it entirely. The Club is guaranteed to appear on Depth 1, rewarding exploration.
 
 ### Why 2 Armor Types?
 
@@ -475,16 +510,14 @@ core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/
 23. **`core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/HeroClass.java`**
     - Update: WARRIOR.initHero() starting equipment:
       ```java
-      // Give player choice or provide one weapon:
       (hero.belongings.weapon = new Longsword()).identify();
       (hero.belongings.armor = new LeatherArmor()).identify();
 
-      // Add mace to starting inventory for skeleton DR testing
-      new Mace().identify().collect();
-
-      // Standard rations
-      new Food().identify().collect();
+      // Starting consumables
+      new PotionOfHealing().identify().collect();  // One healing potion to start
+      new Food().identify().collect();             // Standard rations
       ```
+    - Note: No starting Club or Mace — player must find bludgeoning weapon through exploration
 
 ---
 
@@ -741,7 +774,7 @@ open core/build/reports/jacoco/test/html/index.html
 - ✅ Character creation shows Warrior
 - ✅ Starting stats: STR 16, DEX 13, CON 14, INT 10, WIS 12, CHA 8
 - ✅ Starting HP: 12 (10 + 2 CON mod)
-- ✅ Starting equipment: Longsword, Leather armor, Mace (in inventory)
+- ✅ Starting equipment: Longsword, Leather Armor, 1x Healing Potion, Food
 
 ### 2. Hero Info Window
 - ✅ All 6 ability scores displayed
@@ -825,10 +858,13 @@ open core/build/reports/jacoco/test/html/index.html
 - Weapon switching becomes tactical decision
 
 **Loot system:**
-- Rats drop Mystery Meat (33% chance) - raw food for healing
-- Skeletons drop Daggers (20% chance) - demonstrates piercing weapons
-- Player learns: Different enemies drop thematic loot
-- Daggers are weaker (1d4) but demonstrate the 3rd damage type
+- Rats drop Mystery Meat (33%) — raw food for healing
+- Kobolds drop Gold (25%) or Dagger (15%) — small rewards for easy fights
+- Tiny Vipers drop Antidote (20%) — just often enough to matter
+- Skeletons drop Daggers (20%) — thematic but not optimal vs skeletons
+- Chests and room drops: Healing Potions, Antidotes, weapons, armor
+- A Club is guaranteed somewhere on Depth 1 — rewards exploration, key to beating skeletons
+- Player learns: Exploration pays off; consumables are precious early on
 
 ### D&D Feel
 
@@ -939,23 +975,26 @@ Once this ultra-minimal PoC works, expand in this order:
 
 ## Files Modified Summary
 
-**PoC Total: 23 files**
+**PoC Total: 28 files**
 **Phase 10 (Branding) Total: +15 files**
-**Grand Total with Phase 10: 38 files**
+**Grand Total with Phase 10: 43 files**
 
-### Core Combat (8 files)
+### Core Combat (9 files)
 1. Char.java - Abilities, AC, d20 combat
 2. Hero.java - Fighter stats, attacks, damage
 3. HeroClass.java - Fighter initialization
 4. Weapon.java - Damage type system
 5. Dagger.java - 1d4 piercing
 6. Longsword.java - 1d8 slashing
-7. Mace.java - 1d8 bludgeoning
-8. Armor.java - AC bonus
+7. Club.java - 1d6 bludgeoning (guaranteed Depth 1 drop)
+8. Mace.java - 1d8 bludgeoning
+9. Armor.java - AC bonus
 
-### Monsters (2 files)
+### Monsters (4 files)
 9. Rat.java - Dire Rat (CR 1/3)
-10. Skeleton.java - Skeleton with DR 5/bludgeoning
+10. Skeleton.java - Skeleton with DR 5/bludgeoning (rare spawn, guaranteed Club on level)
+11. Snake.java (or new file) - Tiny Viper (CR 1/8, poison bite)
+12. Gnoll.java (repurposed) or new Kobold.java - Kobold (CR 1/4)
 
 ### Level System (2 files)
 11. Dungeon.java - 2-level cap
