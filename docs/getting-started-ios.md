@@ -1,7 +1,7 @@
 # iOS Build & Installation Guide
 
-> **Project:** Helsmuth Dungeon
-> **Framework:** LibGDX 1.14.0 + RoboVM 2.3.24
+> **Project:** Helsmuth Dungeon ⁓ 
+> **Framework:** LibGDX 1.14.0 + RoboVM 2.3.24 ⁓
 > **Audience:** Internal developers
 
 ---

@@ -352,8 +352,8 @@
 ### Application Identity (1 hour)
 
 #### Update Build Configuration
-- [ ] **build.gradle (root)** - Change `appName` to your game's name (e.g., "D&D Pixel Dungeon")
-- [ ] **build.gradle (root)** - Change `appPackageName` to format: `com.<yourname>.<gamename>`
+- [x] **build.gradle (root)** - Change `appName` to your game's name (e.g., "D&D Pixel Dungeon")
+- [x] **build.gradle (root)** - Change `appPackageName` to format: `com.<yourname>.<gamename>`
 - [ ] **build.gradle (root)** - Update `appVersionName` to your version (e.g., "0.1.0-alpha")
 - [ ] **build.gradle (root)** - Keep `appVersionCode` at Shattered's current value or higher (don't decrement)
 
@@ -440,8 +440,8 @@
 ### Distribution Checklist
 - [ ] Test on target platforms (Android, Desktop, iOS)
 - [ ] Verify GPLv3 compliance (original credits intact, source available)
-- [ ] Create GitHub repository for your fork
-- [ ] Write README explaining D&D conversion
+- [x] Create GitHub repository for your fork
+- [x] Write README explaining D&D conversion
 - [ ] Consider release strategy (alpha, beta, etc.)
 
 ---
