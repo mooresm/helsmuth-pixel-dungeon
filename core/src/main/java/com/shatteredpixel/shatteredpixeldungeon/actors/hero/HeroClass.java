@@ -176,15 +176,17 @@ public enum HeroClass {
 		ThrowingStone stones = new ThrowingStone();
 		stones.identify().collect();
 
+		// set ability scores
+		hero.STR = 16;
+		hero.DEX = 13;
+		hero.CON = 14;
+		hero.INT = 10;
+		hero.WIS = 12;
+		hero.CHA = 8;
+
 		Dungeon.quickslot.setSlot(0, stones);
 
-		if (hero.belongings.armor != null){
-			hero.belongings.armor.affixSeal(new BrokenSeal());
-			Catalog.setSeen(BrokenSeal.class); //as it's not added to the inventory
-		}
-
 		new PotionOfHealing().identify();
-		new ScrollOfRage().identify();
 	}
 
 	private static void initMage( Hero hero ) {

@@ -11,8 +11,13 @@ dependencies {
     // JUnit 4.13.2 for unit testing
     testImplementation 'junit:junit:4.13.2'
     
-    // Mockito for mocking (optional, but useful for complex tests)
-    testImplementation 'org.mockito:mockito-core:4.11.0'
+    // mockito-inline replaces mockito-core and adds static mock support via
+    // the Instrumentation API. Required for MockedStatic (e.g. Challenges,
+    // Dungeon, SPDSettings). JVM-only — not compatible with Android runtime.
+    // mockito-inline 5.x required for Java 21 support (bundles Byte Buddy 1.14+).
+    // 5.2.0 is the last release of mockito-inline before it was merged into
+    // mockito-core in 5.x — use this for static mock support on Java 21.
+    testImplementation 'org.mockito:mockito-inline:5.2.0'
 }
 
 // Configure JaCoCo code coverage
