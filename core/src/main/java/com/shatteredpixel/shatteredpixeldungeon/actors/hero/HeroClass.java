@@ -188,6 +188,7 @@ public enum HeroClass {
 		hero.HTBoost = 10;
 		hero.HT = hero.HTBoost + Char.statBonus(hero.CON);
 		hero.HP = hero.HT;
+		hero.attackSkill = 1;
 
 		new PotionOfHealing().identify().collect();
 		new PotionOfLiquidFlame().identify().collect();
