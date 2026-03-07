@@ -65,12 +65,12 @@
 
 ### Fighter Setup
 - [x] **HeroClass.java** - Set Fighter ability scores (STR 16, DEX 13, CON 14, INT 10, WIS 12, CHA 8)
-- [ ] **HeroClass.java** - Set starting HP: 10 + conMod() = 12
-- [ ] **HeroClass.java** - Set starting BAB: attackSkill = 1
+- [x] **HeroClass.java** - Set starting HP: 10 + conMod() = 12
+- [ ] **HeroClass.java** - Set starting BAB: attackSkill = 1 + strMod()
 - [ ] **HeroClass.java** - Update WARRIOR perks description
 
 ### Level Up System
-- [ ] **Hero.java** - Update onLevelUp() HP gain: 1d10 + conMod()
+- [x] **Hero.java** - Update onLevelUp() HP gain: 1d10 + conMod()
 - [ ] **Hero.java** - Update onLevelUp() BAB increase: attackSkill++
 
 ### Tests
@@ -81,8 +81,8 @@
   item objects whose constructors load LibGDX sprite sheets (`ItemSpriteSheet$Icons.<clinit>`),
   which requires a running GPU/file context. These are integration tests, not unit tests.
   Verify Fighter starting stats manually by running the game instead.
-- [ ] Test Fighter starting HP (should be 12) — **manual test only** (same reason)
-- [ ] Test Fighter level up HP gain — **manual test only**
+- [x] Test Fighter starting HP (should be 12) — **manual test only** (same reason)
+- [x] Test Fighter level up HP gain — **manual test only**
 - [ ] Test BAB progression — **manual test only**
 
 > **Testing boundary:** Any code path that calls `new SomeItem()` or `item.identify()` will

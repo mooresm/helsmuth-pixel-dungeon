@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.QuickSlot;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.AscendedForm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.PowerOfMany;
@@ -175,6 +176,7 @@ public enum HeroClass {
 		(hero.belongings.weapon = new WornShortsword()).identify();
 		ThrowingStone stones = new ThrowingStone();
 		stones.identify().collect();
+		Dungeon.quickslot.setSlot(0, stones);
 
 		// set ability scores
 		hero.STR = 16;
@@ -183,10 +185,15 @@ public enum HeroClass {
 		hero.INT = 10;
 		hero.WIS = 12;
 		hero.CHA = 8;
+		hero.HTBoost = 10;
+		hero.HT = hero.HTBoost + Char.statBonus(hero.CON);
+		hero.HP = hero.HT;
 
-		Dungeon.quickslot.setSlot(0, stones);
-
-		new PotionOfHealing().identify();
+		new PotionOfHealing().identify().collect();
+		new PotionOfLiquidFlame().identify().collect();
+		new ScrollOfUpgrade().identify().collect();
+		new ScrollOfRemoveCurse().identify().collect();
+		new PotionOfStrength().identify();
 	}
 
 	private static void initMage( Hero hero ) {

@@ -251,15 +251,20 @@ public class Hero extends Char {
 	
 	public void updateHT( boolean boostHP ){
 		int curHT = HT;
-		
-		HT = 20 + 5*(lvl-1) + HTBoost;
+
+		if (heroClass == HeroClass.WARRIOR) {
+			HT = HTBoost + lvl*Char.statBonus(CON);
+		} else {
+			HT = 20 + 5*(lvl-1) + HTBoost;
+		}
+
 		float multiplier = RingOfMight.HTMultiplier(this);
 		HT = Math.round(multiplier * HT);
-		
+
 		if (buff(ElixirOfMight.HTBoost.class) != null){
 			HT += buff(ElixirOfMight.HTBoost.class).boost();
 		}
-		
+
 		if (boostHP){
 			HP += Math.max(HT - curHT, 0);
 		}
@@ -331,8 +336,6 @@ public class Hero extends Char {
 		
 		attackSkill = bundle.getInt( ATTACK );
 		defenseSkill = bundle.getInt( DEFENSE );
-		
-		STR = bundle.getInt( STRENGTH );
 
 		belongings.restoreFromBundle( bundle );
 	}
@@ -2002,6 +2005,7 @@ public class Hero extends Char {
 		}
 		
 		boolean levelUp = false;
+		int oldHP = HP;
 		while (this.exp >= maxExp()) {
 			this.exp -= maxExp();
 
@@ -2013,9 +2017,13 @@ public class Hero extends Char {
 			if (lvl < MAX_LEVEL) {
 				lvl++;
 				levelUp = true;
-				
+
 				if (buff(ElixirOfMight.HTBoost.class) != null){
 					buff(ElixirOfMight.HTBoost.class).onLevelUp();
+				}
+
+				if (heroClass == HeroClass.WARRIOR) {
+					HTBoost += Random.IntRange(1, 10);
 				}
 				
 				updateHT( true );
@@ -2036,8 +2044,9 @@ public class Hero extends Char {
 		if (levelUp) {
 			
 			if (sprite != null) {
+				int hpGain = HP - oldHP;
 				GLog.newLine();
-				GLog.p( Messages.get(this, "new_level") );
+				GLog.p( Messages.get(this, "new_level", hpGain) );
 				sprite.showStatus( CharSprite.POSITIVE, Messages.get(Hero.class, "level_up") );
 				Sample.INSTANCE.play( Assets.Sounds.LEVELUP );
 				if (lvl < Talent.tierLevelThresholds[Talent.MAX_TALENT_TIERS+1]){
