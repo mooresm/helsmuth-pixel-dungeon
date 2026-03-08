@@ -49,11 +49,17 @@ public class Skeleton extends Mob {
 	{
 		spriteClass = SkeletonSprite.class;
 		
-		HP = HT = 25;
-		defenseSkill = 9;
+		defenseSkill = 9; // Keep for compatibility
 		
 		EXP = 5;
 		maxLvl = 10;
+		// d20 SRD ability scores: human warrior skeleton
+		STR = 13;
+		DEX = 13;
+		WIS = 10;
+		CHA = 1;
+		HP = HT = Random.IntRange(1, 12);
+		AC = 10 + statBonus(DEX) + 2;
 
 		loot = Generator.Category.WEAPON;
 		lootChance = 0.1667f; //by default, see lootChance()
@@ -64,7 +70,7 @@ public class Skeleton extends Mob {
 	
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 2, 10 );
+		return Random.NormalIntRange( 2, 5 );
 	}
 	
 	@Override
@@ -155,7 +161,8 @@ public class Skeleton extends Mob {
 
 	@Override
 	public int attackSkill( Char target ) {
-		return 12;
+		// BAB 0 + STR +1 = +1
+		return 0 + statBonus(STR);
 	}
 	
 	@Override

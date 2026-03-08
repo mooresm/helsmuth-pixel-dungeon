@@ -661,71 +661,109 @@ public abstract class Char extends Actor {
 	}
 
 	public static boolean hit( Char attacker, Char defender, float accMulti, boolean magic ) {
-		float acuStat = attacker.attackSkill( defender );
-		float defStat = defender.defenseSkill( attacker );
+		// Get attack bonus and AC from field
+		int attackBonus = attacker.attackSkill(defender);
+		int defenderAC = defender.AC;
 
+		// Handle damage interrupts
 		if (defender instanceof Hero && ((Hero) defender).damageInterrupt){
 			((Hero) defender).interrupt();
 		}
 
-		//invisible chars always hit (for the hero this is surprise attacking)
+		// Special case: Invisible surprise attacks = auto-hit
 		if (attacker.invisible > 0 && attacker.canSurpriseAttack()){
-			acuStat = INFINITE_ACCURACY;
+			attackBonus = INFINITE_ACCURACY;
 		}
 
+		// Special case: Monk Focus = auto-miss
 		if (defender.buff(MonkEnergy.MonkAbility.Focus.FocusBuff.class) != null){
-			defStat = INFINITE_EVASION;
+			defenderAC = INFINITE_EVASION;
 		}
 
-		//if accuracy or evasion are large enough, treat them as infinite.
-		//note that infinite evasion beats infinite accuracy
-		if (defStat >= INFINITE_EVASION){
-			hitMissIcon = FloatingText.getMissReasonIcon(attacker, acuStat, defender, INFINITE_EVASION);
+		// Handle INFINITE_ACCURACY and INFINITE_EVASION
+		if (defenderAC >= INFINITE_EVASION){
+			hitMissIcon = FloatingText.getMissReasonIcon(attacker, attackBonus, defender, INFINITE_EVASION);
 			return false;
-		} else if (acuStat >= INFINITE_ACCURACY){
-			hitMissIcon = FloatingText.getHitReasonIcon(attacker, INFINITE_ACCURACY, defender, defStat);
+		} else if (attackBonus >= INFINITE_ACCURACY){
+			hitMissIcon = FloatingText.getHitReasonIcon(attacker, INFINITE_ACCURACY, defender, defenderAC);
 			return true;
 		}
 
-		float acuRoll = Random.Float( acuStat );
-		if (attacker.buff(Bless.class) != null) acuRoll *= 1.25f;
-		if (attacker.buff(  Hex.class) != null) acuRoll *= 0.8f;
-		if (attacker.buff( Daze.class) != null) acuRoll *= 0.5f;
+		// Calculate buff modifiers to attack bonus
+		int bonusMod = 0;
+		if (attacker.buff(Bless.class) != null) bonusMod += 2;
+		if (attacker.buff(Hex.class) != null) bonusMod -= 1;
+		if (attacker.buff(Daze.class) != null) bonusMod -= 2;
+
 		for (ChampionEnemy buff : attacker.buffs(ChampionEnemy.class)){
-			acuRoll *= buff.evasionAndAccuracyFactor();
+			float factor = buff.evasionAndAccuracyFactor();
+			if (factor < 1f) bonusMod -= 2;
+			else if (factor > 1f) bonusMod += 1;
 		}
-		acuRoll *= AscensionChallenge.statModifier(attacker);
+
+		if (AscensionChallenge.statModifier(attacker) < 1f) bonusMod -= 1;
+		else if (AscensionChallenge.statModifier(attacker) > 1f) bonusMod += 1;
+
 		if (Dungeon.hero.heroClass != HeroClass.CLERIC
 				&& Dungeon.hero.hasTalent(Talent.BLESS)
 				&& attacker.alignment == Alignment.ALLY){
-			// + 3%/5%
-			acuRoll *= 1.01f + 0.02f*Dungeon.hero.pointsInTalent(Talent.BLESS);
+			bonusMod += 1;
 		}
-		acuRoll *= accMulti;
 
-		float defRoll = Random.Float( defStat );
-		if (defender.buff(Bless.class) != null) defRoll *= 1.25f;
-		if (defender.buff(  Hex.class) != null) defRoll *= 0.8f;
-		if (defender.buff( Daze.class) != null) defRoll *= 0.5f;
+		// Calculate buff modifiers to AC
+		int acMod = 0;
+		if (defender.buff(Bless.class) != null) acMod += 2;
+		if (defender.buff(Hex.class) != null) acMod -= 1;
+		if (defender.buff(Daze.class) != null) acMod -= 2;
+
 		for (ChampionEnemy buff : defender.buffs(ChampionEnemy.class)){
-			defRoll *= buff.evasionAndAccuracyFactor();
+			float factor = buff.evasionAndAccuracyFactor();
+			if (factor < 1f) acMod -= 2;
+			else if (factor > 1f) acMod += 1;
 		}
-		defRoll *= AscensionChallenge.statModifier(defender);
+
+		if (AscensionChallenge.statModifier(defender) < 1f) acMod -= 1;
+		else if (AscensionChallenge.statModifier(defender) > 1f) acMod += 1;
+
 		if (Dungeon.hero.heroClass != HeroClass.CLERIC
 				&& Dungeon.hero.hasTalent(Talent.BLESS)
 				&& defender.alignment == Alignment.ALLY){
-			// + 3%/5%
-			defRoll *= 1.01f + 0.02f*Dungeon.hero.pointsInTalent(Talent.BLESS);
+			acMod += 1;
 		}
-		defRoll *= FerretTuft.evasionMultiplier();
 
-		if (acuRoll >= defRoll){
-			hitMissIcon = FloatingText.getHitReasonIcon(attacker, acuRoll, defender, defRoll);
-			return true;
-		} else {
-			hitMissIcon = FloatingText.getMissReasonIcon(attacker, acuRoll, defender, defRoll);
-			return false;
+		acMod += (int)(FerretTuft.evasionMultiplier() - 1f);
+
+		// Apply accMulti (magic attacks = 2x = +2 bonus)
+		if (accMulti > 1f) {
+			bonusMod += (int)((accMulti - 1f) * 2);
+		} else if (accMulti < 1f) {
+			bonusMod -= (int)((1f - accMulti) * 2);
 		}
+
+		// Roll d20 and check hit
+		int d20Roll = Random.IntRange(1, 20);
+		boolean hit = d20Hit(d20Roll, attackBonus + bonusMod, defenderAC + acMod);
+		// Debug logging (optional - can be disabled after testing)
+		if (Dungeon.level.heroFOV[attacker.pos] || Dungeon.level.heroFOV[defender.pos]) {
+			String attackerName = attacker == Dungeon.hero ? "You" : attacker.name();
+			String defenderName = defender == Dungeon.hero ? "you" : defender.name();
+			int totalBonus = attackBonus + bonusMod;
+			int totalAC = defenderAC + acMod;
+
+			GLog.i("%s: d20=%d + %d vs AC %d = %s",
+					attackerName, d20Roll, totalBonus, totalAC, hit ? "HIT" : "MISS");
+		}
+
+		// Set hit/miss icon
+		if (hit) {
+			hitMissIcon = FloatingText.getHitReasonIcon(attacker, d20Roll + attackBonus + bonusMod,
+					defender, defenderAC + acMod);
+		} else {
+			hitMissIcon = FloatingText.getMissReasonIcon(attacker, d20Roll + attackBonus + bonusMod,
+					defender, defenderAC + acMod);
+		}
+
+		return hit;
 	}
 
 	private static int hitMissIcon = -1;

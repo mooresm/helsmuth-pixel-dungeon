@@ -1,5 +1,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors;
 
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Skeleton;
 import com.watabou.utils.Random;
 
 import org.junit.After;
@@ -196,5 +199,87 @@ public class D20CombatTest {
                 Char.d20Hit(12, koboldAttackBonus, fighterACInLeather));
         assertFalse("Kobold misses armored Fighter on roll of 11",
                 Char.d20Hit(11, koboldAttackBonus, fighterACInLeather));
+    }
+
+    @Test
+    public void testRat() {
+        Rat rat = new Rat();
+        assertEquals("Rat AC should be 15", 15, rat.AC);
+        assertTrue("Rat HP >= 2", rat.HP >= 2);
+        assertTrue("Rat HP <= 9", rat.HP <= 9);
+        assertEquals("Rat should have +4 to hit", 4, rat.attackSkill(rat));
+        assertTrue("damage >= 1", rat.damageRoll() >= 1);
+        assertTrue("damage <= 4", rat.damageRoll() <= 4);
+    }
+
+    @Test
+    public void testSkeleton() {
+        Skeleton skeleton = new Skeleton();
+        assertEquals("Skeleton AC should be 13", 13, skeleton.AC);
+        assertTrue("Skeleton HP >= 1", skeleton.HP >= 1);
+        assertTrue("Skeleton HP <= 12", skeleton.HP <= 12);
+        assertEquals("Skeleton should have +1 to hit", 1, skeleton.attackSkill(skeleton));
+        assertTrue("damage >= 2", skeleton.damageRoll() >= 2);
+        assertTrue("damage <= 5", skeleton.damageRoll() <= 5);
+    }
+
+    @Test
+    public void testHeroACCalculation() {
+        Hero hero = new Hero();
+        hero.DEX = 13; // +1 modifier
+        hero.updateAC();
+        assertEquals("Hero base AC (no armor) should be 11", 11, hero.AC);
+    }
+
+    // ==================== Hero::attackSkill() ====================
+
+    /**
+     * Unarmed (no weapon): BAB + STR mod, minimum 1.
+     * With Fighter's STR 16 (+3) and BAB 1 → returns 4.
+     */
+    @Test
+    public void testFighterAttackSkillUnarmed() {
+        Hero hero = new Hero();
+        hero.STR = 16; // +3 mod
+        hero.attackSkill = 1; // BAB
+        assertEquals("Fighter unarmed attack skill: BAB 1 + STR mod 3 = 4",
+                4, hero.attackSkill(hero));
+    }
+
+    /**
+     * Weak STR (-1 mod) + low BAB: minimum 1 still applies.
+     */
+    @Test
+    public void testAttackSkillMinimum() {
+        Hero hero = new Hero();
+        hero.STR = 8; // -1 mod
+        hero.attackSkill = 0; // BAB 0, total = -1 → clamped to 1
+        assertEquals("Negative total attack skill should clamp to 1",
+                1, hero.attackSkill(hero));
+    }
+
+    /**
+     * High STR, BAB 0: ability mod alone drives the bonus.
+     */
+    @Test
+    public void testAttackSkillStrModOnlyNoBab() {
+        Hero hero = new Hero();
+        hero.STR = 18; // +4 mod
+        hero.attackSkill = 0;
+        assertEquals("STR 18 with no BAB: 0 + 4 = 4",
+                4, hero.attackSkill(hero));
+    }
+
+    /**
+     * Level-up increases BAB: attackSkill field increments each level.
+     * Fighter BAB 2 at level 2, STR 16 (+3) → 5.
+     */
+    @Test
+    public void testFighterAttackSkillAtLevel2() {
+        Hero hero = new Hero();
+        hero.STR = 16; // +3 mod
+        hero.attackSkill = 2; // BAB after level-up
+        assertEquals("Fighter level 2: BAB 2 + STR mod 3 = 5",
+                5, hero.attackSkill(hero));
     }
 }

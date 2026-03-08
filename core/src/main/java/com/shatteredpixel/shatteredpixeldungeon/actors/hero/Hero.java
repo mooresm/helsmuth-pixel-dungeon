@@ -242,11 +242,11 @@ public class Hero extends Char {
 		super();
 
 		HP = HT = 20;
-		AC = 10;
 		STR = STARTING_STR;
 		
 		belongings = new Belongings( this );
-		
+		updateAC(); // Calculate initial AC
+
 		visibleEnemies = new ArrayList<>();
 	}
 	
@@ -339,6 +339,7 @@ public class Hero extends Char {
 		defenseSkill = bundle.getInt( DEFENSE );
 
 		belongings.restoreFromBundle( bundle );
+		updateAC();
 	}
 	
 	public static void preview( GamesInProgress.Info info, Bundle bundle ) {
@@ -502,59 +503,20 @@ public class Hero extends Char {
 
 	@Override
 	public int attackSkill( Char target ) {
+		// BAB (Base Attack Bonus) = attackSkill field
+		int bab = this.attackSkill;
+
+		// Ability modifier: STR for melee, DEX for ranged
 		KindOfWeapon wep = belongings.attackingWeapon();
-		
-		float accuracy = 1;
-		accuracy *= RingOfAccuracy.accuracyMultiplier( this );
-		
-		//precise assault and liquid agility
-		if (!(wep instanceof MissileWeapon)) {
-			if ((hasTalent(Talent.PRECISE_ASSAULT) || hasTalent(Talent.LIQUID_AGILITY))
-					//does not trigger on ability attacks
-					&& belongings.abilityWeapon != wep && buff(MonkEnergy.MonkAbility.UnarmedAbilityTracker.class) == null){
-
-				//non-duelist benefit for precise assault, can stack with liquid agility
-				if (heroClass != HeroClass.DUELIST) {
-					//persistent +10%/20%/30% ACC for other heroes
-					accuracy *= 1f + 0.1f * pointsInTalent(Talent.PRECISE_ASSAULT);
-				}
-
-				if (wep instanceof Flail && buff(Flail.SpinAbilityTracker.class) != null){
-					//do nothing, this is not a regular attack so don't consume talent fx
-				} else if (wep instanceof Crossbow && buff(Crossbow.ChargedShot.class) != null){
-					//do nothing, this is not a regular attack so don't consume talent fx
-				} else if (buff(Talent.PreciseAssaultTracker.class) != null) {
-					// 2x/5x/inf. ACC for duelist if she just used a weapon ability
-					switch (pointsInTalent(Talent.PRECISE_ASSAULT)){
-						default: case 1:
-							accuracy *= 2; break;
-						case 2:
-							accuracy *= 5; break;
-						case 3:
-							accuracy *= Float.POSITIVE_INFINITY; break;
-					}
-				} else if (buff(Talent.LiquidAgilACCTracker.class) != null){
-					// 3x/inf. ACC, depending on talent level
-					accuracy *= pointsInTalent(Talent.LIQUID_AGILITY) == 2 ? Float.POSITIVE_INFINITY : 3f;
-					Talent.LiquidAgilACCTracker buff = buff(Talent.LiquidAgilACCTracker.class);
-					buff.uses--;
-				}
-			}
+		int abilityMod;
+		if (wep instanceof MissileWeapon) {
+			abilityMod = statBonus(DEX);
 		} else {
-			if (buff(Momentum.class) != null && buff(Momentum.class).freerunning()){
-				accuracy *= 1f + pointsInTalent(Talent.PROJECTILE_MOMENTUM)/2f;
-			}
+			abilityMod = statBonus(STR);
 		}
 
-		if (buff(Scimitar.SwordDance.class) != null){
-			accuracy *= 1.50f;
-		}
-		
-		if (!RingOfForce.fightingUnarmed(this)) {
-			return Math.max(1, Math.round(attackSkill * accuracy * wep.accuracyFactor( this, target )));
-		} else {
-			return Math.max(1, Math.round(attackSkill * accuracy));
-		}
+		// Total = BAB + ability mod
+		return Math.max(1, bab + abilityMod);
 	}
 	
 	@Override
@@ -601,6 +563,19 @@ public class Hero extends Char {
 		}
 
 		return Math.max(1, Math.round(evasion));
+	}
+
+	/**
+	 * Updates AC field based on current DEX and equipped armor.
+	 * Call this when equipment changes or DEX changes.
+	 */
+	public void updateAC() {
+		AC = 10 + statBonus(DEX);
+
+		if (belongings.armor != null) {
+			// Armor tier → AC bonus: tier 2 = +2, tier 3 = +4, tier 4 = +6, tier 5 = +8
+			AC += belongings.armor.tier * 2;
+		}
 	}
 
 	@Override
@@ -673,6 +648,7 @@ public class Hero extends Char {
 				dmg = ((Weapon)belongings.attackingWeapon()).augment.damageFactor(dmg);
 			}
 		}
+		if (!(wep instanceof MissileWeapon)) dmg += statBonus(STR);
 
 		PhysicalEmpower emp = buff(PhysicalEmpower.class);
 		if (emp != null){
@@ -690,7 +666,7 @@ public class Hero extends Char {
 			dmg = Math.round(dmg * 1.025f + (.025f*pointsInTalent(Talent.WEAPON_RECHARGING)));
 		}
 
-		if (dmg < 0) dmg = 0;
+		if (dmg < 1) dmg = 1;
 		return dmg;
 	}
 

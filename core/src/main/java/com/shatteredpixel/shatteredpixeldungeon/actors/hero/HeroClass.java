@@ -189,13 +189,13 @@ public enum HeroClass {
 		hero.HT = hero.HTBoost + Char.statBonus(hero.CON);
 		hero.HP = hero.HT;
 		hero.attackSkill = 1;
-		hero.AC = 10 + Char.statBonus(hero.DEX);
 
 		new PotionOfHealing().identify().collect();
 		new PotionOfLiquidFlame().identify().collect();
 		new ScrollOfUpgrade().identify().collect();
 		new ScrollOfRemoveCurse().identify().collect();
 		new PotionOfStrength().identify();
+		hero.updateAC();
 	}
 
 	private static void initMage( Hero hero ) {

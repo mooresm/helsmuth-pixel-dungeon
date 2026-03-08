@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.MysteryMeat;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RatSprite;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
@@ -32,13 +33,25 @@ public class Rat extends Mob {
 
 	{
 		spriteClass = RatSprite.class;
-		
-		HP = HT = 8;
-		defenseSkill = 2;
+
+		defenseSkill = 2; // Keep for compatibility
+
+		// D&D Dire Rat ability scores
+		STR = 10;
+		DEX = 17; // +3 modifier
+		CON = 12;
+		INT = 2;
+		WIS = 12;
+		CHA = 4;
+
+		// D&D AC: 10 base + 3 DEX + 1 natural + 1 size = 15
+		AC = 10 + statBonus(DEX) + 1 + 1;
+		HP = HT = Random.IntRange(1, 8) + statBonus(CON);
+		loot = MysteryMeat.class;
+		lootChance = 0.3333f;
 
 		maxLvl = 5;
 	}
-
 	@Override
 	protected boolean act() {
 		if (alignment != Alignment.ALLY
@@ -58,7 +71,8 @@ public class Rat extends Mob {
 	
 	@Override
 	public int attackSkill( Char target ) {
-		return 8;
+		// BAB 0 + DEX +3 + size +1 = +4
+		return 0 + statBonus(DEX) + 1;
 	}
 	
 	@Override

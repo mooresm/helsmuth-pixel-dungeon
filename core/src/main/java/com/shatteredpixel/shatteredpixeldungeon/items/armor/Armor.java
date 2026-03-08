@@ -255,6 +255,7 @@ public class Armor extends EquipableItem {
 			
 			((HeroSprite)hero.sprite).updateArmor();
 			activate(hero);
+			hero.updateAC();
 			Talent.onItemEquipped(hero, this);
 			hero.spend( timeToEquip( hero ) );
 
@@ -354,6 +355,7 @@ public class Armor extends EquipableItem {
 
 			hero.belongings.armor = null;
 			((HeroSprite)hero.sprite).updateArmor();
+			hero.updateAC();
 
 			BrokenSeal.WarriorShield sealBuff = hero.buff(BrokenSeal.WarriorShield.class);
 			if (sealBuff != null) sealBuff.setArmor(null);

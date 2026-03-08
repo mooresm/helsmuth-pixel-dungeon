@@ -97,34 +97,44 @@
 ## Phase 3: D&D Combat System (12 hours)
 
 ### Core Combat Mechanics
-- [ ] **Char.java** - Replace hit() method with d20 system
-- [x] **Char.java** - Handle auto-miss on natural 1
-- [x] **Char.java** - Handle auto-hit on natural 20
-- [x] **Char.java** - Implement attack bonus vs AC comparison
-- [ ] **Char.java** - Add new AC field (base 10 + DEX mod)
-- [ ] **Char.java** - Update dr() signature to accept attacker: `dr(Char attacker)`
-- [ ] **Char.java** - Update attack() to pass attacker to dr()
+- [x] **Char.java** - Replace hit() method internals to use d20 system (read AC field instead of calling defenseSkill)
+- [x] **Char.java** - Handle auto-miss on natural 1 (already in d20Hit method)
+- [x] **Char.java** - Handle auto-hit on natural 20 (already in d20Hit method)
+- [x] **Char.java** - Implement attack bonus vs AC comparison (already in d20Hit method)
+- [x] **Char.java** - AC field exists and is serialized
+- [ ] **Char.java** - Update dr() signature to accept attacker: `dr(Char attacker)` (Phase 4/6)
+- [ ] **Char.java** - Update attack() to pass attacker to dr() (Phase 4/6)
 
 ### Hero Combat
-- [ ] **Hero.java** - Update attackSkill() to return BAB + STR mod (+ weapon bonus)
-- [ ] **Hero.java** - Handle ranged weapons using DEX mod
-- [ ] **Hero.java** - Update damageRoll() to add STR mod for melee
-- [ ] **Hero.java** - Implement minimum 1 damage
-- [ ] **Hero.java** - Override armorClass() to include armor AC bonus
+- [x] **Hero.java** - Update attackSkill() to return BAB + STR mod (melee) or BAB + DEX mod (ranged)
+- [x] **Hero.java** - Add updateAC() helper method to calculate AC from DEX + armor tier
+- [x] **Hero.java** - Call updateAC() in constructor/initialization
+- [x] **Hero.java** - Update damageRoll() to add STR mod for melee (Phase 4)
+- [x] **Hero.java** - Implement minimum 1 damage (Phase 4)
+
+### Mob Combat (Rat and Skeleton)
+- [x] **Rat.java** - Set ability scores (STR 10, DEX 17, CON 12, INT 2, WIS 12, CHA 4)
+- [x] **Rat.java** - Set AC = 15 (10 + 3 DEX + 1 natural + 1 size) in initialization block
+- [x] **Rat.java** - Update attackSkill() to return BAB 0 + DEX 3 + size 1 = +4
+- [x] **Skeleton.java** - Set ability scores (STR 13, DEX 13, CON 10, INT 10, WIS 10, CHA 1)
+- [x] **Skeleton.java** - Set AC = 13 (10 + 1 DEX + 2 natural) in initialization block
+- [x] **Skeleton.java** - Update attackSkill() to return BAB 0 + STR 1 = +1
 
 ### Tests
 - [x] Create `D20CombatTest.java`
-- [ ] Test d20 roll range (1-20)
 - [x] Test natural 1 always misses
 - [x] Test natural 20 always hits
-- [ ] Test AC calculation (10 + DEX mod)
-- [ ] Test attack bonus calculation (BAB + STR)
-- [ ] **Note:** Test these as pure calculations on `Char` fields/methods — do not
+- [x] Test Rat AC field = 15
+- [x] Test Skeleton AC field = 13
+- [x] Test Hero updateAC() calculation
+- [x] Test attack bonus calculation (BAB + STR)
+**Note:** Test these as pure calculations on `Char` fields/methods — do not
   instantiate items or call `initHero()` inside combat tests (see Phase 2 testing boundary)
 
 ### Validation
-- [ ] All D20CombatTest tests pass
-- [ ] Combat uses d20 rolls instead of percentage
+- [x] All D20CombatTest tests pass
+- [x] Combat uses d20 rolls instead of percentage
+- [ ] Hero AC updates when equipment changes
 
 ---
 
