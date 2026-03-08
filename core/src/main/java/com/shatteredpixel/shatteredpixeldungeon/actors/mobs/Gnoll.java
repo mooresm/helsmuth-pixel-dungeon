@@ -30,25 +30,35 @@ public class Gnoll extends Mob {
 	
 	{
 		spriteClass = GnollSprite.class;
-		
-		HP = HT = 12;
-		defenseSkill = 4;
-		
+
+		defenseSkill = 4; // Keep for compatibility
 		EXP = 2;
 		maxLvl = 8;
-		
+
+		// D&D kobold ability scores
+		STR = 9;
+		DEX = 13;
+		CON = 10;
+		INT = 10;
+		WIS = 9;
+		CHA = 8;
+
+		HP = HT = Random.IntRange(1, 8);
+		AC = 10 + statBonus(DEX) + 1 + 1 + 2;
+
 		loot = Gold.class;
 		lootChance = 0.5f;
 	}
 	
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 1, 6 );
+		return Random.NormalIntRange( 0, 5 );
 	}
 	
 	@Override
 	public int attackSkill( Char target ) {
-		return 10;
+		// BAB 1 + STR -1 + size +1 = +1
+		return 1 + statBonus(STR) + 1;
 	}
 	
 	@Override

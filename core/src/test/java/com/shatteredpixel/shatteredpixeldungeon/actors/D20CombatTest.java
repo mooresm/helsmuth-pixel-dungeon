@@ -1,8 +1,12 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Crab;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Gnoll;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Skeleton;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
 import com.watabou.utils.Random;
 
 import org.junit.After;
@@ -221,6 +225,50 @@ public class D20CombatTest {
         assertEquals("Skeleton should have +1 to hit", 1, skeleton.attackSkill(skeleton));
         assertTrue("damage >= 2", skeleton.damageRoll() >= 2);
         assertTrue("damage <= 5", skeleton.damageRoll() <= 5);
+    }
+
+    @Test
+    public void testSnake() {
+        Snake snake = new Snake();
+        assertEquals("Snake AC should be 17", 17, snake.AC);
+        assertTrue("Snake HP >= 1", snake.HP >= 1);
+        assertTrue("Snake HP <= 8", snake.HP <= 8);
+        assertEquals("Snake should have +4 to hit", 4, snake.attackSkill(snake));
+        assertTrue("damage >= 1", snake.damageRoll() >= 1);
+        assertTrue("damage <= 4", snake.damageRoll() <= 4);
+    }
+
+    @Test
+    public void testGnoll() {
+        Gnoll kobold = new Gnoll();
+        assertEquals("Kobold AC should be 15", 15, kobold.AC);
+        assertTrue("Kobold HP >= 1", kobold.HP >= 1);
+        assertTrue("Kobold HP <= 8", kobold.HP <= 8);
+        assertEquals("Kobold should have +1 to hit", 1, kobold.attackSkill(kobold));
+        assertTrue("damage >= 0", kobold.damageRoll() >= 0);
+        assertTrue("damage <= 5", kobold.damageRoll() <= 5);
+    }
+
+    @Test
+    public void testPiranha() {
+        Piranha barracuda = new Piranha();
+        assertEquals("barracuda AC should be 14", 14, barracuda.AC);
+        assertTrue("barracuda HP >= 2", barracuda.HP >= 2);
+        assertTrue("barracuda HP <= 16", barracuda.HP <= 16);
+        assertEquals("barracuda should have +4 to hit", 4, barracuda.attackSkill(barracuda));
+        assertTrue("damage >= 1", barracuda.damageRoll() >= 1);
+        assertTrue("damage <= 4", barracuda.damageRoll() <= 4);
+    }
+
+    @Test
+    public void testCrab() {
+        Crab crab = new Crab();
+        assertEquals("Crab AC should be 16", 16, crab.AC);
+        assertTrue("Crab HP >= 9", crab.HP >= 9);
+        assertTrue("Crab HP <= 30", crab.HP <= 30);
+        assertEquals("Crab should have +4 to hit", 4, crab.attackSkill(crab));
+        assertTrue("damage >= 3", crab.damageRoll() >= 3);
+        assertTrue("damage <= 8", crab.damageRoll() <= 8);
     }
 
     @Test

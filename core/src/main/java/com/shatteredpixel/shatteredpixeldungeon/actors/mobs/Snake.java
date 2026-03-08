@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.MysteryMeat;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SnakeSprite;
@@ -35,24 +36,35 @@ public class Snake extends Mob {
 	{
 		spriteClass = SnakeSprite.class;
 		
-		HP = HT = 4;
-		defenseSkill = 25;
+		defenseSkill = 25; // Keep for compatibility
 		
 		EXP = 2;
 		maxLvl = 7;
-		
-		loot = Generator.Category.SEED;
+
+		// D&D small viper ability scores
+		STR = 6;
+		DEX = 17; // +3 modifier
+		CON = 11;
+		INT = 1;
+		WIS = 12;
+		CHA = 2;
+
+		HP = HT = Random.IntRange(1, 8);
+		AC = 10 + statBonus(DEX) + 3 + 1;
+
+		loot = MysteryMeat.class;
 		lootChance = 0.25f;
 	}
 	
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 1, 4 );
+		return Random.IntRange( 1, 4 );
 	}
 	
 	@Override
 	public int attackSkill( Char target ) {
-		return 10;
+		// BAB 0 + DEX +3 = +1
+		return 1 + statBonus(DEX);
 	}
 
 	private static int dodges = 0;

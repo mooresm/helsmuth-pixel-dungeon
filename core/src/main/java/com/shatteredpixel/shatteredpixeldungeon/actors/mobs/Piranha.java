@@ -45,9 +45,17 @@ public class Piranha extends Mob {
 		spriteClass = PiranhaSprite.class;
 
 		baseSpeed = 2f;
-		
 		EXP = 0;
-		
+
+		// D&D barracuda ability scores
+		STR = 11;
+		DEX = 17; // +3 modifier
+		CON = 10;
+		INT = 1;
+		WIS = 12;
+		CHA = 2;
+		AC = 10 + statBonus(DEX) + 1;
+
 		loot = MysteryMeat.class;
 		lootChance = 1f;
 		
@@ -62,8 +70,8 @@ public class Piranha extends Mob {
 	public Piranha() {
 		super();
 		
-		HP = HT = 10 + Dungeon.depth * 5;
-		defenseSkill = 10 + Dungeon.depth * 2;
+		HP = HT = Random.IntRange(1, 8) + Random.IntRange(1, 8);
+		defenseSkill = 10 + Dungeon.depth * 2; // Keep for compatibility
 	}
 	
 	@Override
@@ -81,13 +89,11 @@ public class Piranha extends Mob {
 	}
 	
 	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange( Dungeon.depth, 4 + Dungeon.depth * 2 );
-	}
+	public int damageRoll() { return Random.IntRange( 1, 4 ); }
 	
 	@Override
 	public int attackSkill( Char target ) {
-		return 20 + Dungeon.depth * 2;
+		return 4;
 	}
 	
 	@Override
