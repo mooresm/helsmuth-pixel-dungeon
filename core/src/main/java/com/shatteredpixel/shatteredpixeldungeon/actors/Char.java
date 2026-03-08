@@ -170,6 +170,7 @@ public abstract class Char extends Actor {
 	
 	public int HT;
 	public int HP;
+	public int AC;
 	public int STR;
 	public int DEX;
 	public int CON;
@@ -337,6 +338,7 @@ public abstract class Char extends Actor {
 	protected static final String POS       = "pos";
 	protected static final String TAG_HP    = "HP";
 	protected static final String TAG_HT    = "HT";
+	protected static final String TAG_AC    = "AC";
 	protected static final String TAG_SHLD  = "SHLD";
 	protected static final String STRENGTH	= "STR";
 	protected static final String DEXTERITY	= "DEX";
@@ -355,6 +357,7 @@ public abstract class Char extends Actor {
 		bundle.put( POS, pos );
 		bundle.put( TAG_HP, HP );
 		bundle.put( TAG_HT, HT );
+		bundle.put( TAG_AC, AC );
 		bundle.put( STRENGTH, STR );
 		bundle.put( DEXTERITY, DEX );
 		bundle.put( CONSTITUTION, CON );
@@ -372,6 +375,7 @@ public abstract class Char extends Actor {
 		pos = bundle.getInt( POS );
 		HP = bundle.getInt( TAG_HP );
 		HT = bundle.getInt( TAG_HT );
+		AC = bundle.getInt( TAG_AC );
 		STR = bundle.getInt( STRENGTH );
 		DEX = bundle.getInt( DEXTERITY );
 		CON = bundle.getInt( CONSTITUTION );
@@ -384,6 +388,12 @@ public abstract class Char extends Actor {
 				((Buff)b).attachTo( this );
 			}
 		}
+	}
+
+	static boolean d20Hit(int d20Roll, int attackBonus, int defenderAC) {
+		if (d20Roll == 1)  return false;           // natural 1: auto-miss
+		if (d20Roll == 20) return true;            // natural 20: auto-hit
+		return (d20Roll + attackBonus) >= defenderAC;
 	}
 
 	final public boolean attack( Char enemy ){

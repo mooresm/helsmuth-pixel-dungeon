@@ -98,10 +98,10 @@
 
 ### Core Combat Mechanics
 - [ ] **Char.java** - Replace hit() method with d20 system
-- [ ] **Char.java** - Handle auto-miss on natural 1
-- [ ] **Char.java** - Handle auto-hit on natural 20
-- [ ] **Char.java** - Implement attack bonus vs AC comparison
-- [ ] **Char.java** - Add armorClass() method (base 10 + DEX mod)
+- [x] **Char.java** - Handle auto-miss on natural 1
+- [x] **Char.java** - Handle auto-hit on natural 20
+- [x] **Char.java** - Implement attack bonus vs AC comparison
+- [ ] **Char.java** - Add new AC field (base 10 + DEX mod)
 - [ ] **Char.java** - Update dr() signature to accept attacker: `dr(Char attacker)`
 - [ ] **Char.java** - Update attack() to pass attacker to dr()
 
@@ -113,10 +113,10 @@
 - [ ] **Hero.java** - Override armorClass() to include armor AC bonus
 
 ### Tests
-- [ ] Create `D20CombatTest.java`
+- [x] Create `D20CombatTest.java`
 - [ ] Test d20 roll range (1-20)
-- [ ] Test natural 1 always misses
-- [ ] Test natural 20 always hits
+- [x] Test natural 1 always misses
+- [x] Test natural 20 always hits
 - [ ] Test AC calculation (10 + DEX mod)
 - [ ] Test attack bonus calculation (BAB + STR)
 - [ ] **Note:** Test these as pure calculations on `Char` fields/methods — do not
