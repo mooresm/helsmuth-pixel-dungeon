@@ -164,10 +164,4 @@ public class Skeleton extends Mob {
 		// BAB 0 + STR +1 = +1
 		return 0 + statBonus(STR);
 	}
-	
-	@Override
-	public int drRoll() {
-		return super.drRoll() + Random.NormalIntRange(0, 5);
-	}
-
 }

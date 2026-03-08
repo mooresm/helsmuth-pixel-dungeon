@@ -60,9 +60,4 @@ public class Gnoll extends Mob {
 		// BAB 1 + STR -1 + size +1 = +1
 		return 1 + statBonus(STR) + 1;
 	}
-	
-	@Override
-	public int drRoll() {
-		return super.drRoll() + Random.NormalIntRange(0, 2);
-	}
 }

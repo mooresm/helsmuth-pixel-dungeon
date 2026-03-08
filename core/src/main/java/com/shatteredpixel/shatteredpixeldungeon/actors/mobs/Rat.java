@@ -74,11 +74,6 @@ public class Rat extends Mob {
 		// BAB 0 + DEX +3 + size +1 = +4
 		return 0 + statBonus(DEX) + 1;
 	}
-	
-	@Override
-	public int drRoll() {
-		return super.drRoll() + Random.NormalIntRange(0, 1);
-	}
 
 	private static final String RAT_ALLY = "rat_ally";
 
