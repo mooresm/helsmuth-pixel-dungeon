@@ -13,7 +13,7 @@
 - **2 consumables:** Healing Potion (reuses SPD's PotionOfHealing), Antidote (reuses SPD's existing antidote/cure poison potion)
 - **Core D&D mechanics:** Ability scores, d20 combat, AC, BAB, DR 5/bludgeoning
 
-**Estimated effort:** 60-80 hours (1.5-2 months part-time)
+**Estimated effort:** 83 hours (2 months part-time)
 **Optional Phase 10 (Branding):** +4 hours if preparing for public distribution
 
 ---
@@ -412,10 +412,10 @@ core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/
       }
       ```
 
-**Tests to create:**
-- `RatTest.java` - Test Dire Rat D&D stats
-- `SkeletonTest.java` - Test Skeleton D&D stats
-- `SkeletonDRTest.java` - Test DR 5/bludgeoning mechanic
+**Tests:**
+- Mob stats and combat tested in `D20CombatTest.java`
+- Mob XP awards tested in `CRExperienceTest.java`
+- Skeleton DR 5/bludgeoning tested in `D20CombatTest.java`
 
 ### Phase 7: Level System (8 hours)
 
@@ -476,11 +476,164 @@ core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/
 - `DungeonDepthTest.java` - Test 2-level cap
 - `BestiaryTest.java` - Test mob spawning logic
 
+### Phase 7b: CR-Based Experience System (3 hours)
+
+**Goal:** Replace the legacy fixed XP system with D&D 3.5 Challenge Rating (CR) based XP that scales with hero level.
+
+**Files to modify:**
+
+20. **`core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/Hero.java`**
+    - Add: `getCRExperience(float cr, int heroLevel)` method:
+      ```java
+      /**
+       * Calculate XP award for defeating a creature with a Challenge Rating.
+       * Based on D&D 3.5 CR system where CR equals party level = 300 XP per character.
+       *
+       * XP Table (solo character):
+       * - CR = Hero Level: 300 XP
+       * - CR = Hero Level - 1: 225 XP (75%)
+       * - CR = Hero Level - 2: 150 XP (50%)
+       * - CR = Hero Level - 3: 100 XP (33%)
+       * - CR = Hero Level - 4+: 50 XP (minimum)
+       *
+       * For fractional CRs, scale proportionally:
+       * - CR 1/3 at level 1 = 100 XP (300 * 1/3)
+       * - CR 1/4 at level 1 = 75 XP (300 * 1/4)
+       * - CR 1/8 at level 1 = 37 XP (300 * 1/8)
+       */
+      public static int getCRExperience(float cr, int heroLevel) {
+          // Base XP for CR = Hero Level
+          int baseXP = 300;
+
+          // Calculate level difference
+          float crDifference = heroLevel - cr;
+
+          // Apply level-based scaling
+          float multiplier;
+          if (crDifference <= 0) {
+              // CR equals or exceeds hero level: full XP
+              multiplier = 1.0f;
+          } else if (crDifference <= 1) {
+              // CR = Hero Level - 1: 75% XP
+              multiplier = 0.75f;
+          } else if (crDifference <= 2) {
+              // CR = Hero Level - 2: 50% XP
+              multiplier = 0.50f;
+          } else if (crDifference <= 3) {
+              // CR = Hero Level - 3: 33% XP
+              multiplier = 0.33f;
+          } else {
+              // CR = Hero Level - 4+: minimum 50 XP
+              return 50;
+          }
+
+          // Scale base XP by CR value and level difference
+          int xp = Math.round(baseXP * cr * multiplier);
+
+          // Minimum 10 XP for any kill
+          return Math.max(xp, 10);
+      }
+      ```
+
+21. **`core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Mob.java`**
+    - Update: `die()` method to use CR-based XP when `EXP < 1.0f`:
+      ```java
+      @Override
+      public void die( Object cause ) {
+          // ... existing code ...
+
+          if (cause == Dungeon.hero) {
+              // Determine XP award
+              int xpAward;
+              if (EXP < 1.0f) {
+                  // Treat EXP as Challenge Rating
+                  xpAward = Hero.getCRExperience(EXP, Dungeon.hero.lvl);
+                  GLog.i("Defeated " + name() + " (CR " + EXP + "): +" + xpAward + " XP");
+              } else {
+                  // Legacy XP system (for monsters not yet converted)
+                  xpAward = (int) EXP;
+              }
+
+              Dungeon.hero.earnXP(xpAward);
+          }
+
+          // ... existing code ...
+      }
+      ```
+
+22. **`core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Rat.java`**
+    - Update: `EXP = 0.33f`  (Dire Rat is CR 1/3)
+    - Note: Changed in Phase 6, verify value
+
+23. **`core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Skeleton.java`**
+    - Update: `EXP = 0.33f`  (Skeleton is CR 1/3)
+    - Note: Skeleton currently has `EXP = 5`, change to 0.33f
+
+24. **`core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Gnoll.java` or new `Kobold.java`**
+    - Update: `EXP = 0.25f`  (Kobold is CR 1/4)
+
+25. **New file: `core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/TinyViper.java`** (or repurpose Snake.java)
+    - Create: New mob class for Tiny Viper
+    - Set: `EXP = 0.125f`  (Tiny Viper is CR 1/8)
+
+**Design Notes:**
+
+- **Backward compatibility:** Mobs with `EXP >= 1.0f` use legacy XP system
+- **Fractional CR encoding:** CR 1/3 = 0.33f, CR 1/4 = 0.25f, CR 1/8 = 0.125f
+- **Level scaling:** Higher level heroes get less XP from weak monsters (prevents grinding)
+- **Debug logging:** Shows CR value and XP award in game log for verification
+
+**XP Award Examples:**
+
+| Monster | CR | Level 1 Hero | Level 2 Hero | Level 3 Hero |
+|---------|-----|--------------|--------------|--------------|
+| Dire Rat | 1/3 (0.33f) | 100 XP | 50 XP | 33 XP |
+| Skeleton | 1/3 (0.33f) | 100 XP | 50 XP | 33 XP |
+| Kobold | 1/4 (0.25f) | 75 XP | 37 XP | 25 XP |
+| Tiny Viper | 1/8 (0.125f) | 37 XP | 18 XP | 12 XP |
+
+**Tests to create:**
+
+- `CRExperienceTest.java` - Test CR-to-XP conversion:
+  ```java
+  @Test public void testCR_OneThird_Level1() {
+      // CR 1/3 at Level 1 = 100 XP (300 * 1/3)
+      assertEquals(100, Hero.getCRExperience(0.33f, 1));
+  }
+
+  @Test public void testCR_OneThird_Level2() {
+      // CR 1/3 at Level 2 = 50 XP (Level difference scaling)
+      assertEquals(50, Hero.getCRExperience(0.33f, 2));
+  }
+
+  @Test public void testCR_OneFourth_Level1() {
+      // CR 1/4 at Level 1 = 75 XP (300 * 1/4)
+      assertEquals(75, Hero.getCRExperience(0.25f, 1));
+  }
+
+  @Test public void testCR_OneEighth_Level1() {
+      // CR 1/8 at Level 1 = 37 XP (300 * 1/8)
+      assertEquals(37, Hero.getCRExperience(0.125f, 1));
+  }
+
+  @Test public void testMinimumXP() {
+      // Very low CR at high level still gives minimum XP
+      assertTrue(Hero.getCRExperience(0.125f, 10) >= 10);
+  }
+
+  @Test public void testLegacyXPCompatibility() {
+      // Mobs with EXP >= 1.0 should use legacy system (tested in Mob.die())
+      Mob legacyMob = new Rat();
+      legacyMob.EXP = 5;  // Old-style fixed XP
+      // Verify die() uses (int)EXP instead of getCRExperience()
+  }
+  ```
+
 ### Phase 8: UI Updates (6 hours)
 
 **Files to modify:**
 
-20. **`core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndHero.java`**
+26. **`core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndHero.java`**
     - Add ability score display in stats section:
       ```java
       // After existing stat slots:
@@ -494,10 +647,10 @@ core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/
       statSlot("BAB", "+" + hero.attackSkill);
       ```
 
-21. **`core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/StatusPane.java`**
+27. **`core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/StatusPane.java`**
     - Add AC display next to HP (or replace old defense display)
 
-22. **`core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/WelcomeScene.java`** (optional)
+28. **`core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/WelcomeScene.java`** (optional)
     - Add note about D&D conversion in welcome text
 
 **Tests:**
@@ -507,7 +660,7 @@ core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/
 
 **Files to modify:**
 
-23. **`core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/HeroClass.java`**
+29. **`core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/HeroClass.java`**
     - Update: WARRIOR.initHero() starting equipment:
       ```java
       (hero.belongings.weapon = new Longsword()).identify();
@@ -527,76 +680,76 @@ core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/
 
 **Files to modify:**
 
-24. **`build.gradle` (root)** - Application identity
+30. **`build.gradle` (root)** - Application identity
     - Change: `appName = "Your D&D Pixel Dungeon"` (or your chosen name)
     - Change: `appPackageName = "com.yourname.yourproject"` (must be unique)
     - Update: `appVersionName = "0.1.0-alpha"` (or your versioning scheme)
     - Keep: `appVersionCode` at Shattered's current value or higher (don't decrement)
     - Note: If setting version code to 1, review compatibility code in ShatteredPixelDungeon.java
 
-25. **`core/src/main/assets/interfaces/banners.png`** - Title screen graphics
+31. **`core/src/main/assets/interfaces/banners.png`** - Title screen graphics
     - Replace: Main title graphic with your game's name/logo
     - Replace: Glow layer for title effect
     - Maintain: Same image dimensions and format
 
-26. **Application Icons** - Replace all platform icons
+32. **Application Icons** - Replace all platform icons
     - `android/src/debug/res/` - Android debug icons (mipmap-*/ic_launcher.png, multiple sizes)
     - `android/src/main/res/` - Android release icons (mipmap-*/ic_launcher.png, multiple sizes)
     - `desktop/src/main/assets/icons/` - Desktop application icons
     - `ios/assets/Assets.xcassets/` - iOS icons (if targeting iOS)
 
-27. **`core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/AboutScene.java`** - Credits
+33. **`core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/AboutScene.java`** - Credits
     - Add: Your name and role to credits section
     - Maintain: All existing Shattered Pixel Dungeon credits (GPLv3 requirement)
     - Add: Link to your project repository
     - Note: Cannot remove existing credits per GPLv3 license
 
-28. **`core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/SupporterScene.java`** - Supporter links
+34. **`core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/SupporterScene.java`** - Supporter links
     - Update: Links to your own support platform (if desired)
     - Or: Disable entirely if not seeking support
 
-29. **`core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/TitleScene.java`** - UI buttons
+35. **`core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/TitleScene.java`** - UI buttons
     - Option A: Disable supporter button by commenting out `add(btnSupport);`
     - Option B: Disable news button by commenting out `add(btnNews);`
     - Warning: Google Play prohibits Patreon mentions - remove if releasing there
 
-30. **`core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndSupportPrompt.java`** - Support prompt
+36. **`core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndSupportPrompt.java`** - Support prompt
     - Update: Text and links for your project
     - Or: Disable entirely if not seeking support
 
-31. **`core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/keys/WornKey.java`** - Prompt trigger
+37. **`core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/keys/WornKey.java`** - Prompt trigger
     - Disable: Support prompt trigger if not using
 
-32. **`desktop/build.gradle`** - Desktop update notifications
+38. **`desktop/build.gradle`** - Desktop update notifications
     - Change: `:services:updates:githubUpdates` to `:services:updates:debugUpdates` (disables updates)
     - Or: Keep githubUpdates and modify GitHubUpdates.java to point to your repo
 
-33. **`android/build.gradle`** - Android update notifications
+39. **`android/build.gradle`** - Android update notifications
     - Change: `:services:updates:githubUpdates` to `:services:updates:debugUpdates` (disables updates)
     - Or: Keep githubUpdates and modify GitHubUpdates.java to point to your repo
 
-34. **`services/updates/githubUpdates/src/main/java/.../GitHubUpdates.java`** (optional)
+40. **`services/updates/githubUpdates/src/main/java/.../GitHubUpdates.java`** (optional)
     - Update: URL to your GitHub releases API:
       ```java
       httpGet.setUrl("https://api.github.com/repos/yourusername/yourrepo/releases");
       ```
     - Note: Requires specific release format (title, body with `---`, `internal version number: #`)
 
-35. **`services/news/shatteredNews/src/main/java/.../ShatteredNews.java`** (optional)
+41. **`services/news/shatteredNews/src/main/java/.../ShatteredNews.java`** (optional)
     - Update: URLs to point to your atom/xml news feed
     - Adjust: Parsing logic if your feed format differs
 
-36. **`core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/messages/Languages.java`** - Translations
+42. **`core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/messages/Languages.java`** - Translations
     - Option A (Remove all non-English): Delete all enum constants except ENGLISH
     - Option B (Keep some): Remove only unwanted language enums
     - Option C (Change base language): Remove English enums, rename your language files
 
-37. **`core/src/main/assets/messages/`** - Translation resource files
+43. **`core/src/main/assets/messages/`** - Translation resource files
     - Option A: Remove all `*_XX.properties` files (XX = language code like ru, es, zh)
     - Option B: Keep only desired language files
     - Note: Keep base `*.properties` files (no underscore+code)
 
-38. **`core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndSettings.java`** - Language picker
+44. **`core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndSettings.java`** - Language picker
     - If removing translations: Comment out `add( langs );` and `add( langsTab );`
     - If keeping translations: Leave language picker enabled
 
@@ -619,7 +772,7 @@ core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/
 
 ## Complete Test Suite
 
-### Test Files to Create (16 tests total)
+### Test Files to Create (6 test files with 15+ test methods total)
 
 **1. `core/src/test/java/.../actors/CharTest.java`**
 ```java
@@ -929,18 +1082,19 @@ open core/build/reports/jacoco/test/html/index.html
 9. ✅ Phase 6: Monsters (12h)
 10. ✅ Phase 7: Levels (6h of 8h)
 
-### Week 7-8 (20 hours)
+### Week 7-8 (21 hours)
 11. ✅ Phase 7: Levels continued (2h)
-12. ✅ Phase 8: UI (6h)
-13. ✅ Phase 9: Starting equipment (2h)
-14. ✅ Integration testing (10h)
+12. ✅ Phase 7b: CR-Based XP System (3h)
+13. ✅ Phase 8: UI (6h)
+14. ✅ Phase 9: Starting equipment (2h)
+15. ✅ Integration testing (8h)
 
-**PoC Total: 80 hours (2 months at 10 hours/week)**
+**PoC Total: 83 hours (2 months at 10 hours/week)**
 
 ### Post-PoC (Optional)
-15. ⚠️ Phase 10: Project branding & distribution prep (4h) - **Only if preparing for public release**
+16. ⚠️ Phase 10: Project branding & distribution prep (4h) - **Only if preparing for public release**
 
-**Total with Branding: 84 hours**
+**Total with Branding: 87 hours**
 
 ---
 
@@ -975,9 +1129,9 @@ Once this ultra-minimal PoC works, expand in this order:
 
 ## Files Modified Summary
 
-**PoC Total: 28 files**
+**PoC Total: 27 files** (including Phase 7b CR-based XP)
 **Phase 10 (Branding) Total: +15 files**
-**Grand Total with Phase 10: 43 files**
+**Grand Total with Phase 10: 42 files**
 
 ### Core Combat (9 files)
 1. Char.java - Abilities, AC, d20 combat
@@ -1000,6 +1154,12 @@ Once this ultra-minimal PoC works, expand in this order:
 11. Dungeon.java - 2-level cap
 12. Bestiary.java - Mob spawning
 
+### CR-Based XP System (Phase 7b: already-modified files + new test)
+- Hero.java - getCRExperience() method (already counted in Core Combat)
+- Mob.java - die() uses CR-based XP (modifies existing)
+- Rat.java, Skeleton.java, Kobold.java, TinyViper.java - EXP field as CR (already counted in Monsters)
+- CRExperienceTest.java - New test file (+1 file to test count)
+
 ### UI (3 files)
 13. WndHero.java - Ability score display
 14. StatusPane.java - AC display
@@ -1013,35 +1173,34 @@ Once this ultra-minimal PoC works, expand in this order:
 18. core/build.gradle - Test dependencies
 19. .gitignore - Test output
 
-### Test Files (7 files)
+### Test Files (6 files)
 20. CharTest.java
 21. HeroTest.java
-22. D20CombatTest.java
+22. D20CombatTest.java - Includes mob combat testing
 23. WeaponTest.java
 24. ArmorTest.java
-25. RatTest.java
-26. SkeletonTest.java
+25. CRExperienceTest.java - Includes mob XP testing
 
 ### Phase 10: Branding & Distribution (15 files) - *Optional*
-27. build.gradle (root) - App name, package, version
-28. ShatteredPixelDungeon.java - Version code handling (if needed)
-29. banners.png - Title screen graphics
-30. android/src/debug/res - Debug icons
-31. android/src/main/res - Release icons
-32. desktop icons - Desktop application icons
-33. iOS icons - iOS assets (if targeting iOS)
-34. AboutScene.java - Credits and attribution
-35. SupporterScene.java - Supporter links
-36. TitleScene.java - Button visibility
-37. WndSupportPrompt.java - Support prompt window
-38. WornKey.java - Prompt triggers
-39. desktop/build.gradle - Update service configuration
-40. android/build.gradle - Update service configuration
-41. GitHubUpdates.java - Release notifications (optional)
-42. ShatteredNews.java - News feed (optional)
-43. Languages.java - Translation management
-44. messages/*.properties - Translation files
-45. WndSettings.java - Language picker
+30. build.gradle (root) - App name, package, version
+31. ShatteredPixelDungeon.java - Version code handling (if needed)
+32. banners.png - Title screen graphics
+33. android/src/debug/res - Debug icons
+34. android/src/main/res - Release icons
+35. desktop icons - Desktop application icons
+36. iOS icons - iOS assets (if targeting iOS)
+37. AboutScene.java - Credits and attribution
+38. SupporterScene.java - Supporter links
+39. TitleScene.java - Button visibility
+40. WndSupportPrompt.java - Support prompt window
+41. WornKey.java - Prompt triggers
+42. desktop/build.gradle - Update service configuration
+43. android/build.gradle - Update service configuration
+44. GitHubUpdates.java - Release notifications (optional)
+45. ShatteredNews.java - News feed (optional)
+46. Languages.java - Translation management
+47. messages/*.properties - Translation files
+48. WndSettings.java - Language picker
 
 ---
 

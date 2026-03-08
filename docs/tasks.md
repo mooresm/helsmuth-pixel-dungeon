@@ -97,28 +97,21 @@
 ## Phase 3: D&D Combat System (12 hours)
 
 ### Core Combat Mechanics
-- [x] **Char.java** - Replace hit() method internals to use d20 system (read AC field instead of calling defenseSkill)
-- [x] **Char.java** - Handle auto-miss on natural 1 (already in d20Hit method)
-- [x] **Char.java** - Handle auto-hit on natural 20 (already in d20Hit method)
-- [x] **Char.java** - Implement attack bonus vs AC comparison (already in d20Hit method)
-- [x] **Char.java** - AC field exists and is serialized
-- [ ] **Char.java** - Update dr() signature to accept attacker: `dr(Char attacker)` (Phase 4/6)
-- [ ] **Char.java** - Update attack() to pass attacker to dr() (Phase 4/6)
+- [x] **Char.java** - Replace hit() method with d20 system
+- [x] **Char.java** - Handle auto-miss on natural 1
+- [x] **Char.java** - Handle auto-hit on natural 20
+- [x] **Char.java** - Implement attack bonus vs AC comparison
+- [x] **Char.java** - Add new AC field (base 10 + DEX mod)
+- [ ] **Char.java** - Update dr() signature to accept attacker: `dr(Char attacker)`
+- [ ] **Char.java** - Update attack() to pass attacker to dr()
 
 ### Hero Combat
-- [x] **Hero.java** - Update attackSkill() to return BAB + STR mod (melee) or BAB + DEX mod (ranged)
-- [x] **Hero.java** - Add updateAC() helper method to calculate AC from DEX + armor tier
+- [x] **Hero.java** - Update attackSkill() to return BAB + STR mod (+ weapon bonus)
+- [x] **Hero.java** - Handle ranged weapons using DEX mod
 - [x] **Hero.java** - Call updateAC() in constructor/initialization
-- [x] **Hero.java** - Update damageRoll() to add STR mod for melee (Phase 4)
-- [x] **Hero.java** - Implement minimum 1 damage (Phase 4)
-
-### Mob Combat (Rat and Skeleton)
-- [x] **Rat.java** - Set ability scores (STR 10, DEX 17, CON 12, INT 2, WIS 12, CHA 4)
-- [x] **Rat.java** - Set AC = 15 (10 + 3 DEX + 1 natural + 1 size) in initialization block
-- [x] **Rat.java** - Update attackSkill() to return BAB 0 + DEX 3 + size 1 = +4
-- [x] **Skeleton.java** - Set ability scores (STR 13, DEX 13, CON 10, INT 10, WIS 10, CHA 1)
-- [x] **Skeleton.java** - Set AC = 13 (10 + 1 DEX + 2 natural) in initialization block
-- [x] **Skeleton.java** - Update attackSkill() to return BAB 0 + STR 1 = +1
+- [x] **Hero.java** - Update damageRoll() to add STR mod for melee
+- [x] **Hero.java** - Implement minimum 1 damage
+- [x] **Hero.java** - Override armorClass() to include armor AC bonus
 
 ### Tests
 - [x] Create `D20CombatTest.java`
@@ -128,7 +121,7 @@
 - [x] Test Skeleton AC field = 13
 - [x] Test Hero updateAC() calculation
 - [x] Test attack bonus calculation (BAB + STR)
-**Note:** Test these as pure calculations on `Char` fields/methods — do not
+  **Note:** Test these as pure calculations on `Char` fields/methods — do not
   instantiate items or call `initHero()` inside combat tests (see Phase 2 testing boundary)
 
 ### Validation
@@ -247,16 +240,11 @@
 - [ ] This ensures the player always has access to a bludgeoning weapon if they explore
 
 ### Tests
-- [ ] Create `RatTest.java` - Test Dire Rat stats, AC, damage
-- [ ] Create `SkeletonTest.java` - Test Skeleton stats and DR
-- [ ] Test DR = 5 against slashing weapons
-- [ ] Test DR = 0 against bludgeoning weapons
-- [ ] Test DR = 0 for unarmed attacks
-- [ ] Test "glances off" log message fires when DR negates all damage
-- [ ] Create `KoboldTest.java` - Test Kobold stats, AC, damage
-- [ ] Test Kobold minimum damage = 1 (STR penalty)
-- [ ] Create `TinyViperTest.java` - Test Tiny Viper stats, AC, poison, loot
-- [ ] Test poison buff applied on hit
+- [ ] Mob stats and combat tested in `D20CombatTest.java`
+- [ ] Skeleton DR = 5 vs slashing, DR = 0 vs bludgeoning tested in `D20CombatTest.java`
+- [ ] Kobold minimum damage = 1 tested in `D20CombatTest.java`
+- [ ] Tiny Viper poison buff tested in `D20CombatTest.java`
+- [ ] Mob XP awards tested in `CRExperienceTest.java`
 - [ ] Test viper damage minimum = 1
 - [ ] Test Antidote drops at 20% chance
 
@@ -292,6 +280,100 @@
 - [ ] Dungeon stops at depth 2
 - [ ] Level 1 spawns correct enemies
 - [ ] Level 2 has no enemy spawns
+
+---
+
+## Phase 7b: CR-Based Experience System (3 hours)
+
+### Background: D&D 3.5 Challenge Rating (CR)
+
+In D&D 3.5, monsters have a Challenge Rating that determines XP awards:
+- **CR 1/8**: 50 XP (level 1), 25 XP (level 2)
+- **CR 1/4**: 75 XP (level 1), 38 XP (level 2)
+- **CR 1/3**: 100 XP (level 1), 50 XP (level 2)
+- **CR 1/2**: 150 XP (level 1), 100 XP (level 2)
+- **CR 1**: 300 XP (level 1), 200 XP (level 2)
+
+XP awards scale based on the difference between party level and monster CR.
+
+### Implementation Strategy
+
+**Use existing EXP field to store CR as a float multiplier:**
+- Rat (CR 1/3): `EXP = 0.33f`
+- Skeleton (CR 1/3): `EXP = 0.33f`
+- Kobold (CR 1/4): `EXP = 0.25f`
+- Tiny Viper (CR 1/8): `EXP = 0.125f`
+
+**Create CR-to-XP conversion table in Hero or Experience helper class.**
+
+### Core XP System Changes
+
+- [ ] **Hero.java** - Add getCRExperience(float cr, int heroLevel) method
+- [ ] **Hero.java** - Create XP table for CR to XP conversion:
+  - Level 1 vs CR 1/8: 50 XP
+  - Level 1 vs CR 1/4: 75 XP
+  - Level 1 vs CR 1/3: 100 XP
+  - Level 1 vs CR 1/2: 150 XP
+  - Level 1 vs CR 1: 300 XP
+  - Level 2 vs CR 1/8: 25 XP
+  - Level 2 vs CR 1/4: 38 XP
+  - Level 2 vs CR 1/3: 50 XP
+  - Level 2 vs CR 1/2: 100 XP
+  - Level 2 vs CR 1: 200 XP
+- [ ] **Hero.java** - Update earnExp(int exp) to use getCRExperience() when EXP < 1.0
+- [ ] **Mob.java** - Add comment explaining EXP field now stores CR for D&D mobs
+
+### Monster CR Configuration
+
+- [ ] **Rat.java** - Change `EXP = 5` to `EXP = 0.33f` (CR 1/3)
+- [ ] **Skeleton.java** - Change `EXP = 5` to `EXP = 0.33f` (CR 1/3)
+- [ ] **Kobold.java** - Set `EXP = 0.25f` (CR 1/4)
+- [ ] **Snake.java** (Tiny Viper) - Set `EXP = 0.125f` (CR 1/8)
+
+### XP Calculation Logic
+
+**Current system (in Mob.java or Hero.java):**
+```java
+// On mob death, awards mob.EXP directly
+hero.earnExp(mob.EXP);
+```
+
+**New system:**
+```java
+// On mob death, check if EXP is a CR value (< 1.0)
+if (mob.EXP < 1.0f) {
+    // Treat as CR, calculate XP based on hero level
+    int xp = hero.getCRExperience(mob.EXP, hero.lvl);
+    hero.earnExp(xp);
+} else {
+    // Legacy mob, use EXP value directly
+    hero.earnExp((int)mob.EXP);
+}
+```
+
+### Tests
+
+- [ ] Create `CRExperienceTest.java`
+- [ ] Test CR 1/3 awards 100 XP to level 1 hero
+- [ ] Test CR 1/3 awards 50 XP to level 2 hero
+- [ ] Test CR 1/4 awards 75 XP to level 1 hero
+- [ ] Test CR 1/8 awards 50 XP to level 1 hero
+- [ ] Test legacy mobs (EXP >= 1.0) still work
+
+### Validation
+
+- [ ] Kill rat at level 1, verify 100 XP awarded
+- [ ] Kill rat at level 2, verify 50 XP awarded
+- [ ] Kill skeleton at level 1, verify 100 XP awarded
+- [ ] Verify level 2 is reached after ~12 rat kills (1200 XP needed)
+- [ ] XP display shows correct values in combat log
+
+### Notes
+
+- **Simplified D&D system**: Only implements level 1-2 XP table
+- **CR as float**: Allows fractional CR values (1/8 = 0.125, 1/3 = 0.333, etc.)
+- **Backward compatible**: Mobs with EXP >= 1.0 use old system
+- **Full D&D XP tables**: Can be added later for levels 3-20
 
 ---
 
@@ -564,8 +646,8 @@
 
 ## Files Modified Summary
 
-**PoC Total: 28 files + 9 test files = 37 files**
-**Phase 10 (Branding) Total: +15 files = 52 files total if doing distribution**
+**PoC Total: 28 files + 6 test files = 34 files**
+**Phase 10 (Branding) Total: +15 files = 49 files total if doing distribution**
 
 ### Core Combat (8 files)
 1. Char.java
@@ -600,37 +682,210 @@
 18. core/build.gradle
 19. .gitignore
 
-### Test Files (9 files)
+### Test Files (6 files)
 20. CharTest.java
 21. HeroTest.java
-22. D20CombatTest.java
+22. D20CombatTest.java - Includes mob combat and DR testing
 23. WeaponTest.java
 24. ArmorTest.java
-25. RatTest.java
-26. SkeletonTest.java
-27. KoboldTest.java
-28. TinyViperTest.java
+25. CRExperienceTest.java - Includes mob XP testing
 
 ### Phase 10: Branding & Distribution (15 files) - *Optional*
-27. build.gradle (root) - App name, package, version
-28. ShatteredPixelDungeon.java - Version code handling (if needed)
-29. core/src/main/assets/interfaces/banners.png - Title screen
-30. android/src/debug/res - Debug icons (multiple files)
-31. android/src/main/res - Release icons (multiple files)
-32. desktop/src/main/assets/icons - Desktop icons
-33. ios/assets/Assets.xcassets - iOS icons
-34. AboutScene.java - Credits
-35. SupporterScene.java - Supporter links
-36. TitleScene.java - Supporter/news buttons
-37. WndSupportPrompt.java - Support prompt
-38. WornKey.java - Prompt trigger
-39. desktop/build.gradle - Update notifications
-40. android/build.gradle - Update notifications
-41. GitHubUpdates.java - GitHub release URL (optional)
-42. ShatteredNews.java - News feed URL (optional)
-43. Languages.java - Translation management
-44. core/src/main/assets/messages/*.properties - Translation files
-45. WndSettings.java - Language picker
+26. build.gradle (root) - App name, package, version
+27. ShatteredPixelDungeon.java - Version code handling (if needed)
+28. core/src/main/assets/interfaces/banners.png - Title screen
+29. android/src/debug/res - Debug icons (multiple files)
+30. android/src/main/res - Release icons (multiple files)
+31. desktop/src/main/assets/icons - Desktop icons
+32. ios/assets/Assets.xcassets - iOS icons
+33. AboutScene.java - Credits
+34. SupporterScene.java - Supporter links
+35. TitleScene.java - Supporter/news buttons
+36. WndSupportPrompt.java - Support prompt
+37. WornKey.java - Prompt trigger
+38. desktop/build.gradle - Update notifications
+39. android/build.gradle - Update notifications
+40. GitHubUpdates.java - GitHub release URL (optional)
+41. ShatteredNews.java - News feed URL (optional)
+42. Languages.java - Translation management
+43. core/src/main/assets/messages/*.properties - Translation files
+44. WndSettings.java - Language picker
+
+---
+
+## Phase 11: Complete Monster Conversion (Post-PoC Expansion)
+
+**Goal:** Convert all remaining Shattered Pixel Dungeon mobs to D&D 3.5 equivalents with appropriate stats, abilities, and Challenge Ratings.
+
+**Note:** This phase is for full game conversion after the PoC is complete. Check off mobs as they are converted.
+
+### Sewers (Depths 1-5)
+
+**Basic Enemies:**
+- [x] Rat.java → **Dire Rat** (CR 1/3) - PoC complete
+- [x] Snake.java → **Tiny Viper** (CR 1/8) - Planned in PoC
+- [x] Gnoll.java → **Kobold** (CR 1/4) - Planned in PoC, or use actual Gnoll (CR 1)
+- [x] Crab.java → **Giant Crab** (CR 2)
+- [ ] Swarm.java → **Rat Swarm** (CR 2)
+
+**Variants:**
+- [ ] FetidRat.java → **Dire Rat** variant with disease (CR 1/2)
+- [ ] Albino.java → **Albino Dire Rat** variant (CR 1/2)
+
+**Slimes & Oozes:**
+- [ ] CausticSlime.java → **Gray Ooze** (CR 4)
+- [ ] Slime.java → **Small Ooze** (CR 1)
+
+**Boss:**
+- [ ] Goo.java → **Ochre Jelly** or Large Gray Ooze (CR 5-6)
+
+### Prison (Depths 6-10)
+
+**Humanoids:**
+- [x] Skeleton.java → **Human Skeleton** (CR 1/3) - PoC complete
+- [ ] Thief.java → **Human Rogue** 2nd level (CR 1)
+- [ ] Bandit.java → **Human Warrior** 1st level (CR 1)
+- [ ] Guard.java → **Human Fighter** 3rd-5th level (CR 2-4)
+
+**Magic Users:**
+- [ ] Shaman.java (Gnoll) → **Gnoll Adept** 2nd level (CR 2)
+- [ ] Necromancer.java → **Human Necromancer** 5th-9th level (CR 5-9)
+- [ ] SpectralNecromancer.java → **Ghost Necromancer** (CR 8-10)
+
+**Undead:**
+- [ ] Ghoul.java → **Ghoul** (CR 1)
+- [ ] Wraith.java → **Wraith** (CR 5)
+- [ ] TormentedSpirit.java → **Specter** (CR 7)
+
+**Boss:**
+- [ ] Tengu.java → **Ninja/Assassin Boss** (CR 7-10)
+
+### Caves (Depths 11-15)
+
+**Orcs & Brutes:**
+- [ ] Brute.java → **Orc Warrior** 2nd level or Bugbear (CR 2-3)
+- [ ] ArmoredBrute.java → **Orc Fighter** 3rd level with scale mail (CR 3-4)
+
+**Spiders & Spinners:**
+- [ ] Spinner.java → **Monstrous Spider** Medium (CR 1)
+- [ ] FungalSpinner.java → **Fungal Spider** (CR 2)
+
+**Flying:**
+- [ ] Bat.java → **Bat Swarm** (CR 2)
+
+**Gnoll Variants:**
+- [ ] GnollExile.java → **Gnoll** basic (CR 1)
+- [ ] GnollGeomancer.java → **Gnoll Adept** (earth/stone magic) (CR 2)
+- [ ] GnollGuard.java → **Gnoll Warrior** with shield (CR 1-2)
+- [ ] GnollSapper.java → **Gnoll Saboteur** (explosives) (CR 2)
+- [ ] GnollTrickster.java → **Gnoll Rogue** 2nd level (CR 2)
+
+**Shaman:**
+- [ ] Shaman.java (Cave) → **Orc Adept** 3rd level (CR 3)
+
+**Constructs:**
+- [ ] DM100.java → **Small Construct** (CR 2)
+- [ ] DM200.java → **Medium Construct** (CR 4-5)
+- [ ] DM201.java → **Advanced Construct** (CR 6-7)
+
+**Boss:**
+- [ ] DM300.java → **Large Construct** (CR 10)
+
+### Dwarven Metropolis (Depths 16-20)
+
+**Monks:**
+- [ ] Monk.java → **Human Monk** 3rd-6th level (CR 3-6)
+- [ ] Senior.java → **Human Monk** 7th-10th level (CR 7-10)
+
+**Elementals:**
+- [ ] Elemental.java → **Fire Elemental** (cold halls) or **Ice Elemental** (burning halls) (CR 5-9)
+- [ ] CrystalWisp.java → **Will-o'-Wisp** or Small Elemental (CR 4)
+
+**Constructs & Golems:**
+- [ ] Golem.java → **Stone Golem** (CR 11)
+- [ ] Statue.java → **Animated Statue** (CR 3)
+- [ ] ArmoredStatue.java → **Animated Armor** (CR 4-6)
+
+**Magic Users:**
+- [ ] Warlock.java → **Human Warlock** 6th-9th level (CR 6-9)
+
+**Crystal Creatures:**
+- [ ] CrystalGuardian.java → **Crystal Golem** (CR 5-7)
+- [ ] CrystalSpire.java → **Immobile Crystal Defender** (CR 4-6)
+
+**Boss:**
+- [ ] DwarfKing.java → **Dwarf Fighter/King** 12th-15th level (CR 12-15)
+
+### Demon Halls (Depths 21-25)
+
+**Demons:**
+- [ ] Succubus.java → **Succubus** (CR 7)
+- [ ] RipperDemon.java → **Vrock** or similar Demon (CR 9-12)
+- [ ] DemonSpawner.java → **Demon Summoner** (immobile) (CR 8-10)
+
+**Aberrations:**
+- [ ] Eye.java → **Beholder** (simplified) or **Evil Eye** (CR 10-13)
+- [ ] Scorpio.java → **Monstrous Scorpion** Huge (CR 8) - Boss variant
+
+**Boss:**
+- [ ] YogDzewa.java → **Demon Lord** or **Elder Evil** (CR 20+)
+- [ ] YogFist.java → **Demon Fist** (summoned) (CR 10-15) - 6 types (Burning, Soiled, Rotting, Rusted, Bright, Dark)
+
+### Special & Quest Monsters
+
+**Mimics:**
+- [ ] Mimic.java → **Mimic** (CR 4)
+- [ ] GoldenMimic.java → **Greater Mimic** (CR 6)
+- [ ] CrystalMimic.java → **Crystal Mimic** (CR 7)
+- [ ] EbonyMimic.java → **Ebony Mimic** (CR 8)
+
+**Aquatic:**
+- [ ] Piranha.java → **Quipper** or Small Piranha (CR 1/2)
+- [ ] PhantomPiranha.java → **Ethereal Quipper** (CR 2)
+
+**Crabs:**
+- [ ] GreatCrab.java → **Giant Crab** Large (CR 3)
+- [ ] HermitCrab.java → **Hermit Crab** (defensive) (CR 2)
+
+**Rot Garden:**
+- [ ] RotHeart.java → **Shambling Mound** or Plant Creature (CR 5-7)
+- [ ] RotLasher.java → **Vine Horror** (CR 3)
+
+**Fungal:**
+- [ ] FungalCore.java → **Fungal Creature** (CR 5)
+- [ ] FungalSentry.java → **Myconid Guard** (CR 3)
+
+**Traps & Hazards:**
+- [ ] DelayedRockFall.java → **Trap/Hazard** (not a creature, assign CR to trap)
+- [ ] Pylon.java → **Magical Defense Device** (CR varies by depth)
+
+**Other:**
+- [ ] Bee.java → **Giant Bee** (CR 1/2)
+- [ ] VaultRat.java → **Dire Rat** variant (guardian) (CR 1/2)
+- [ ] Acidic.java → **Acid-spitting creature** (CR 1-2)
+
+### Mob Conversion Checklist Summary
+
+**Total Mobs:** 74 regular mobs + 5 bosses = **79 mobs**
+- [x] **Converted:** 2 (Rat, Skeleton)
+- [x] **Planned in PoC:** 2 (Snake/Tiny Viper, Gnoll/Kobold)
+- [ ] **Remaining:** 75 mobs
+
+**Conversion Progress:** 2/79 (3%)
+
+### Conversion Guidelines
+
+For each mob conversion:
+1. **Research D&D equivalent** - Use Monster Manual, d20srd.org
+2. **Set ability scores** - STR, DEX, CON, INT, WIS, CHA
+3. **Calculate AC** - 10 + DEX mod + natural armor + armor bonus
+4. **Set HP** - Hit dice appropriate to CR (e.g., 2d8+2 for CR 1)
+5. **Set attack bonus** - BAB + STR/DEX mod
+6. **Set damage** - Weapon damage + STR mod
+7. **Special abilities** - Translate SPD abilities to D&D (e.g., poison, DR, regeneration)
+8. **Set CR and XP** - Use EXP field as CR (e.g., 0.5f for CR 1/2, 1.0f for CR 1, 2.0f for CR 2)
+9. **Test in game** - Verify balance and difficulty
+10. **Check off in list** - Mark [x] when complete
 
 ---
 

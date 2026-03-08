@@ -21,6 +21,84 @@ Replace the hit calculation with d20 + attack bonus vs AC, handling natural 1/20
 
 ---
 
+## Current Damage Reduction System (drRoll)
+
+**Background:** Before implementing D&D combat, it's important to understand the existing damage reduction system.
+
+### How drRoll() Currently Works:
+
+**1. Base Implementation (Char.java, lines 745-751):**
+```java
+public int drRoll() {
+    int dr = 0;
+    dr += Random.NormalIntRange(0, Barkskin.currentLevel(this));
+    return dr;
+}
+```
+- Returns **random** DR value each attack
+- Base: 0 to Barkskin buff level
+
+**2. Called in attack() (Char.java, line 421):**
+```java
+int dr = Math.round(enemy.drRoll() * AscensionChallenge.statModifier(enemy));
+```
+
+**3. Applied to damage (Char.java, line 528):**
+```java
+effectiveDamage = Math.max(effectiveDamage - dr, 0);
+```
+
+**4. Hero Override (Hero.java, lines 636-659):**
+```java
+@Override
+public int drRoll() {
+    int dr = super.drRoll();  // Barkskin
+
+    // Add armor DR (random between DRMin and DRMax)
+    if (belongings.armor() != null) {
+        int armDr = Random.NormalIntRange(
+            belongings.armor().DRMin(),
+            belongings.armor().DRMax()
+        );
+        // Penalty if STR too low
+        if (STR() < belongings.armor().STRReq()){
+            armDr -= 2*(belongings.armor().STRReq() - STR());
+        }
+        if (armDr > 0) dr += armDr;
+    }
+
+    // Add weapon defensive blocking
+    // Add HoldFast buff
+
+    return dr;
+}
+```
+
+**5. Mob Override Pattern:**
+```java
+// Skeleton.java (line 162-164)
+@Override
+public int drRoll() {
+    return super.drRoll() + Random.NormalIntRange(0, 5);
+}
+```
+
+### D&D 3.5 DR Goal (Phase 6):
+
+The D&D system uses **fixed DR based on weapon type**, not random values:
+
+**Current:** `drRoll()` → random value
+**D&D Goal:** `dr(Char attacker)` → fixed value checking weapon type
+
+**Example - Skeleton DR 5/bludgeoning:**
+- Takes 5 less damage from all sources
+- Takes **full damage** from bludgeoning weapons
+- Requires checking attacker's weapon type
+
+**Implementation Note:** Phase 3 keeps the current drRoll() system. Phase 6 will change to `dr(Char attacker)` signature to support weapon-type-based DR.
+
+---
+
 ## Implementation Approach
 
 **Strategy: Use AC Field Directly**
@@ -32,11 +110,12 @@ Replace the hit calculation with d20 + attack bonus vs AC, handling natural 1/20
 - Map existing buffs to d20 bonuses (+2, -1, -2)
 - Handle INFINITE_ACCURACY/INFINITE_EVASION before rolling
 
-**Files to Modify:** 4 total
-1. Char.java - Replace hit() logic to use AC field
-2. Hero.java - Update attackSkill(), add updateAC() helper, call updateAC() on equipment changes
-3. Rat.java - Set ability scores and AC in initialization
-4. Skeleton.java - Set ability scores and AC in initialization
+**Files to Modify:** 5 total
+1. Char.java - Replace hit() logic to read AC field
+2. Hero.java - Update attackSkill(), add updateAC() helper, call updateAC() in restoreFromBundle()
+3. Armor.java - Call updateAC() in doEquip() (line ~257) and doUnequip() (line ~356)
+4. Rat.java - Set ability scores, HP, AC, and loot in initialization
+5. Skeleton.java - Set ability scores, HP, and AC in initialization
 
 ---
 
@@ -234,21 +313,77 @@ public void updateAC() {
 
 **Part C - Call updateAC() on initialization:**
 
-In Hero constructor or after initial equipment is set, add:
+In Hero constructor (line ~245) after `AC = 10;`, add:
 ```java
-updateAC(); // Calculate initial AC
+AC = 10;
+// updateAC() will be called after equipment is initialized
 ```
 
 **Part D - Call updateAC() when equipment changes:**
 
-You'll need to call `updateAC()` in methods where armor is equipped/unequipped. For the PoC, we can manually test or add hooks later. The key places are:
-- When armor is equipped via item use
-- When armor is removed
-- When DEX changes (rare, but can happen with curses)
+Add `updateAC()` calls in these specific locations:
+
+**1. Armor.java - After equipping armor:**
+
+File: `core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/Armor.java`
+
+In `doEquip()` method, after line 257 (after `activate(hero);`), add:
+```java
+activate(hero);
+
+// Update AC to reflect new armor
+if (hero instanceof Hero) {
+    ((Hero) hero).updateAC();
+}
+```
+
+**2. Armor.java - After unequipping armor:**
+
+In `doUnequip()` method, after line 356 (after `((HeroSprite)hero.sprite).updateArmor();`), add:
+```java
+((HeroSprite)hero.sprite).updateArmor();
+
+// Update AC since armor was removed
+hero.updateAC();
+```
+
+**3. Hero.java - After restoring from saved game:**
+
+File: `core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/Hero.java`
+
+In `restoreFromBundle()` method, after line 341 (after `belongings.restoreFromBundle(bundle);`), add:
+```java
+belongings.restoreFromBundle( bundle );
+
+// Recalculate AC after restoring equipment
+updateAC();
+```
+
+**Why these locations:**
+- **Armor.doEquip()** (line 248): `hero.belongings.armor = this;` - armor reference changes
+- **Armor.doUnequip()** (line 355): `hero.belongings.armor = null;` - armor removed
+- **Hero.restoreFromBundle()** (line 341): Equipment restored from save, AC needs recalculation
 
 ---
 
-### Step 3: Implement Rat (Dire Rat) D&D Stats
+### Step 3: Update Rat Display Name
+
+**File:** `core/src/main/assets/messages/actors/actors.properties`
+
+**Find line ~1701 and change:**
+```properties
+# OLD
+actors.mobs.rat.name=marsupial rat
+
+# NEW
+actors.mobs.rat.name=dire rat
+```
+
+**Note:** For the PoC, only update the English properties file. The 22 other language files (actors_XX.properties) can be updated later or left as-is.
+
+---
+
+### Step 4: Implement Rat (Dire Rat) D&D Stats
 
 **File:** `core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Rat.java`
 
@@ -257,22 +392,33 @@ You'll need to call `updateAC()` in methods where armor is equipped/unequipped. 
 {
     spriteClass = RatSprite.class;
 
-    HP = HT = 8;
-    defenseSkill = 2; // Keep for compatibility
-
     // D&D Dire Rat ability scores
     STR = 10;
     DEX = 17; // +3 modifier
-    CON = 12;
+    CON = 12; // +1 modifier
     INT = 2;
     WIS = 12;
     CHA = 4;
+
+    // D&D Hit Dice: 1d8 + CON modifier (1d8+1)
+    HP = HT = Random.IntRange(1, 8) + statBonus(CON);
+
+    defenseSkill = 2; // Keep for compatibility
 
     // D&D AC: 10 base + 3 DEX + 1 natural + 1 size = 15
     AC = 10 + statBonus(DEX) + 1 + 1;
 
     maxLvl = 5;
+
+    // Loot: Mystery Meat (33% chance)
+    loot = MysteryMeat.class;
+    lootChance = 0.33f;
 }
+```
+
+**Note:** Add import at top of file:
+```java
+import com.shatteredpixel.shatteredpixeldungeon.items.food.MysteryMeat;
 ```
 
 **Update attackSkill() (~line 60):**
@@ -295,16 +441,18 @@ public int attackSkill( Char target ) {
 {
     spriteClass = SkeletonSprite.class;
 
-    HP = HT = 25;
-    defenseSkill = 9; // Keep for compatibility
-
     // D&D Skeleton ability scores
     STR = 13; // +1 modifier
     DEX = 13; // +1 modifier
-    CON = 10;
+    CON = 10; // +0 modifier
     INT = 10;
     WIS = 10;
     CHA = 1;
+
+    // D&D Hit Dice: 1d12 + CON modifier (1d12+0)
+    HP = HT = Random.IntRange(1, 12);
+
+    defenseSkill = 9; // Keep for compatibility
 
     // D&D AC: 10 base + 1 DEX + 2 natural + 2 armor = 15
     AC = 10 + statBonus(DEX) + 2 + 2;
@@ -377,16 +525,17 @@ Skip the debug logging entirely and rely on:
 ## Critical Files
 
 1. `core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Char.java` - Replace hit() to use AC field
-2. `core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/Hero.java` - Update attackSkill(), add updateAC() helper
-3. `core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Rat.java` - Set ability scores and AC
-4. `core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Skeleton.java` - Set ability scores and AC
+2. `core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/Hero.java` - Update attackSkill(), add updateAC() helper, call updateAC() in restoreFromBundle()
+3. `core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/Armor.java` - Call updateAC() in doEquip() and doUnequip()
+4. `core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Rat.java` - Set ability scores, HP, AC, and loot
+5. `core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Skeleton.java` - Set ability scores, HP, and AC
 
 ---
 
 ## Verification Strategy
 
 ### Unit Tests
-The D20CombatTest.java file already has tests for natural 1/20. Add these tests to verify AC field values:
+The D20CombatTest.java file already has tests for natural 1/20. Add these tests to verify AC field values and HP:
 
 ```java
 @Test
@@ -396,9 +545,27 @@ public void testRatAC() {
 }
 
 @Test
+public void testRatHP() {
+    // Test multiple instances to verify random HP range
+    for (int i = 0; i < 20; i++) {
+        Rat rat = new Rat();
+        assertTrue("Rat HP should be 2-9 (1d8+1)", rat.HP >= 2 && rat.HP <= 9);
+    }
+}
+
+@Test
 public void testSkeletonAC() {
     Skeleton skeleton = new Skeleton();
     assertEquals("Skeleton AC should be 15", 15, skeleton.AC);
+}
+
+@Test
+public void testSkeletonHP() {
+    // Test multiple instances to verify random HP range
+    for (int i = 0; i < 20; i++) {
+        Skeleton skeleton = new Skeleton();
+        assertTrue("Skeleton HP should be 1-12 (1d12)", skeleton.HP >= 1 && skeleton.HP <= 12);
+    }
 }
 
 @Test
@@ -421,6 +588,8 @@ Run: `./gradlew test --tests "D20CombatTest"`
 2. **Attack a rat**
    - Hit on d20 roll of 11+ (need 15 total: d20 + 4 vs AC 15)
    - Verify combat log shows different patterns than old system
+   - Rat HP should vary: 2-9 HP (1d8+1 hit dice)
+   - Kill multiple rats, verify Mystery Meat drops approximately 33% of the time
 
 3. **Get attacked by rat**
    - Rat hits you on d20 roll of 9+ (need 13 total: d20 + 4 vs AC 13)
@@ -429,6 +598,8 @@ Run: `./gradlew test --tests "D20CombatTest"`
 4. **Attack skeleton**
    - Same threshold as rat (AC 15)
    - Verify skeleton takes damage (DR tested in Phase 6)
+   - Skeleton HP should vary: 1-12 HP (1d12 hit dice)
+   - Note: Skeletons will be easier/harder based on HP roll (min 1, max 12)
 
 5. **Test Bless buff**
    - Cast Bless on self
@@ -462,10 +633,11 @@ Run: `./gradlew test --tests "D20CombatTest"`
 - **Complexity**: Requires roll-twice logic, UI changes
 - **Future**: Can add in Phase 8+ if needed
 
-### Why Only 4 Files?
+### Why Only 5 Files?
 - **Rat and Skeleton**: Only mobs needed for Phase 3
 - **All other mobs**: Will inherit AC = 0 initially (gets replaced in Phase 6)
 - **Hero**: Needs updateAC() helper to recalculate when equipment changes
+- **Armor**: Needs to call updateAC() when equipped/unequipped
 - **Phase 6**: Will add Kobold and Tiny Viper by setting AC in initialization
 
 ---
@@ -485,7 +657,8 @@ Run: `./gradlew test --tests "D20CombatTest"`
 - ✅ Bless improves hit rate noticeably
 
 **Code Quality:**
-- ✅ Only 4 files modified (not 75+)
+- ✅ Only 5 files modified (not 75+)
 - ✅ AC field pattern easy to extend to more mobs (just set AC in initialization)
 - ✅ Buffs continue to work with new mappings
 - ✅ Simpler architecture using existing AC field
+- ✅ updateAC() called in all the right places (equip, unequip, restore)
