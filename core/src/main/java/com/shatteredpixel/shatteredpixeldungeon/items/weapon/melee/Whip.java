@@ -43,12 +43,12 @@ public class Whip extends MeleeWeapon {
 
 		tier = 3;
 		RCH = 3;    //lots of extra reach
+		damageType = DamageType.SLASHING;
 	}
 
 	@Override
 	public int max(int lvl) {
-		return  5*(tier) +      //15 base, down from 20
-				lvl*(tier);     //+3 per level, down from +4
+		return 3;
 	}
 
 	@Override

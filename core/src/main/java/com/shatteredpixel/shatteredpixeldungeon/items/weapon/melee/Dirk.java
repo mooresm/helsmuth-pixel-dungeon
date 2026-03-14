@@ -36,12 +36,12 @@ public class Dirk extends MeleeWeapon {
 		hitSoundPitch = 1f;
 
 		tier = 2;
+		damageType = DamageType.PIERCING;
 	}
 
 	@Override
 	public int max(int lvl) {
-		return  4*(tier+1) +    //12 base, down from 15
-				lvl*(tier+1);   //scaling unchanged
+		return  4;
 	}
 	
 	@Override

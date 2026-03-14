@@ -38,12 +38,12 @@ public class Scimitar extends MeleeWeapon {
 
 		tier = 3;
 		DLY = 0.8f; //1.25x speed
+		damageType = DamageType.SLASHING;
 	}
 
 	@Override
 	public int max(int lvl) {
-		return  4*(tier+1) +    //16 base, down from 20
-				lvl*(tier+1);   //scaling unchanged
+		return 6;
 	}
 
 	@Override

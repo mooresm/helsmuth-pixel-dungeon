@@ -42,12 +42,12 @@ public class Greataxe extends MeleeWeapon {
 		hitSoundPitch = 1f;
 
 		tier = 5;
+		damageType = DamageType.SLASHING;
 	}
 
 	@Override
 	public int max(int lvl) {
-		return  5*(tier+4) +    //45 base, up from 30
-				lvl*(tier+1);   //scaling unchanged
+		return  12;
 	}
 
 	@Override

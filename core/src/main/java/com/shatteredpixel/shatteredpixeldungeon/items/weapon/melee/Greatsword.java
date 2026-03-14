@@ -35,6 +35,17 @@ public class Greatsword extends MeleeWeapon {
 		hitSoundPitch = 1f;
 
 		tier = 5;
+		damageType = DamageType.SLASHING;
+	}
+
+	@Override
+	public int max(int lvl) {
+		return 12;
+	}
+
+	@Override
+	public int min(int lvl) {
+		return 2;
 	}
 
 	@Override

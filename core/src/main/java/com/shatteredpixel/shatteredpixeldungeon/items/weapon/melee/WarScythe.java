@@ -35,12 +35,17 @@ public class WarScythe extends MeleeWeapon {
 
 		tier = 5;
 		ACC = 0.8f; //20% penalty to accuracy
+		damageType = DamageType.SLASHING;
+	}
+
+	@Override
+	public int min(int lvl) {
+		return 2;
 	}
 
 	@Override
 	public int max(int lvl) {
-		return  Math.round(6.67f*(tier+1)) +    //40 base, up from 30
-				lvl*(tier+1);                   //scaling unchanged
+		return 8;
 	}
 
 	@Override

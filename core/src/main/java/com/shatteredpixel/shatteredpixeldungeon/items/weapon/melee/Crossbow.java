@@ -44,6 +44,7 @@ public class Crossbow extends MeleeWeapon {
 		//check Dart.class for additional properties
 		
 		tier = 4;
+		damageType = DamageType.PIERCING;
 	}
 
 	@Override
@@ -108,8 +109,7 @@ public class Crossbow extends MeleeWeapon {
 
 	@Override
 	public int max(int lvl) {
-		return  4*(tier+1) +    //20 base, down from 25
-				lvl*(tier);     //+4 per level, down from +5
+		return  10;
 	}
 
 	public int dartMin(){

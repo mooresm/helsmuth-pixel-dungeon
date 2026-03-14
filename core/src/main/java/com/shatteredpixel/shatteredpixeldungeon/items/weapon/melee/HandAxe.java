@@ -35,12 +35,12 @@ public class HandAxe extends MeleeWeapon {
 
 		tier = 2;
 		ACC = 1.32f; //32% boost to accuracy
+		damageType = DamageType.SLASHING;
 	}
 
 	@Override
 	public int max(int lvl) {
-		return  4*(tier+1) +    //12 base, down from 15
-				lvl*(tier+1);   //scaling unchanged
+		return  6;
 	}
 
 	@Override

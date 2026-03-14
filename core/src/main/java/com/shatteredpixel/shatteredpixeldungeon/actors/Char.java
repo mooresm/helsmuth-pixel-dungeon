@@ -547,11 +547,10 @@ public abstract class Char extends Actor {
 				String attackerName = this == Dungeon.hero ? "You" : this.name();
 				String defenderName = enemy == Dungeon.hero ? "you" : enemy.name();
 				if (dr > 0) {
-					GLog.i("%s dealt %d damage to %s (DR %d reduced from %d)",
-							attackerName, effectiveDamage, defenderName, dr, Math.round(dmg));
+					GLog.i("(%d damage -- DR %d reduced from %d)",
+							effectiveDamage, dr, Math.round(dmg));
 				} else {
-					GLog.i("%s dealt %d damage to %s",
-							attackerName, effectiveDamage, defenderName);
+					GLog.i("(%d damage)", effectiveDamage);
 				}
 			}
 

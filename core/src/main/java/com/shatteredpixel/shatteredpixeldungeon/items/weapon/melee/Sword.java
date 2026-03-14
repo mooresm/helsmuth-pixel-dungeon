@@ -45,6 +45,12 @@ public class Sword extends MeleeWeapon {
 		hitSoundPitch = 1f;
 
 		tier = 3;
+		damageType = DamageType.SLASHING;
+	}
+
+	@Override
+	public int max(int lvl) {
+		return 8;
 	}
 
 	@Override

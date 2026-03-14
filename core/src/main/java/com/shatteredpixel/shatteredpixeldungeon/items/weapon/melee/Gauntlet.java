@@ -35,12 +35,12 @@ public class Gauntlet extends MeleeWeapon {
 		
 		tier = 5;
 		DLY = 0.5f; //2x speed
+		damageType = DamageType.BLUDGEONING;
 	}
 	
 	@Override
 	public int max(int lvl) {
-		return  Math.round(2.5f*(tier+1)) +     //15 base, down from 30
-				lvl*Math.round(0.5f*(tier+1));  //+3 per level, down from +6
+		return  3;
 	}
 
 	@Override

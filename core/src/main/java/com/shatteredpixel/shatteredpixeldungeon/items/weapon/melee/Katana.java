@@ -35,12 +35,17 @@ public class Katana extends MeleeWeapon {
 		hitSoundPitch = 1.1f;
 
 		tier = 4;
+		damageType = DamageType.SLASHING;
 	}
 
 	@Override
 	public int max(int lvl) {
-		return  4*(tier+1) +    //20 base, down from 25
-				lvl*(tier+1);   //scaling unchanged
+		return  16;
+	}
+
+	@Override
+	public int min(int lvl) {
+		return  2;
 	}
 
 	@Override

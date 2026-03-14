@@ -45,12 +45,12 @@ public class Sickle extends MeleeWeapon {
 
 		tier = 2;
 		ACC = 0.68f; //32% penalty to accuracy
+		damageType = DamageType.SLASHING;
 	}
 
 	@Override
 	public int max(int lvl) {
-		return  Math.round(6.67f*(tier+1)) +    //20 base, up from 15
-				lvl*(tier+1);                   //scaling unchanged
+		return 6;
 	}
 
 	@Override

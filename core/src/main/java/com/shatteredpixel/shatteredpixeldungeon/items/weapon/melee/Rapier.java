@@ -49,12 +49,12 @@ public class Rapier extends MeleeWeapon {
 		tier = 1;
 
 		bones = false;
+		damageType = DamageType.PIERCING;
 	}
 
 	@Override
 	public int max(int lvl) {
-		return  4*(tier+1) +    //8 base, down from 10
-				lvl*(tier+1);   //scaling unchanged
+		return  6;
 	}
 
 	@Override
