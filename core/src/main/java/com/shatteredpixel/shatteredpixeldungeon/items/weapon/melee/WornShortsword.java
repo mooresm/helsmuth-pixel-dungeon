@@ -37,6 +37,12 @@ public class WornShortsword extends MeleeWeapon {
 		tier = 1;
 		
 		bones = false;
+		damageType = DamageType.PIERCING;
+	}
+
+	@Override
+	public int max(int lvl) {
+		return  6;
 	}
 
 	@Override

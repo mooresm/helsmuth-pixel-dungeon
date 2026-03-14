@@ -11,7 +11,7 @@
 - [x] Phase 0: Build Setup (2 hours)
 - [x] Phase 1: Ability Scores (6 hours)
 - [x] Phase 2: Fighter Initialization (8 hours)
-- [ ] Phase 3: D&D Combat System (12 hours)
+- [x] Phase 3: D&D Combat System (12 hours)
 - [ ] Phase 4: Weapon System (10 hours)
 - [ ] Phase 5: Armor System (4 hours)
 - [ ] Phase 6: Monster Conversions (12 hours)
@@ -134,36 +134,36 @@
 ## Phase 4: Weapon System (10 hours)
 
 ### Weapon Base Class
-- [ ] **Weapon.java** - Add DamageType enum (SLASHING, PIERCING, BLUDGEONING)
-- [ ] **Weapon.java** - Add damageType field
-- [ ] **Weapon.java** - Add getDamageType() getter
+- [x] **Weapon.java** - Add DamageType enum (SLASHING, PIERCING, BLUDGEONING)
+- [x] **Weapon.java** - Add damageType field
+- [x] **Weapon.java** - Add getDamageType() getter
 
 ### Individual Weapons
-- [ ] **Dagger.java** - Set min() = 1, max() = 4 (1d4)
-- [ ] **Dagger.java** - Set damageType = PIERCING
-- [ ] **Longsword.java** - Set min() = 1, max() = 8 (1d8)
-- [ ] **Longsword.java** - Set damageType = SLASHING
-- [ ] **Club.java** - Set min() = 1, max() = 6 (1d6)
-- [ ] **Club.java** - Set damageType = BLUDGEONING
-- [ ] **Mace.java** - Set min() = 1, max() = 8 (1d8)
-- [ ] **Mace.java** - Set damageType = BLUDGEONING
+- [x] **Dagger.java** - Set min() = 1, max() = 4 (1d4)
+- [x] **Dagger.java** - Set damageType = PIERCING
+- [x] **Longsword.java** - Set min() = 1, max() = 8 (1d8)
+- [x] **Longsword.java** - Set damageType = SLASHING
+- [x] **Cudgel.java** - Set min() = 1, max() = 6 (1d6)
+- [x] **Cudgel.java** - Set damageType = BLUDGEONING
+- [x] **Mace.java** - Set min() = 1, max() = 8 (1d8)
+- [x] **Mace.java** - Set damageType = BLUDGEONING
 
 ### Tests
-- [ ] Create `WeaponTest.java`
-- [ ] Test Dagger damage range (1-4)
-- [ ] Test Longsword damage range (1-8)
-- [ ] Test Club damage range (1-6)
-- [ ] Test Mace damage range (1-8)
-- [ ] Test damage types are set correctly
-- [ ] **Note:** Instantiating weapon objects (`new Dagger()` etc.) will trigger
+- [x] Create `WeaponTest.java`
+- [x] Test Dagger damage range (1-4)
+- [x] Test Longsword damage range (1-8)
+- [x] Test Club damage range (1-6)
+- [x] Test Mace damage range (1-8)
+- [x] Test damage types are set correctly
+**Note:** Instantiating weapon objects (`new Dagger()` etc.) will trigger
   `ItemSpriteSheet$Icons.<clinit>` — same LibGDX boundary as Phase 2. Test
   `damageType` and damage ranges by setting fields directly on a `Weapon` subclass
   instance, or extract damage/type as static constants that can be tested without
   constructing the full item object.
 
 ### Validation
-- [ ] All WeaponTest tests pass
-- [ ] Weapons have correct damage dice
+- [x] All WeaponTest tests pass
+- [x] Weapons have correct damage dice
 
 ---
 

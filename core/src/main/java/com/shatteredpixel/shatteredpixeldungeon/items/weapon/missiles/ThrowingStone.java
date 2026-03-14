@@ -36,8 +36,14 @@ public class ThrowingStone extends MissileWeapon {
 		tier = 1;
 		baseUses = 5;
 		sticky = false;
+		damageType = DamageType.BLUDGEONING;
 	}
-	
+
+	@Override
+	public int max(int lvl) {
+		return  4;
+	}
+
 	@Override
 	public int value() {
 		return Math.round(super.value()/2f); //half normal value

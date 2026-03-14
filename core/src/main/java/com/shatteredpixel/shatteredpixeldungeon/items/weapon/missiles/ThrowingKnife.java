@@ -38,12 +38,12 @@ public class ThrowingKnife extends MissileWeapon {
 		
 		tier = 1;
 		baseUses = 5;
+		damageType = DamageType.PIERCING;
 	}
-	
+
 	@Override
 	public int max(int lvl) {
-		return  6 * tier +                      //6 base, up from 5
-				(tier == 1 ? 2*lvl : tier*lvl); //scaling unchanged
+		return  4;
 	}
 	
 	@Override

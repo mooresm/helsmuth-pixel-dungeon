@@ -41,8 +41,16 @@ public class Swarm extends Mob {
 
 	{
 		spriteClass = SwarmSprite.class;
-		
-		HP = HT = 50;
+
+		// D&D giant bee ability scores
+		STR = 11;
+		DEX = 14;
+		CON = 11;
+		WIS = 12;
+		CHA = 9;
+
+		HP = HT = Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8);
+		AC = 10 + statBonus(DEX) + 2;
 		defenseSkill = 5;
 
 		EXP = 3;
@@ -78,10 +86,15 @@ public class Swarm extends Mob {
 		flying = false;
 		super.die(cause);
 	}
-	
+
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 1, 4 );
+		return Random.IntRange( 1, 4 );
+	}
+
+	@Override
+	public int attackSkill( Char target ) {
+		return 2;
 	}
 	
 	@Override
@@ -118,12 +131,7 @@ public class Swarm extends Mob {
 		
 		return super.defenseProc(enemy, damage);
 	}
-	
-	@Override
-	public int attackSkill( Char target ) {
-		return 10;
-	}
-	
+
 	private Swarm split() {
 		Swarm clone = new Swarm();
 		clone.generation = generation + 1;

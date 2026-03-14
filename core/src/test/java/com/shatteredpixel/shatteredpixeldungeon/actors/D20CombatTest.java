@@ -7,6 +7,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Skeleton;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Swarm;
 import com.watabou.utils.Random;
 
 import org.junit.After;
@@ -269,6 +270,17 @@ public class D20CombatTest {
         assertEquals("Crab should have +4 to hit", 4, crab.attackSkill(crab));
         assertTrue("damage >= 3", crab.damageRoll() >= 3);
         assertTrue("damage <= 8", crab.damageRoll() <= 8);
+    }
+
+    @Test
+    public void testFly() {
+        Swarm fly = new Swarm();
+        assertEquals("Giant fly AC should be 14", 14, fly.AC);
+        assertTrue("Giant fly HP >= 3", fly.HP >= 3);
+        assertTrue("Giant fly HP <= 24", fly.HP <= 24);
+        assertEquals("Giant fly should have +2 to hit", 2, fly.attackSkill(fly));
+        assertTrue("damage >= 1", fly.damageRoll() >= 1);
+        assertTrue("damage <= 4", fly.damageRoll() <= 4);
     }
 
     @Test

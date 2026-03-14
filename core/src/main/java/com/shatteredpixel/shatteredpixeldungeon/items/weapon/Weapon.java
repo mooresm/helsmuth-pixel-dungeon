@@ -88,6 +88,22 @@ abstract public class Weapon extends KindOfWeapon {
 	public float	DLY	= 1f;	// Speed modifier
 	public int      RCH = 1;    // Reach modifier (only applies to melee hits)
 
+	public enum DamageType {
+		SLASHING,
+		PIERCING,
+		BLUDGEONING
+	}
+	protected DamageType damageType = DamageType.SLASHING;
+
+	public DamageType getDamageType() {
+		return damageType;
+	}
+
+	@Override
+	public int min(int lvl) {
+		return  1;
+	}
+
 	public enum Augment {
 		SPEED   (0.7f, 2/3f),
 		DAMAGE  (1.5f, 5/3f),

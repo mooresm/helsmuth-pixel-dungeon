@@ -35,6 +35,12 @@ public class Longsword extends MeleeWeapon {
 		hitSoundPitch = 1f;
 
 		tier = 4;
+		damageType = DamageType.SLASHING;
+	}
+
+	@Override
+	public int max(int lvl) {
+		return  8;
 	}
 
 	@Override
