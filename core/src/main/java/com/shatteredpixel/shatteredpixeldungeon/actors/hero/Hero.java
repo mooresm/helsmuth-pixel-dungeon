@@ -515,8 +515,13 @@ public class Hero extends Char {
 			abilityMod = statBonus(STR);
 		}
 
-		// Total = BAB + ability mod
-		return Math.max(1, bab + abilityMod);
+		int enhBonus = 0;
+		if (wep instanceof Weapon) {
+			enhBonus += wep.buffedLvl(); // magic +1, +2, etc.
+		}
+
+		// Total = BAB + ability mod + magical enhancement bonus
+		return Math.max(1, bab + abilityMod + enhBonus);
 	}
 	
 	@Override
@@ -574,7 +579,7 @@ public class Hero extends Char {
 
 		if (belongings.armor != null) {
 			// Armor tier → AC bonus: tier 2 = +2, tier 3 = +4, tier 4 = +6, tier 5 = +8
-			AC += belongings.armor.tier * 2;
+			AC += belongings.armor.ACBonus();
 		}
 	}
 
@@ -623,6 +628,8 @@ public class Hero extends Char {
 			}
 		}
 		if (!(wep instanceof MissileWeapon)) dmg += statBonus(STR);
+
+		if (wep instanceof Weapon) dmg += wep.buffedLvl(); // magic +1, +2, etc.
 
 		PhysicalEmpower emp = buff(PhysicalEmpower.class);
 		if (emp != null){

@@ -166,6 +166,18 @@ public class Armor extends EquipableItem {
 		augment = bundle.getEnum(AUGMENT, Augment.class);
 	}
 
+	public int ACBonus() {
+		int enhBonus = buffedLvl();
+		switch (tier) {
+			case 1: return 0 + enhBonus;  // Cloth
+			case 2: return 2 + enhBonus;  // Leather
+			case 3: return 4 + enhBonus;  // Scale mail
+			case 4: return 5 + enhBonus;  // Chainmail
+			case 5: return 8 + enhBonus;  // Plate
+			default: return 0;
+		}
+	}
+
 	@Override
 	public void reset() {
 		super.reset();

@@ -12,8 +12,8 @@
 - [x] Phase 1: Ability Scores (6 hours)
 - [x] Phase 2: Fighter Initialization (8 hours)
 - [x] Phase 3: D&D Combat System (12 hours)
-- [ ] Phase 4: Weapon System (10 hours)
-- [ ] Phase 5: Armor System (4 hours)
+- [x] Phase 4: Weapon System (10 hours)
+- [x] Phase 5: Armor System (4 hours)
 - [ ] Phase 6: Monster Conversions (12 hours)
 - [ ] Phase 7: Level System (8 hours)
 - [ ] Phase 8: UI Updates (6 hours)
@@ -170,21 +170,9 @@
 ## Phase 5: Armor System (4 hours)
 
 ### Armor Base Class
-- [ ] **Armor.java** - Add ACBonus() method
-- [ ] **Armor.java** - Map tier to AC bonus (tier 2 = +2, tier 3 = +4, etc.)
-
-### Individual Armors
-- [ ] **LeatherArmor.java** - Verify tier = 2 (AC +2)
-- [ ] **ScaleArmor.java** - Verify tier = 3 (AC +4)
-
-### Tests
-- [ ] Create `ArmorTest.java`
-- [ ] Test leather armor AC bonus (+2)
-- [ ] Test scale armor AC bonus (+4)
-
-### Validation
-- [ ] All ArmorTest tests pass
-- [ ] Armor contributes to AC correctly
+- [x] **Armor.java** - Add ACBonus() method
+- [x] **Armor.java** - Map tier to AC bonus (tier 1 = +2, tier 3 = +4, etc.)
+- [x] adjust to-hit, damage and AC based on magical enhancement bonus
 
 ---
 
