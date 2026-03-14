@@ -246,12 +246,6 @@ public class MeleeWeapon extends Weapon {
 	public int tier;
 
 	@Override
-	public int min(int lvl) {
-		return  tier +  //base
-				lvl;    //level scaling
-	}
-
-	@Override
 	public int max(int lvl) {
 		return  5*(tier+1) +    //base
 				lvl*(tier+1);   //level scaling
@@ -287,19 +281,6 @@ public class MeleeWeapon extends Weapon {
 			}
 		}
 		return super.buffedLvl();
-	}
-
-	@Override
-	public int damageRoll(Char owner) {
-		int damage = augment.damageFactor(super.damageRoll( owner ));
-
-		if (owner instanceof Hero) {
-			int exStr = ((Hero)owner).STR() - STRReq();
-			if (exStr > 0) {
-				damage += Hero.heroDamageIntRange( 0, exStr );
-			}
-		}
-		return damage;
 	}
 	
 	@Override

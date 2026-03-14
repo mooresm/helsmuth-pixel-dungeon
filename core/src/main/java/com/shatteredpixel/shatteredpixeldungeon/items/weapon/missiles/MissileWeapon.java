@@ -94,22 +94,7 @@ abstract public class MissileWeapon extends Weapon {
 	protected int usesToID(){
 		return 10; //half of a melee weapon
 	}
-	
-	@Override
-	public int min() {
-		if (Dungeon.hero != null){
-			return Math.max(0, min(buffedLvl() + RingOfSharpshooting.levelDamageBonus(Dungeon.hero)));
-		} else {
-			return Math.max(0 , min( buffedLvl() ));
-		}
-	}
-	
-	@Override
-	public int min(int lvl) {
-		return  2 * tier +                      //base
-				lvl;                            //level scaling
-	}
-	
+
 	@Override
 	public int max() {
 		if (Dungeon.hero != null){
@@ -497,23 +482,6 @@ abstract public class MissileWeapon extends Weapon {
 				GLog.n(Messages.get(this, "has_broken"));
 			}
 		}
-	}
-	
-	@Override
-	public int damageRoll(Char owner) {
-		int damage = augment.damageFactor(super.damageRoll( owner ));
-		
-		if (owner instanceof Hero) {
-			int exStr = ((Hero)owner).STR() - STRReq();
-			if (exStr > 0) {
-				damage += Hero.heroDamageIntRange( 0, exStr );
-			}
-			if (owner.buff(Momentum.class) != null && owner.buff(Momentum.class).freerunning()) {
-				damage = Math.round(damage * (1f + 0.15f * ((Hero) owner).pointsInTalent(Talent.PROJECTILE_MOMENTUM)));
-			}
-		}
-		
-		return damage;
 	}
 	
 	@Override

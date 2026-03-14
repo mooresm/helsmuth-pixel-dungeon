@@ -14,6 +14,8 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.DamageType;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 
 import org.junit.Test;
 
@@ -55,6 +57,46 @@ public class WeaponDamageTypeTest {
 
             @Override
             public int STRReq(int lvl) {
+                return 0;
+            }
+        };
+    }
+
+    /** Returns a bare MeleeWeapon for testing min/max formulas. */
+    private MeleeWeapon makeMeleeWeapon(DamageType type, int tier, int maxDamage) {
+        return new MeleeWeapon() {
+            {
+                this.tier = tier;
+                damageType = type;
+            }
+
+            @Override
+            public int max(int lvl) {
+                return maxDamage;
+            }
+
+            @Override
+            public int damageRoll(Char owner) {
+                return 0;
+            }
+        };
+    }
+
+    /** Returns a bare MissileWeapon for testing min/max formulas. */
+    private MissileWeapon makeMissileWeapon(DamageType type, int tier, int maxDamage) {
+        return new MissileWeapon() {
+            {
+                this.tier = tier;
+                damageType = type;
+            }
+
+            @Override
+            public int max(int lvl) {
+                return maxDamage;
+            }
+
+            @Override
+            public int damageRoll(Char owner) {
                 return 0;
             }
         };
@@ -155,5 +197,45 @@ public class WeaponDamageTypeTest {
                     w.max() >= w.min()
             );
         }
+    }
+
+    // ---------------------------------------------------------------------------
+    // MeleeWeapon min() — D&D-style damage formula (tier + lvl)
+    // ---------------------------------------------------------------------------
+
+    @Test
+    public void meleeWeaponTier1MinDamageIs1() {
+        // D&D Dagger (1d4 piercing): tier 1 weapon at level 0 should have min = 1
+        MeleeWeapon dagger = makeMeleeWeapon(DamageType.PIERCING, 1, 4);
+        assertEquals("Tier 1 melee weapon min should be 1 at level 0", 1, dagger.min(0));
+        assertEquals(4, dagger.max(0));
+    }
+
+    @Test
+    public void meleeWeaponTier1ClubIs1d6() {
+        // D&D Club (1d6 bludgeoning): tier 1 weapon
+        MeleeWeapon club = makeMeleeWeapon(DamageType.BLUDGEONING, 1, 6);
+        assertEquals("Club should have min=1 (1d6)", 1, club.min(0));
+        assertEquals("Club should have max=6 (1d6)", 6, club.max(0));
+    }
+
+    // ---------------------------------------------------------------------------
+    // MissileWeapon min() — D&D-style damage formula (tier + lvl)
+    // ---------------------------------------------------------------------------
+
+    @Test
+    public void missileWeaponTier1MinDamageIs1() {
+        // D&D Throwing Stone (1d4 bludgeoning): tier 1 missile at level 0 should have min = 1
+        MissileWeapon stone = makeMissileWeapon(DamageType.BLUDGEONING, 1, 4);
+        assertEquals("Tier 1 missile weapon min should be 1 at level 0", 1, stone.min(0));
+        assertEquals(4, stone.max(0));
+    }
+
+    @Test
+    public void missileWeaponThrowingStoneIs1d4() {
+        // Throwing Stone (1d4 bludgeoning): tier 1 missile
+        MissileWeapon stone = makeMissileWeapon(DamageType.BLUDGEONING, 1, 4);
+        assertEquals("Throwing stone should have min=1 (1d4)", 1, stone.min(0));
+        assertEquals("Throwing stone should have max=4 (1d4)", 4, stone.max(0));
     }
 }

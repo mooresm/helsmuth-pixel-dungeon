@@ -543,6 +543,16 @@ public abstract class Char extends Actor {
 				if (effectiveDamage > 0 || !enemy.blockSound(Random.Float(0.96f, 1.05f))) {
 					hitSound(Random.Float(0.87f, 1.15f));
 				}
+				// Log damage dealt
+				String attackerName = this == Dungeon.hero ? "You" : this.name();
+				String defenderName = enemy == Dungeon.hero ? "you" : enemy.name();
+				if (dr > 0) {
+					GLog.i("%s dealt %d damage to %s (DR %d reduced from %d)",
+							attackerName, effectiveDamage, defenderName, dr, Math.round(dmg));
+				} else {
+					GLog.i("%s dealt %d damage to %s",
+							attackerName, effectiveDamage, defenderName);
+				}
 			}
 
 			// If the enemy is already dead, interrupt the attack.
