@@ -102,8 +102,8 @@
 - [x] **Char.java** - Handle auto-hit on natural 20
 - [x] **Char.java** - Implement attack bonus vs AC comparison
 - [x] **Char.java** - Add new AC field (base 10 + DEX mod)
-- [ ] **Char.java** - Update dr() signature to accept attacker: `dr(Char attacker)`
-- [ ] **Char.java** - Update attack() to pass attacker to dr()
+- [x] **Char.java** - Update dr() signature to accept attacker: `dr(Char attacker)`
+- [x] **Char.java** - Update attack() to pass attacker to dr()
 
 ### Hero Combat
 - [x] **Hero.java** - Update attackSkill() to return BAB + STR mod (+ weapon bonus)
@@ -179,69 +179,61 @@
 ## Phase 6: Monster Conversions (18 hours)
 
 ### Dire Rat Conversion
-- [ ] **Rat.java** - Update name to "dire rat"
-- [ ] **Rat.java** - Set HP = HT = 5 (1d8+1)
-- [ ] **Rat.java** - Set abilities: STR 10, DEX 17, CON 12, INT 2, WIS 12, CHA 4
-- [ ] **Rat.java** - Add armorClass() = 15 (10 + 3 DEX + 1 natural + 1 size)
-- [ ] **Rat.java** - Add attackSkill() = BAB 0 + DEX 3 + size 1 = +4
-- [ ] **Rat.java** - Update damageRoll() = 1d4 (bite)
-- [ ] **Rat.java** - Add dr(Char attacker) = 0 (no DR)
-- [ ] **Rat.java** - Add loot drop: MysteryMeat (33% chance)
+- [x] **Rat.java** - Update name to "dire rat"
+- [x] **Rat.java** - Set HP = HT = 5 (1d8+1)
+- [x] **Rat.java** - Set abilities: STR 10, DEX 17, CON 12, INT 2, WIS 12, CHA 4
+- [x] **Rat.java** - Add armorClass() = 15 (10 + 3 DEX + 1 natural + 1 size)
+- [x] **Rat.java** - Add attackSkill() = BAB 0 + DEX 3 + size 1 = +4
+- [x] **Rat.java** - Update damageRoll() = 1d4 (bite)
+- [x] **Rat.java** - Add loot drop: MysteryMeat (33% chance)
 
 ### Skeleton Conversion
-- [ ] **Skeleton.java** - Set HP = HT = 6 (1d12)
-- [ ] **Skeleton.java** - Set abilities: STR 13, DEX 13, CON 10, INT 10, WIS 10, CHA 1
-- [ ] **Skeleton.java** - Add armorClass() = 15 (10 + 2 natural + 1 DEX + 2 armor)
-- [ ] **Skeleton.java** - Add attackSkill() = BAB 0 + STR 1 = +1
-- [ ] **Skeleton.java** - Update damageRoll() = 1d4 + STR mod (dagger)
-- [ ] **Skeleton.java** - Implement DR 5/bludgeoning mechanic
-- [ ] **Skeleton.java** - Check attacker's weapon type
-- [ ] **Skeleton.java** - Return 0 DR for bludgeoning weapons
-- [ ] **Skeleton.java** - Return 5 DR for non-bludgeoning
+- [x] **Skeleton.java** - Set HP = HT = 6 (1d12)
+- [x] **Skeleton.java** - Set abilities: STR 13, DEX 13, CON 10, INT 10, WIS 10, CHA 1
+- [x] **Skeleton.java** - Add armorClass() = 15 (10 + 2 natural + 1 DEX + 2 armor)
+- [x] **Skeleton.java** - Add attackSkill() = BAB 0 + STR 1 = +1
+- [x] **Skeleton.java** - Update damageRoll() = 1d4 + STR mod (dagger)
+- [x] **Skeleton.java** - Implement DR 5/bludgeoning mechanic
+- [x] **Skeleton.java** - Check attacker's weapon type
+- [x] **Skeleton.java** - Return 0 DR for bludgeoning weapons
+- [x] **Skeleton.java** - Return 5 DR for non-bludgeoning
 - [ ] **Skeleton.java** - Print "Your weapon glances off the bones!" in game log when DR negates all damage
 - [ ] **Skeleton.java** - Add loot drop: Dagger (20% chance)
 
 ### Kobold Conversion
-- [ ] **Kobold.java** (new file, or repurpose Gnoll.java) - Set name to "kobold"
-- [ ] **Kobold.java** - Set HP = HT = 4 (1d8)
-- [ ] **Kobold.java** - Set abilities: STR 9, DEX 13, CON 10, INT 10, WIS 9, CHA 8
-- [ ] **Kobold.java** - Add armorClass() = 15 (10 + 1 DEX + 1 natural + 1 armor + 2 size)
-- [ ] **Kobold.java** - Add attackSkill() = BAB 0 + DEX 1 = +1
-- [ ] **Kobold.java** - Update damageRoll() = 1d3 (dagger, STR -1 penalty, min 1)
-- [ ] **Kobold.java** - Add dr(Char attacker) = 0 (no DR)
-- [ ] **Kobold.java** - Add loot drop: Dagger (15% chance), Gold (25% chance)
+- [x] **Kobold.java** (new file, or repurpose Gnoll.java) - Set name to "kobold"
+- [x] **Kobold.java** - Set HP = HT = 4 (1d8)
+- [x] **Kobold.java** - Set abilities: STR 9, DEX 13, CON 10, INT 10, WIS 9, CHA 8
+- [x] **Kobold.java** - Add armorClass() = 15 (10 + 1 DEX + 1 natural + 1 armor + 2 size)
+- [x] **Kobold.java** - Add attackSkill() = BAB 0 + DEX 1 = +1
+- [x] **Kobold.java** - Update damageRoll() = 1d3 (dagger, STR -1 penalty, min 1)
+- [x] **Kobold.java** - Add loot drop: Dagger (15% chance), Gold (25% chance)
 
 ### Tiny Viper Conversion
-- [ ] **Snake.java** (or new TinyViper.java) - Set name to "tiny viper"
-- [ ] **Snake.java** - Set HP = HT = 2 (1d4)
-- [ ] **Snake.java** - Set abilities: STR 4, DEX 17, CON 11, INT 1, WIS 12, CHA 2
-- [ ] **Snake.java** - Add armorClass() = 17 (10 + 3 DEX + 2 natural + 2 size)
-- [ ] **Snake.java** - Add attackSkill() = +5 (finesse, size bonus)
-- [ ] **Snake.java** - Update damageRoll() = 1 (bite, STR -3 penalty, min 1)
+- [x] **Snake.java** (or new TinyViper.java) - Set name to "tiny viper"
+- [x] **Snake.java** - Set HP = HT = 2 (1d4)
+- [x] **Snake.java** - Set abilities: STR 4, DEX 17, CON 11, INT 1, WIS 12, CHA 2
+- [x] **Snake.java** - Add armorClass() = 17 (10 + 3 DEX + 2 natural + 2 size)
+- [x] **Snake.java** - Add attackSkill() = +5 (finesse, size bonus)
+- [x] **Snake.java** - Update damageRoll() = 1 (bite, STR -3 penalty, min 1)
 - [ ] **Snake.java** - Implement simplified poison: on hit, apply Poison buff (1 extra damage next turn)
 - [ ] **Snake.java** - Print "You feel the venom!" in game log when poison is applied
-- [ ] **Snake.java** - Add dr(Char attacker) = 0 (no DR)
-- [ ] **Snake.java** - Add loot drop: Antidote (20% chance)
-
-### Guaranteed Club Drop (Skeleton balancing)
-- [ ] **SewerLevel.java** (or level generation) - Guarantee one Club spawns in a chest or room on Depth 1
-- [ ] This ensures the player always has access to a bludgeoning weapon if they explore
+- [x] **Snake.java** - Add loot drop: Antidote (20% chance)
 
 ### Tests
-- [ ] Mob stats and combat tested in `D20CombatTest.java`
-- [ ] Skeleton DR = 5 vs slashing, DR = 0 vs bludgeoning tested in `D20CombatTest.java`
-- [ ] Kobold minimum damage = 1 tested in `D20CombatTest.java`
+- [x] Mob stats and combat tested in `D20CombatTest.java`
+- [x] Skeleton DR = 5 vs slashing, DR = 0 vs bludgeoning tested in `D20CombatTest.java`
+- [x] Kobold minimum damage = 1 tested in `D20CombatTest.java`
 - [ ] Tiny Viper poison buff tested in `D20CombatTest.java`
 - [ ] Mob XP awards tested in `CRExperienceTest.java`
-- [ ] Test viper damage minimum = 1
+- [x] Test viper damage minimum = 1
 - [ ] Test Antidote drops at 20% chance
 
 ### Validation
 - [ ] All monster tests pass
-- [ ] Skeleton DR works correctly
-- [ ] Kobold deals minimum 1 damage despite STR penalty
+- [x] Skeleton DR works correctly
+- [x] Kobold deals minimum 1 damage despite STR penalty
 - [ ] Tiny Viper poison buff applies correctly
-- [ ] Club guaranteed to appear on Depth 1
 
 ---
 

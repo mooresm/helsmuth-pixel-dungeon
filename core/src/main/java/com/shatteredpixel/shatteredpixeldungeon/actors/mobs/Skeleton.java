@@ -26,7 +26,9 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWard;
@@ -157,6 +159,33 @@ public class Skeleton extends Mob {
 	public Item createLoot() {
 		Dungeon.LimitedDrops.SKELE_WEP.count++;
 		return super.createLoot();
+	}
+
+	// D&D 3.5: Human Skeleton has DR 5/bludgeoning.
+	// Bludgeoning weapons negate the reduction entirely; all other physical attacks (and
+	// natural attacks without an explicit weapon type) are reduced by 5.
+	static final int DR_AMOUNT = 5;
+	static final Weapon.DamageType DR_BYPASS_TYPE = Weapon.DamageType.BLUDGEONING;
+
+	/**
+	 * Pure logic: returns 0 if the weapon type bypasses this skeleton's DR, DR_AMOUNT otherwise.
+	 * Kept package-private so unit tests can call it directly without a LibGDX context.
+	 * {@code null} represents a natural attack (no weapon) — subject to DR.
+	 */
+	static int drForWeaponType(Weapon.DamageType weaponType) {
+		return weaponType == DR_BYPASS_TYPE ? 0 : DR_AMOUNT;
+	}
+
+	@Override
+	public int drRoll(Char attacker) {
+		Weapon.DamageType wt = null;
+		if (attacker instanceof Hero) {
+			Object wep = ((Hero) attacker).belongings.attackingWeapon();
+			if (wep instanceof Weapon) {
+				wt = ((Weapon) wep).getDamageType();
+			}
+		}
+		return drForWeaponType(wt);
 	}
 
 	@Override

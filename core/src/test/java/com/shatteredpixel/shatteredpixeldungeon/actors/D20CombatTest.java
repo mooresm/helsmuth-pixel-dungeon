@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Crab;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Gnoll;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Skeleton;
@@ -281,6 +282,21 @@ public class D20CombatTest {
         assertEquals("Giant fly should have +2 to hit", 2, fly.attackSkill(fly));
         assertTrue("damage >= 1", fly.damageRoll() >= 1);
         assertTrue("damage <= 4", fly.damageRoll() <= 4);
+    }
+
+    @Test
+    public void testMimic() {
+        Mimic mimic = new Mimic();
+        assertEquals("Mimic AC should be 15", 15, mimic.AC);
+        assertTrue("Mimic HP >= 28", mimic.HP >= 28);
+        assertTrue("Mimic HP <= 77", mimic.HP <= 77);
+        assertEquals("Mimic alignment neutral", Char.Alignment.NEUTRAL, mimic.alignment);
+        assertEquals("Flat footed, so +10 to hit", 10, mimic.attackSkill(mimic));
+        // now switch to attack mode
+        mimic.alignment = Char.Alignment.ENEMY;
+        assertEquals("Mimic should now have +9 to hit", 9, mimic.attackSkill(mimic));
+        assertTrue("damage >= 5", mimic.damageRoll() >= 5);
+        assertTrue("damage <= 12", mimic.damageRoll() <= 12);
     }
 
     @Test

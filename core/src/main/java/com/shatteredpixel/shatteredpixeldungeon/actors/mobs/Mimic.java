@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2025 Evan Debenham
  *
+ * Helsmuth Dungeon
+ * Copyright (C) 2026 Matt Moores
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -58,7 +61,17 @@ public class Mimic extends Mob {
 		properties.add(Property.DEMONIC);
 
 		EXP = 0;
-		
+
+		// D&D mimic ability scores
+		STR = 19;
+		DEX = 12;
+		CON = 17;
+		INT = 10;
+		WIS = 13;
+		CHA = 10;
+		AC = 10 + statBonus(DEX) + 5 - 1;
+		HP = HT = 21 + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8);
+
 		//mimics are neutral when hidden
 		alignment = Alignment.NEUTRAL;
 		state = PASSIVE;
@@ -228,11 +241,7 @@ public class Mimic extends Mob {
 
 	@Override
 	public int damageRoll() {
-		if (alignment == Alignment.NEUTRAL){
-			return Random.NormalIntRange( 2 + 2*level, 2 + 2*level);
-		} else {
-			return Random.NormalIntRange( 1 + level, 2 + 2*level);
-		}
+		return Random.NormalIntRange( 5, 12 ); // 1d8+4
 	}
 
 	@Override
@@ -249,11 +258,11 @@ public class Mimic extends Mob {
 
 	@Override
 	public int attackSkill( Char target ) {
-		if (target != null && alignment == Alignment.NEUTRAL && target.invisible <= 0){
-			return INFINITE_ACCURACY;
-		} else {
-			return 6 + level;
+		int toHit = 6 + statBonus(STR) - 1;
+		if (target != null && alignment == Alignment.NEUTRAL && target.invisible <= 0) {
+			toHit += Char.statBonus(target.DEX); // flat footed
 		}
+		return toHit;
 	}
 
 	public void setLevel( int level ){
@@ -262,9 +271,7 @@ public class Mimic extends Mob {
 	}
 	
 	public void adjustStats( int level ) {
-		HP = HT = (1 + level) * 6;
 		defenseSkill = 2 + level/2;
-		
 		enemySeen = true;
 	}
 	

@@ -418,7 +418,7 @@ public abstract class Char extends Actor {
 
 		} else if (hit( this, enemy, accMulti, false )) {
 			
-			int dr = Math.round(enemy.drRoll() * AscensionChallenge.statModifier(enemy));
+			int dr = Math.round(enemy.drRoll(this) * AscensionChallenge.statModifier(enemy));
 			
 			if (this instanceof Hero){
 				Hero h = (Hero)this;
@@ -796,7 +796,12 @@ public abstract class Char extends Actor {
 
 		return dr;
 	}
-	
+
+	/** DR roll that subclasses can override to inspect the attacker (e.g. weapon damage type). */
+	public int drRoll(Char attacker) {
+		return drRoll();
+	}
+
 	public int damageRoll() {
 		return 1;
 	}
