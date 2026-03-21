@@ -14,8 +14,8 @@ allprojects {
         appName = 'Helsmuth Dungeon'
         appPackageName = 'com.helsmuth.dungeon'
 
-        appVersionCode = 890
-        appVersionName = '3.3.5'
+        appVersionCode = 891
+        appVersionName = '4.0.0'
 
         appJavaCompatibility = JavaVersion.VERSION_11
 

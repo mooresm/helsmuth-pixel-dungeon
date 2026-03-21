@@ -240,26 +240,19 @@
 ## Phase 7: Level System (8 hours)
 
 ### Dungeon Configuration
-- [ ] **Dungeon.java** - Update newLevel() to cap at depth 2
-- [ ] **Dungeon.java** - Depth 1: SewerLevel (combat)
-- [ ] **Dungeon.java** - Depth 2: LastLevel (amulet/victory)
-- [ ] **Dungeon.java** - Set bossLevel() = false
-- [ ] **Dungeon.java** - Set shopOnLevel() = false
-
-### Monster Spawning
-- [ ] **Bestiary.java** - Update mobClass() for 2-level system
-- [ ] **Bestiary.java** - Depth 1: 50% Rats, 30% Kobolds, 15% Tiny Vipers, 5% Skeletons
-- [ ] **Bestiary.java** - Depth 2: No spawns (null)
-- [ ] **Bestiary.java** - Set isBoss() = false
+- [x] **Dungeon.java** - Update newLevel() to cap at depth 5
+- [x] **Dungeon.java** - Depths 1-4: SewerLevel (combat)
+- [x] **Dungeon.java** - Depth 5: LastLevel (amulet/victory)
+- [x] **Dungeon.java** - Set shopOnLevel() = true at level 4
 
 ### Tests
-- [ ] Create `DungeonDepthTest.java` - Test 2-level cap
-- [ ] Create `BestiaryTest.java` - Test spawn rates (50/30/15/5)
+- [x] Create `DungeonDepthTest.java` - Test 2-level cap
 
 ### Validation
-- [ ] Dungeon stops at depth 2
-- [ ] Level 1 spawns correct enemies
-- [ ] Level 2 has no enemy spawns
+- [ ] Dungeon stops at depth 5
+- [ ] Levels 1-4 spawn correct enemies
+- [ ] Level 4 has a shop
+- [ ] Level 5 has no enemy spawns
 
 ---
 
@@ -590,7 +583,7 @@ if (mob.EXP < 1.0f) {
 - [ ] Language settings appropriate for your translation strategy
 
 ### Distribution Checklist
-- [ ] Test on target platforms (Android, Desktop, iOS)
+- [x] Test on target platforms (Android, Desktop, iOS)
 - [ ] Verify GPLv3 compliance (original credits intact, source available)
 - [x] Create GitHub repository for your fork
 - [x] Write README explaining D&D conversion
@@ -706,7 +699,7 @@ if (mob.EXP < 1.0f) {
 - [x] Snake.java → **Tiny Viper** (CR 1/8) - Planned in PoC
 - [x] Gnoll.java → **Kobold** (CR 1/4) - Planned in PoC, or use actual Gnoll (CR 1)
 - [x] Crab.java → **Giant Crab** (CR 2)
-- [ ] Swarm.java → **Rat Swarm** (CR 2)
+- [x] Swarm.java → **Rat Swarm** (CR 2)
 
 **Variants:**
 - [ ] FetidRat.java → **Dire Rat** variant with disease (CR 1/2)
@@ -814,13 +807,13 @@ if (mob.EXP < 1.0f) {
 ### Special & Quest Monsters
 
 **Mimics:**
-- [ ] Mimic.java → **Mimic** (CR 4)
+- [x] Mimic.java → **Mimic** (CR 4)
 - [ ] GoldenMimic.java → **Greater Mimic** (CR 6)
 - [ ] CrystalMimic.java → **Crystal Mimic** (CR 7)
 - [ ] EbonyMimic.java → **Ebony Mimic** (CR 8)
 
 **Aquatic:**
-- [ ] Piranha.java → **Quipper** or Small Piranha (CR 1/2)
+- [x] Piranha.java → **Quipper** or Small Piranha (CR 1/2)
 - [ ] PhantomPiranha.java → **Ethereal Quipper** (CR 2)
 
 **Crabs:**

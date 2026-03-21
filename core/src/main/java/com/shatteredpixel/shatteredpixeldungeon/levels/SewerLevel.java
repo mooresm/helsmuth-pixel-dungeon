@@ -138,7 +138,7 @@ public class SewerLevel extends RegularLevel {
 
 	@Override
 	protected void createMobs() {
-		Ghost.Quest.spawn( this, roomExit );
+		// Ghost.Quest.spawn( this, roomExit ); // D&D PoC: ghost quest disabled
 		super.createMobs();
 	}
 	

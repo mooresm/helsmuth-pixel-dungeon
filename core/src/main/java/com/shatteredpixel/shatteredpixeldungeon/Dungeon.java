@@ -293,92 +293,25 @@ public class Dungeon {
 	public static boolean levelHasBeenGenerated(int depth, int branch){
 		return generatedLevels.contains(depth + 1000*branch);
 	}
-	
+
 	public static Level newLevel() {
-		
+
 		Dungeon.level = null;
 		Actor.clear();
-		
+
 		Level level;
 		if (branch == 0) {
-			switch (depth) {
-				case 1:
-				case 2:
-				case 3:
-				case 4:
-					level = new SewerLevel();
-					break;
-				case 5:
-					level = new SewerBossLevel();
-					break;
-				case 6:
-				case 7:
-				case 8:
-				case 9:
-					level = new PrisonLevel();
-					break;
-				case 10:
-					level = new PrisonBossLevel();
-					break;
-				case 11:
-				case 12:
-				case 13:
-				case 14:
-					level = new CavesLevel();
-					break;
-				case 15:
-					level = new CavesBossLevel();
-					break;
-				case 16:
-				case 17:
-				case 18:
-				case 19:
-					level = new CityLevel();
-					break;
-				case 20:
-					level = new CityBossLevel();
-					break;
-				case 21:
-				case 22:
-				case 23:
-				case 24:
-					level = new HallsLevel();
-					break;
-				case 25:
-					level = new HallsBossLevel();
-					break;
-				case 26:
-					level = new LastLevel();
-					break;
-				default:
-					level = new DeadEndLevel();
-			}
-		} else if (branch == 1) {
-			switch (depth) {
-				case 11:
-				case 12:
-				case 13:
-				case 14:
-					level = new MiningLevel();
-					break;
-				case 16:
-				case 17:
-				case 18:
-				case 19:
-					level = new VaultLevel();
-					break;
-				default:
-					level = new DeadEndLevel();
+			try {
+				level = levelClass(depth).getDeclaredConstructor().newInstance();
+			} catch (Exception e) {
+				level = new DeadEndLevel();
 			}
 		} else {
 			level = new DeadEndLevel();
 		}
 
-		//dead end levels (and vault levels for now!) get cleared, don't count as generated
-		if (!(level instanceof DeadEndLevel || level instanceof VaultLevel)){
-			//this assumes that we will never have a depth value outside the range 0 to 999
-			// or -500 to 499, etc.
-			if (!generatedLevels.contains(depth + 1000*branch)) {
+		if (!(level instanceof DeadEndLevel)) {
+			if (!generatedLevels.contains(depth + 1000 * branch)) {
 				generatedLevels.add(depth + 1000 * branch);
 			}
 
@@ -394,13 +327,35 @@ public class Dungeon {
 		}
 
 		Statistics.qualifiedForBossRemainsBadge = false;
-		
+
 		level.create();
-		
+
 		if (branch == 0) Statistics.qualifiedForNoKilling = !bossLevel();
 		Statistics.qualifiedForBossChallengeBadge = false;
-		
+
 		return level;
+	}
+
+	/**
+	 * Maps a branch-0 depth to its Level class.
+	 * Package-private so DungeonDepthTest can verify the mapping without
+	 * calling level.create() (which requires a LibGDX context).
+	 *
+	 * PoC layout:
+	 *   Depths 1-3 : SewerLevel  (combat floors)
+	 *   Depth  4   : SewerLevel  (shop floor — shopOnLevel() returns true here)
+	 *   Depth  5   : LastLevel   (amulet / victory)
+	 *   Anything else: DeadEndLevel (safe fallback, capped dungeon)
+	 */
+	static Class<? extends Level> levelClass(int depth) {
+		switch (depth) {
+			case 1:
+			case 2:
+			case 3:
+			case 4:  return SewerLevel.class;
+			case 5:  return LastLevel.class;
+			default: return DeadEndLevel.class;
+		}
 	}
 	
 	public static void resetLevel() {
@@ -431,7 +386,7 @@ public class Dungeon {
 	}
 	
 	public static boolean shopOnLevel() {
-		return depth == 6 || depth == 11 || depth == 16;
+		return depth == 4 || depth == 6 || depth == 11 || depth == 16;
 	}
 	
 	public static boolean bossLevel() {
@@ -439,7 +394,7 @@ public class Dungeon {
 	}
 	
 	public static boolean bossLevel( int depth ) {
-		return depth == 5 || depth == 10 || depth == 15 || depth == 20 || depth == 25;
+		return depth == 6 || depth == 10 || depth == 15 || depth == 20 || depth == 25;
 	}
 
 	//value used for scaling of damage values and other effects.
