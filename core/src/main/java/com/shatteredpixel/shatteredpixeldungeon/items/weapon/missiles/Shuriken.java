@@ -37,12 +37,12 @@ public class Shuriken extends MissileWeapon {
 		
 		tier = 2;
 		baseUses = 5;
+		damageType = DamageType.PIERCING;
 	}
 	
 	@Override
 	public int max(int lvl) {
-		return  4 * tier +                      //8 base, down from 10
-				(tier == 1 ? 2*lvl : tier*lvl); //scaling unchanged
+		return  4;
 	}
 
 	@Override

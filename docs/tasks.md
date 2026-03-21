@@ -14,8 +14,8 @@
 - [x] Phase 3: D&D Combat System (12 hours)
 - [x] Phase 4: Weapon System (10 hours)
 - [x] Phase 5: Armor System (4 hours)
-- [ ] Phase 6: Monster Conversions (12 hours)
-- [ ] Phase 7: Level System (8 hours)
+- [x] Phase 6: Monster Conversions (12 hours)
+- [x] Phase 7: Level System (8 hours)
 - [ ] Phase 8: UI Updates (6 hours)
 - [ ] Phase 9: Starting Equipment (2 hours)
 - [ ] Integration Testing & Playthrough (10 hours)
@@ -249,10 +249,10 @@
 - [x] Create `DungeonDepthTest.java` - Test 2-level cap
 
 ### Validation
-- [ ] Dungeon stops at depth 5
-- [ ] Levels 1-4 spawn correct enemies
-- [ ] Level 4 has a shop
-- [ ] Level 5 has no enemy spawns
+- [x] Dungeon stops at depth 5
+- [x] Levels 1-4 spawn correct enemies
+- [x] Level 4 has a shop
+- [x] Level 5 has no enemy spawns
 
 ---
 
@@ -374,35 +374,7 @@ if (mob.EXP < 1.0f) {
 
 ---
 
-## Phase 9: Starting Equipment (2 hours)
-
-### Fighter Starting Gear
-- [ ] **HeroClass.java** - Give Longsword as starting weapon
-- [ ] **HeroClass.java** - Give Leather Armor as starting armor
-- [ ] **HeroClass.java** - Add 1x PotionOfHealing to starting inventory
-- [ ] **HeroClass.java** - Add standard Food rations
-- [ ] **Note:** No starting bludgeoning weapon — player must find Club through exploration
-
-### Dungeon Loot Configuration
-- [ ] **SewerLevel.java** (or level generator) - Add Healing Potions to chest/room drop pool
-- [ ] **SewerLevel.java** - Add Antidotes to chest/room drop pool (lower weight than Healing Potions)
-- [ ] **SewerLevel.java** - Add weapons (Longsword, Club, Mace) to chest/room drop pool
-- [ ] **SewerLevel.java** - Add armor (Leather Armor, Scale Mail) to chest/room drop pool
-- [ ] **SewerLevel.java** - Guarantee exactly one Club spawns on Depth 1
-
-### Validation
-- [ ] Start new game as Warrior
-- [ ] Verify Longsword equipped
-- [ ] Verify Leather Armor equipped
-- [ ] Verify 1x Healing Potion in inventory
-- [ ] Verify Food in inventory
-- [ ] Verify Club appears somewhere on Depth 1
-- [ ] Verify Healing Potions appear in chests/rooms
-- [ ] Verify Antidotes appear in chests/rooms (less frequent than Healing Potions)
-
----
-
-## Integration Testing & Manual Playthrough (10 hours)
+## Phase 9: Integration Testing & Manual Playthrough (10 hours)
 
 ### Unit Test Suite
 - [ ] Run all tests: `./gradlew test`
@@ -707,10 +679,10 @@ if (mob.EXP < 1.0f) {
 
 **Slimes & Oozes:**
 - [ ] CausticSlime.java → **Gray Ooze** (CR 4)
-- [ ] Slime.java → **Small Ooze** (CR 1)
+- [x] Slime.java → **Gelatinous Cube** (CR 3)
 
 **Boss:**
-- [ ] Goo.java → **Ochre Jelly** or Large Gray Ooze (CR 5-6)
+- [ ] Goo.java → **Black Pudding** (CR 7)
 
 ### Prison (Depths 6-10)
 

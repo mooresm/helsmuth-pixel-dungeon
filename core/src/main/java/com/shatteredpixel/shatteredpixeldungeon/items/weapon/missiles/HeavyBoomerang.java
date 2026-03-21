@@ -43,12 +43,12 @@ public class HeavyBoomerang extends MissileWeapon {
 		tier = 4;
 		sticky = false;
 		baseUses = 5;
+		damageType = DamageType.BLUDGEONING;
 	}
 
 	@Override
 	public int max(int lvl) {
-		return  4 * tier +                  //16 base, down from 20
-				(tier-1) * lvl;             //3 scaling, down from 4
+		return  4;
 	}
 
 	boolean circlingBack = false;

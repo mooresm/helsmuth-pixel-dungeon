@@ -32,6 +32,11 @@ public class Trident extends MissileWeapon {
 		hitSoundPitch = 0.9f;
 		
 		tier = 5;
+		damageType = DamageType.PIERCING;
 	}
-	
+
+	@Override
+	public int max(int lvl) {
+		return  8;
+	}
 }

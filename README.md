@@ -44,7 +44,6 @@ If you'd like to work with the code, you can find the following guides in `/docs
 - [x] Phase 6: Monster implementation (Dire Rat, Skeleton) (12h)
 - [x] Phase 7: 5-level dungeon (8h)
 - [ ] Phase 8: UI updates (ability scores, AC display) (6h)
-- [ ] Phase 9: Starting equipment (2h)
 - [ ] Integration testing (10h)
 
 **PoC Total:** 80 hours (~2 months at 10 hours/week)

@@ -32,6 +32,11 @@ public class ThrowingSpear extends MissileWeapon {
 		hitSoundPitch = 1f;
 		
 		tier = 3;
+		damageType = DamageType.PIERCING;
 	}
-	
+
+	@Override
+	public int max(int lvl) {
+		return  6;
+	}
 }

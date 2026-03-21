@@ -40,18 +40,12 @@ public class Tomahawk extends MissileWeapon {
 
 		tier = 4;
 		baseUses = 5;
+		damageType = DamageType.SLASHING;
 	}
 
 	@Override
-	public int min(int lvl) {
-		return  Math.round(1.5f * tier) +   //6 base, down from 8
-				lvl;                        //scaling unchanged
-	}
-	
-	@Override
 	public int max(int lvl) {
-		return  Math.round(4f * tier) +     //16 base, down from 20
-				(tier-1)*lvl;               //3 scaling, down from 4
+		return  6;
 	}
 
 	public float minBleed(){

@@ -41,12 +41,12 @@ public class RoundShield extends MeleeWeapon {
 		hitSoundPitch = 1f;
 
 		tier = 3;
+		damageType = DamageType.BLUDGEONING;
 	}
 
 	@Override
 	public int max(int lvl) {
-		return  Math.round(3f*(tier+1)) +   //12 base, down from 20
-				lvl*(tier-1);               //+2 per level, down from +4
+		return  4;
 	}
 
 	@Override

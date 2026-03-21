@@ -34,10 +34,20 @@ public class Slime extends Mob {
 	
 	{
 		spriteClass = SlimeSprite.class;
-		
-		HP = HT = 20;
 		defenseSkill = 5;
-		
+
+		// D&D Gelatinous Cube ability scores
+		STR = 10;
+		DEX = 1;
+		CON = 26;
+		WIS = 1;
+		CHA = 1;
+
+		// D&D AC: 10 base - 5 DEX - 1 size = 4
+		AC = 10 + statBonus(DEX) - 1;
+		// D&D HP: 4d10 + 32
+		HP = HT = Random.IntRange(1, 10) + Random.IntRange(1, 10) + Random.IntRange(1, 10) + Random.IntRange(1, 10) + 32;
+
 		EXP = 4;
 		maxLvl = 9;
 		
@@ -46,12 +56,12 @@ public class Slime extends Mob {
 	
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 2, 5 );
+		return Random.NormalIntRange( 1, 6 );
 	}
 	
 	@Override
 	public int attackSkill( Char target ) {
-		return 12;
+		return 2;
 	}
 	
 	@Override

@@ -35,6 +35,11 @@ public class ThrowingSpike extends MissileWeapon {
 
 		baseUses = 12;
 		tier = 1;
+		damageType = DamageType.PIERCING;
 	}
 
+	@Override
+	public int max(int lvl) {
+		return  4;
+	}
 }

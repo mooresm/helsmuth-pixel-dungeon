@@ -32,6 +32,11 @@ public class Javelin extends MissileWeapon {
 		hitSoundPitch = 1f;
 		
 		tier = 4;
+		damageType = DamageType.PIERCING;
 	}
-	
+
+	@Override
+	public int max(int lvl) {
+		return  6;
+	}
 }

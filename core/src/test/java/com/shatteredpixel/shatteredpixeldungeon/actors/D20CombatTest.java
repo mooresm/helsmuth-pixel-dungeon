@@ -7,8 +7,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Skeleton;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Slime;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Swarm;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
 import com.watabou.utils.Random;
 
 import org.junit.After;
@@ -300,6 +304,17 @@ public class D20CombatTest {
     }
 
     @Test
+    public void testSlime() {
+        Slime slime = new Slime();
+        assertEquals("Slime AC should be 4", 4, slime.AC);
+        assertTrue("Slime HP >= 36", slime.HP >= 36);
+        assertTrue("Slime HP <= 72", slime.HP <= 72);
+        assertEquals("Slime should have +2 to hit", 2, slime.attackSkill(slime));
+        assertTrue("damage >= 1", slime.damageRoll() >= 1);
+        assertTrue("damage <= 6", slime.damageRoll() <= 6);
+    }
+
+    @Test
     public void testHeroACCalculation() {
         Hero hero = new Hero();
         hero.DEX = 13; // +1 modifier
@@ -358,4 +373,71 @@ public class D20CombatTest {
         assertEquals("Fighter level 2: BAB 2 + STR mod 3 = 5",
                 5, hero.attackSkill(hero));
     }
+
+// ==================== updateAC(): Shield bonus ====================
+
+/**
+ * RoundShield in the weapon slot adds +1 shield bonus (+ upgrade level).
+ * Tested by setting belongings.weapon to a real RoundShield instance.
+ *
+ * NOTE: RoundShield() triggers ItemSpriteSheet.<clinit> — same LibGDX
+ * boundary as other item constructors. If this test causes
+ * ExceptionInInitializerError, move it to a manual integration test
+ * and verify in-game instead (same resolution as initHero() tests).
+ */
+@Test
+public void testShieldAddsOneACToBase() {
+    Hero hero = new Hero();
+    hero.DEX = 10; // +0 mod → base AC = 10
+    hero.updateAC();
+    int baseAC = hero.AC;
+    assertEquals("Base AC with DEX 10, no armor, no shield should be 10", 10, baseAC);
+
+    // Equipping a +0 RoundShield should add exactly +1 AC
+    RoundShield shield = new RoundShield();
+    hero.belongings.weapon = shield;
+    hero.updateAC();
+    assertEquals("RoundShield (+0) should add +1 AC", baseAC + 1, hero.AC);
+}
+
+@Test
+public void testUpgradedShieldAddsEnhancementBonus() {
+    Hero hero = new Hero();
+    hero.DEX = 10;
+
+    RoundShield shield = new RoundShield();
+    // Simulate a +2 upgraded shield (level() returns upgrade level)
+    shield.upgrade();
+    shield.upgrade();
+    hero.belongings.weapon = shield;
+    hero.updateAC();
+
+    // +1 base shield bonus + 2 upgrade levels = +3 AC total
+    assertEquals("RoundShield (+2) should add +3 AC (1 base + 2 enhancement)", 13, hero.AC);
+}
+
+@Test
+public void testShieldStacksWithArmor() {
+    Hero hero = new Hero();
+    hero.DEX = 13; // +1 mod
+
+    // Equip leather armor (tier 2 → +2 AC bonus from ACBonus())
+    hero.belongings.armor = new LeatherArmor();
+    RoundShield shield = new RoundShield();
+    hero.belongings.weapon = shield;
+    hero.updateAC();
+
+    // 10 + 1 (DEX) + 2 (leather) + 1 (shield) = 14
+    assertEquals("Shield bonus stacks with armor and DEX", 14, hero.AC);
+}
+
+@Test
+public void testNonShieldWeaponDoesNotAddAC() {
+    Hero hero = new Hero();
+    hero.DEX = 10;
+    hero.belongings.weapon = new WornShortsword();
+    hero.updateAC();
+    assertEquals("A non-shield weapon must not add any AC", 10, hero.AC);
+}
+
 }

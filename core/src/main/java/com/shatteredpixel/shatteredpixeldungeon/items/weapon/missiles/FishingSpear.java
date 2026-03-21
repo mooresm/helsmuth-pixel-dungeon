@@ -34,8 +34,14 @@ public class FishingSpear extends MissileWeapon {
 		hitSoundPitch = 1.1f;
 		
 		tier = 2;
+		damageType = DamageType.PIERCING;
 	}
-	
+
+	@Override
+	public int max(int lvl) {
+		return  6;
+	}
+
 	@Override
 	public int proc(Char attacker, Char defender, int damage) {
 		if (defender instanceof Piranha){

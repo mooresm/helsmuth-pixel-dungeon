@@ -570,9 +570,18 @@ public class Hero extends Char {
 		return Math.max(1, Math.round(evasion));
 	}
 
+// REPLACE updateAC() with:
+
 	/**
-	 * Updates AC field based on current DEX and equipped armor.
+	 * Updates AC field based on current DEX, equipped armor, and equipped shield.
 	 * Call this when equipment changes or DEX changes.
+	 *
+	 * AC = 10 + DEX mod + armor bonus + shield bonus
+	 *
+	 * Shield bonus (D&D 3.5):
+	 *   RoundShield in weapon slot grants +1 AC (light shield base),
+	 *   plus its upgrade level as the magic enhancement bonus.
+	 *   e.g. a +0 RoundShield = +1 AC, a +2 RoundShield = +3 AC.
 	 */
 	public void updateAC() {
 		AC = 10 + statBonus(DEX);
@@ -580,6 +589,11 @@ public class Hero extends Char {
 		if (belongings.armor != null) {
 			// Armor tier → AC bonus: tier 2 = +2, tier 3 = +4, tier 4 = +6, tier 5 = +8
 			AC += belongings.armor.ACBonus();
+		}
+
+		if (belongings.weapon instanceof RoundShield) {
+			// +1 shield bonus, plus upgrade level as magic enhancement bonus
+			AC += 1 + belongings.weapon.level();
 		}
 	}
 
