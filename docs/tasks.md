@@ -680,7 +680,7 @@ if (mob.EXP < 1.0f) {
 - [x] Slime.java → **Gelatinous Cube** (CR 3)
 
 **Boss:**
-- [ ] Goo.java → **Black Pudding** (CR 7)
+- [x] Goo.java → **Black Pudding** (CR 7)
 
 ### Prison (Depths 6-10)
 

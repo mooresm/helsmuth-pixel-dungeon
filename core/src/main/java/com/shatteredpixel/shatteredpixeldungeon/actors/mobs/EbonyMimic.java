@@ -48,19 +48,27 @@ public class EbonyMimic extends Mimic {
 	{
 		spriteClass = MimicSprite.Ebony.class;
 
-		// adjusted for size and hit dice
-		STR = 31;
+		// D&D: Huge Mimic, 14 HD — CR 9
+		// Large→Huge: STR +8→27, +1 at HD 8, +1 at HD 12 → STR 29 (+9 mod)
+		// CON 21 (+5 mod) → 5 flat HP per HD = 70 flat + 14d8
+		STR = 29;
 		DEX = 10;
 		CON = 21;
 		AC = 10 + statBonus(DEX) + 8 - 2; // AC 16
-		HP = HT = 60 + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8);
+		HP = HT = 70
+				+ Random.IntRange(1,8) + Random.IntRange(1,8) + Random.IntRange(1,8)
+				+ Random.IntRange(1,8) + Random.IntRange(1,8) + Random.IntRange(1,8)
+				+ Random.IntRange(1,8) + Random.IntRange(1,8) + Random.IntRange(1,8)
+				+ Random.IntRange(1,8) + Random.IntRange(1,8) + Random.IntRange(1,8)
+				+ Random.IntRange(1,8) + Random.IntRange(1,8);
 	}
 
 	@Override
-	public int attackSkill( Char target ) {
-		int toHit = 15 + statBonus(STR) - 2;
+	public int attackSkill(Char target) {
+		// BAB +10 (14 HD) + STR +9 - size 2 = +17 combat
+		int toHit = 10 + statBonus(STR) - 2;
 		if (target != null && alignment == Alignment.NEUTRAL && target.invisible <= 0) {
-			toHit += Char.statBonus(target.DEX); // flat footed
+			toHit += Char.statBonus(target.DEX); // flat-footed
 		}
 		return toHit;
 	}

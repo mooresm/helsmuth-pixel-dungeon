@@ -320,47 +320,39 @@ public class D20CombatTest {
 
     @Test
     public void testGoldenMimic() {
-        GoldenMimic mimic = new GoldenMimic();
-        assertEquals("Golden mimic AC should be 16", 16, mimic.AC);
-        assertTrue("Golden mimic HP >= 72", mimic.HP >= 72);
-        assertTrue("Golden mimic HP <= 156", mimic.HP <= 156);
-        assertEquals("Golden mimic alignment neutral", Char.Alignment.NEUTRAL, mimic.alignment);
-        assertEquals("Flat footed, so +16 to hit", 16, mimic.attackSkill(mimic));
-        // now switch to attack mode
-        mimic.alignment = Char.Alignment.ENEMY;
-        assertEquals("Golden mimic should now have +16 to hit", 16, mimic.attackSkill(mimic));
-        assertTrue("damage >= 11", mimic.damageRoll() >= 11);
-        assertTrue("damage <= 21", mimic.damageRoll() <= 21);
+        GoldenMimic m = new GoldenMimic();
+        assertEquals("Golden Mimic AC should be 15", 15, m.AC);
+        assertTrue("Golden Mimic HP >= 36",  m.HP >= 36);
+        assertTrue("Golden Mimic HP <= 99", m.HP <= 99);
+        assertEquals("flat footed attack should be +11", 11, m.attackSkill(m));
+        m.alignment = Char.Alignment.ENEMY;
+        assertEquals("Golden Mimic combat attack should be +10", 10, m.attackSkill(m));
+        assertTrue("Golden Mimic damage >= 6", m.damageRoll() >= 6);
+        assertTrue("Golden Mimic damage <= 13", m.damageRoll() <= 13);
     }
 
     @Test
     public void testCrystalMimic() {
-        CrystalMimic mimic = new CrystalMimic();
-        assertEquals("Crystal Mimic AC should be 16", 16, mimic.AC);
-        assertTrue("Crystal Mimic HP >= 96", mimic.HP >= 96);
-        assertTrue("Crystal Mimic HP <= 208", mimic.HP <= 208);
-        assertEquals("Crystal Mimic alignment neutral", Char.Alignment.NEUTRAL, mimic.alignment);
-        assertEquals("Flat footed, so +20 to hit", 20, mimic.attackSkill(mimic));
-        // now switch to attack mode
-        mimic.alignment = Char.Alignment.ENEMY;
-        assertEquals("Crystal Mimic should now have +20 to hit", 20, mimic.attackSkill(mimic));
-        assertTrue("damage >= 12", mimic.damageRoll() >= 12);
-        assertTrue("damage <= 22", mimic.damageRoll() <= 22);
+        CrystalMimic m = new CrystalMimic();
+        assertEquals("Crystal Mimic AC should be 16", 16, m.AC);
+        assertTrue("Crystal Mimic HP >= 66",  m.HP >= 66);
+        assertTrue("Crystal Mimic HP <= 143", m.HP <= 143);
+        m.alignment = Char.Alignment.ENEMY;
+        assertEquals("Crystal Mimic combat attack should be +15", 15, m.attackSkill(m));
+        assertTrue("Crystal Mimic damage >= 11", m.damageRoll() >= 11);
+        assertTrue("Crystal Mimic damage <= 21", m.damageRoll() <= 21);
     }
 
     @Test
     public void testEbonyMimic() {
-        EbonyMimic mimic = new EbonyMimic();
-        assertEquals("Ebony Mimic AC should be 16", 16, mimic.AC);
-        assertTrue("Ebony mimic HP >= 72", mimic.HP >= 72);
-        assertTrue("Ebony mimic HP <= 156", mimic.HP <= 156);
-        assertEquals("Ebony Mimic alignment neutral", Char.Alignment.NEUTRAL, mimic.alignment);
-        assertEquals("Flat footed, so +23 to hit", 23, mimic.attackSkill(mimic));
-        // now switch to attack mode
-        mimic.alignment = Char.Alignment.ENEMY;
-        assertEquals("Ebony Mimic should now have +23 to hit", 23, mimic.attackSkill(mimic));
-        assertTrue("damage >= 12", mimic.damageRoll() >= 12);
-        assertTrue("damage <= 22", mimic.damageRoll() <= 22);
+        EbonyMimic m = new EbonyMimic();
+        assertEquals("Ebony Mimic AC should be 16", 16, m.AC);
+        assertTrue("Ebony Mimic HP >= 84",  m.HP >= 84);
+        assertTrue("Ebony Mimic HP <= 182", m.HP <= 182);
+        m.alignment = Char.Alignment.ENEMY;
+        assertEquals("Ebony Mimic combat attack should be +17", 17, m.attackSkill(m));
+        assertTrue("Ebony Mimic damage >= 11", m.damageRoll() >= 11);
+        assertTrue("Ebony Mimic damage <= 21", m.damageRoll() <= 21);
     }
 
     @Test

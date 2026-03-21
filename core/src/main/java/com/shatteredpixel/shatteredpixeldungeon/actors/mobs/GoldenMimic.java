@@ -47,17 +47,17 @@ public class GoldenMimic extends Mimic {
 	{
 		spriteClass = MimicSprite.Golden.class;
 
-		// adjusted for size and hit dice
-		STR = 29;
-		DEX = 10;
-		CON = 21;
-		AC = 10 + statBonus(DEX) + 8 - 2; // AC 16
-		HP = HT = 60 + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8);
+		// adjusted for 9 hit dice
+		STR = 20;
+		DEX = 12;
+		CON = 17;
+		AC = 10 + statBonus(DEX) + 5 - 1; // AC 15
+		HP = HT = 27 + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8);
 	}
 
 	@Override
 	public int attackSkill( Char target ) {
-		int toHit = 9 + statBonus(STR) - 2;
+		int toHit = 6 + statBonus(STR) - 1;
 		if (target != null && alignment == Alignment.NEUTRAL && target.invisible <= 0) {
 			toHit += Char.statBonus(target.DEX); // flat footed
 		}
@@ -66,7 +66,7 @@ public class GoldenMimic extends Mimic {
 
 	@Override
 	public int damageRoll() {
-		return Random.IntRange(1, 6) + Random.IntRange(1, 6) + 9; // 2d6+9
+		return Random.NormalIntRange( 6, 13 ); // 1d8+5
 	}
 
 	@Override
