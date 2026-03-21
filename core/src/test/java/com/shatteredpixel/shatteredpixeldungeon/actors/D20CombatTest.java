@@ -13,6 +13,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Skeleton;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Slime;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Swarm;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
@@ -291,6 +292,15 @@ public class D20CombatTest {
         assertEquals("Giant fly should have +2 to hit", 2, fly.attackSkill(fly));
         assertTrue("damage >= 1", fly.damageRoll() >= 1);
         assertTrue("damage <= 4", fly.damageRoll() <= 4);
+    }
+
+    @Test
+    public void testStatue() {
+        Statue statue = new Statue();
+        assertEquals("Statue AC should be 14", 14, statue.AC);
+        assertTrue("Statue HP >= 22", statue.HP >= 22);
+        assertTrue("Statue HP <= 40", statue.HP <= 40);
+        assertEquals("Statue should have +2 to hit", 2, statue.attackSkill(statue));
     }
 
     @Test

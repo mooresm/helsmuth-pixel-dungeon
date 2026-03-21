@@ -17,8 +17,7 @@
 - [x] Phase 6: Monster Conversions (12 hours)
 - [x] Phase 7: Level System (8 hours)
 - [ ] Phase 8: UI Updates (6 hours)
-- [ ] Phase 9: Starting Equipment (2 hours)
-- [ ] Integration Testing & Playthrough (10 hours)
+- [ ] Phase 9: Integration Testing & Playthrough (10 hours)
 - [ ] Phase 10: Project Branding & Distribution Prep (4 hours) - *Optional, do after PoC success*
 
 ---
@@ -127,7 +126,7 @@
 ### Validation
 - [x] All D20CombatTest tests pass
 - [x] Combat uses d20 rolls instead of percentage
-- [ ] Hero AC updates when equipment changes
+- [x] Hero AC updates when equipment changes
 
 ---
 
@@ -747,7 +746,7 @@ if (mob.EXP < 1.0f) {
 
 **Constructs & Golems:**
 - [ ] Golem.java → **Stone Golem** (CR 11)
-- [ ] Statue.java → **Animated Statue** (CR 3)
+- [x] Statue.java → **Animated Statue** (CR 3)
 - [ ] ArmoredStatue.java → **Animated Armor** (CR 4-6)
 
 **Magic Users:**
@@ -780,8 +779,8 @@ if (mob.EXP < 1.0f) {
 **Mimics:**
 - [x] Mimic.java → **Mimic** (CR 4)
 - [x] GoldenMimic.java extends Mimic
-- [ ] CrystalMimic.java → **Crystal Mimic** (CR 7)
-- [ ] EbonyMimic.java → **Ebony Mimic** (CR 8)
+- [x] CrystalMimic.java → **Crystal Mimic** (CR 7)
+- [x] EbonyMimic.java → **Ebony Mimic** (CR 8)
 
 **Aquatic:**
 - [x] Piranha.java → **Quipper** or Small Piranha (CR 1/2)

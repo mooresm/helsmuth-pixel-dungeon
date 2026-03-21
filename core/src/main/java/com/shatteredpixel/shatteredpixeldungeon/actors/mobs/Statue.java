@@ -44,7 +44,14 @@ public class Statue extends Mob {
 
 		EXP = 0;
 		state = PASSIVE;
-		
+
+		// d20 SRD ability scores: Animated Object, Medium
+		STR = 12;
+		DEX = 10;
+		WIS = 1;
+		CHA = 1;
+		HP = HT = Random.IntRange(1, 10) + Random.IntRange(1, 10) + 20; // 2d10+20 hp
+		AC = 10 + statBonus(DEX) + 4;
 		properties.add(Property.INORGANIC);
 	}
 	
@@ -55,7 +62,6 @@ public class Statue extends Mob {
 	public Statue() {
 		super();
 		
-		HP = HT = 15 + Dungeon.depth * 5;
 		defenseSkill = 4 + Dungeon.depth;
 	}
 
@@ -95,7 +101,7 @@ public class Statue extends Mob {
 	
 	@Override
 	public int attackSkill( Char target ) {
-		return (int)((9 + Dungeon.depth) * weapon.accuracyFactor( this, target ));
+		return 2;
 	}
 	
 	@Override
@@ -108,11 +114,6 @@ public class Statue extends Mob {
 		return super.canAttack(enemy) || weapon.canReach(this, enemy.pos);
 	}
 
-	@Override
-	public int drRoll() {
-		return super.drRoll() + Random.NormalIntRange(0, Dungeon.depth + weapon.defenseFactor(this));
-	}
-	
 	@Override
 	public boolean add(Buff buff) {
 		if (super.add(buff)) {

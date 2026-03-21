@@ -352,9 +352,9 @@ public class Dungeon {
 			case 1:
 			case 2:
 			case 3:
-			case 4:
-			case 5:  return SewerLevel.class;
-			case 6:  return LastLevel.class;
+			case 4: return SewerLevel.class;     // shop = True
+			case 5: return SewerBossLevel.class; //  Goo (Black Pudding boss fight)
+			case 6:  return LastLevel.class;     //  Amulet of Yendor (victory)
 			default: return DeadEndLevel.class;
 		}
 	}

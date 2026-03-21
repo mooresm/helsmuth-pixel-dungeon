@@ -24,11 +24,15 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ChallengeParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.RatSkull;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WraithSprite;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.tweeners.AlphaTweener;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
@@ -45,13 +49,17 @@ public class Wraith extends Mob {
 	
 	{
 		spriteClass = WraithSprite.class;
-		
-		HP = HT = 1;
 		EXP = 0;
-
 		maxLvl = -2;
-		
 		flying = true;
+
+		// d20 SRD ability scores
+		DEX = 16;
+		INT = 14;
+		WIS = 14;
+		CHA = 15;
+		HP = HT = Random.IntRange(1, 12) + Random.IntRange(1, 12) + Random.IntRange(1, 12) + Random.IntRange(1, 12) + Random.IntRange(1, 12);
+		AC = 10 + statBonus(DEX) + 2;
 
 		properties.add(Property.UNDEAD);
 		properties.add(Property.INORGANIC);
@@ -74,14 +82,70 @@ public class Wraith extends Mob {
 	
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 1 + level/2, 2 + level );
+		return Random.IntRange( 1, 4);
 	}
 	
 	@Override
 	public int attackSkill( Char target ) {
-		return 10 + level;
+		return 5;
 	}
-	
+
+	// ── Incorporeal subtype (D&D 3.5) ────────────────────────────────────────
+//
+// Immune to all nonmagical attacks. Magical attacks (weapon buffedLvl > 0,
+// or enchanted weapon) have a 50% chance to be deflected.
+// Spells and other non-Char damage sources bypass this entirely — they arrive
+// through damage() directly and never call defenseProc(), which is correct
+// per the SRD: "spells and spell-like abilities always affect incorporeal
+// creatures normally."
+
+	/**
+	 * Returns true if the weapon is magical: upgraded (+1 or higher) or enchanted.
+	 * Pure logic — no GLog, no LibGDX, safe for unit tests.
+	 * A null weapon (unarmed, non-Hero attacker) is never magical.
+	 */
+	static boolean isMagicalWeapon(KindOfWeapon wep) {
+		if (wep == null) return false;
+		if (wep.buffedLvl() > 0) return true;
+		if (wep instanceof Weapon && ((Weapon) wep).enchantment != null) return true;
+		return false;
+	}
+
+	/**
+	 * Returns true if this hit should be deflected:
+	 *   - always, if the weapon is nonmagical (or attacker has no weapon)
+	 *   - 50% of the time, if the weapon is magical
+	 * Pure logic — takes the isMagical result and a pre-supplied random roll
+	 * so tests can call this without touching Random.
+	 */
+	static boolean isDeflected(boolean isMagical, boolean deflectRoll) {
+		if (!isMagical) return true;   // nonmagical: always deflected
+		return deflectRoll;            // magical: 50% chance
+	}
+
+	@Override
+	public int defenseProc(Char enemy, int damage) {
+		damage = super.defenseProc(enemy, damage);
+
+		KindOfWeapon wep = (enemy instanceof Hero)
+				? ((Hero) enemy).belongings.attackingWeapon()
+				: null;
+
+		boolean magical = isMagicalWeapon(wep);
+		boolean deflected = isDeflected(magical, Random.Int(2) == 0);
+
+		if (deflected) {
+			if (magical) {
+				GLog.i("Your weapon passes through the wraith!");
+			} else {
+				GLog.w("Your weapon has no effect on the wraith — use magic!");
+			}
+			return 0;
+		}
+
+		return damage;
+	}
+
 	public void adjustStats( int level ) {
 		this.level = level;
 		defenseSkill = attackSkill( null ) * 5;
