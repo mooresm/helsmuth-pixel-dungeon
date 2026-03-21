@@ -52,6 +52,7 @@ public class Slime extends Mob {
 		maxLvl = 9;
 		
 		lootChance = 0.2f; //by default, see lootChance()
+		properties.add(Property.ACIDIC);
 	}
 	
 	@Override

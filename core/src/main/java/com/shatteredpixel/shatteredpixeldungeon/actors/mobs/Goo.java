@@ -31,10 +31,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.WornKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.GooBlob;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -51,10 +53,21 @@ import com.watabou.utils.Random;
 public class Goo extends Mob {
 
 	{
-		HP = HT = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 120 : 100;
 		EXP = 10;
 		defenseSkill = 8;
 		spriteClass = GooSprite.class;
+
+		// D&D Black Pudding ability scores
+		STR = 17;
+		DEX = 1;
+		CON = 22;
+		WIS = 1;
+		CHA = 1;
+
+		// D&D AC: 10 base - 5 DEX - 2 size = 3
+		AC = 10 + statBonus(DEX) - 2;
+		// D&D HP: 10d10 + 60
+		HP = HT = Random.IntRange(1, 10) + Random.IntRange(1, 10) + Random.IntRange(1, 10) + Random.IntRange(1, 10) + Random.IntRange(1, 10) + Random.IntRange(1, 10) + Random.IntRange(1, 10) + Random.IntRange(1, 10) + Random.IntRange(1, 10) + Random.IntRange(1, 10) + 60;
 
 		properties.add(Property.BOSS);
 		properties.add(Property.DEMONIC);
@@ -66,36 +79,57 @@ public class Goo extends Mob {
 
 	@Override
 	public int damageRoll() {
-		int min = 1;
-		int max = (HP*2 <= HT) ? 12 : 8;
+		// D&D 3.5: slam 2d6+4
+		// Enraged (HP <= half) or pumped: 3d6+7
 		if (pumpedUp > 0) {
 			pumpedUp = 0;
 			if (enemy == Dungeon.hero) {
 				Statistics.qualifiedForBossChallengeBadge = false;
 				Statistics.bossScores[0] -= 100;
 			}
-			return Random.NormalIntRange( min*3, max*3 );
-		} else {
-			return Random.NormalIntRange( min, max );
+			return Random.IntRange(1, 6) + Random.IntRange(1, 6) + Random.IntRange(1, 6) + 7;
 		}
+		if (HP * 2 <= HT) {
+			return Random.IntRange(1, 6) + Random.IntRange(1, 6) + Random.IntRange(1, 6) + 7;
+		}
+		return Random.IntRange(1, 6) + Random.IntRange(1, 6) + 4; // 2d6+4
 	}
 
 	@Override
 	public int attackSkill( Char target ) {
-		int attack = 10;
-		if (HP*2 <= HT) attack = 15;
+		int attack = 8;
+		if (HP*2 <= HT) attack = 12;
 		if (pumpedUp > 0) attack *= 2;
 		return attack;
 	}
 
-	@Override
-	public int defenseSkill(Char enemy) {
-		return (int)(super.defenseSkill(enemy) * ((HP*2 <= HT)? 1.5 : 1));
+	static final int SPLIT_DR = 10;
+	static final Weapon.DamageType SPLIT_BYPASS = Weapon.DamageType.BLUDGEONING;
+
+	/**
+	 * Pure logic: returns 0 if bludgeoning (bypasses split), SPLIT_DR otherwise.
+	 * Package-private so GooTest can call it directly without a LibGDX context,
+	 * matching the pattern established by Skeleton.drForWeaponType().
+	 */
+	static int drForDamageType(Weapon.DamageType weaponType) {
+		if (weaponType == SPLIT_BYPASS) return 0;
+		return SPLIT_DR;
 	}
 
 	@Override
-	public int drRoll() {
-		return super.drRoll() + Random.NormalIntRange(0, 2);
+	public int drRoll(Char attacker) {
+		Weapon.DamageType wt = null;
+		if (attacker instanceof Hero) {
+			Object wep = ((Hero) attacker).belongings.attackingWeapon();
+			if (wep instanceof Weapon) {
+				wt = ((Weapon) wep).getDamageType();
+			}
+		}
+		int dr = drForDamageType(wt);
+		if (dr > 0) {
+			GLog.w("Your weapon passes through the pudding harmlessly!");
+		}
+		return dr;
 	}
 
 	@Override

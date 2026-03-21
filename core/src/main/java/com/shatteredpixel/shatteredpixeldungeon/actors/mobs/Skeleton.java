@@ -185,7 +185,11 @@ public class Skeleton extends Mob {
 				wt = ((Weapon) wep).getDamageType();
 			}
 		}
-		return drForWeaponType(wt);
+		int dr = drForWeaponType(wt);
+		if (dr > 0) {
+			GLog.w("Your weapon glances off the bones!");
+		}
+		return dr;
 	}
 
 	@Override

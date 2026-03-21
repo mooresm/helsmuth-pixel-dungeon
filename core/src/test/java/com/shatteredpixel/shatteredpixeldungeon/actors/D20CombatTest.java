@@ -2,7 +2,11 @@ package com.shatteredpixel.shatteredpixeldungeon.actors;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Crab;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalMimic;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.EbonyMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Gnoll;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GoldenMimic;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
@@ -11,6 +15,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Slime;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Swarm;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
 import com.watabou.utils.Random;
@@ -304,6 +309,51 @@ public class D20CombatTest {
     }
 
     @Test
+    public void testGoldenMimic() {
+        GoldenMimic mimic = new GoldenMimic();
+        assertEquals("Golden mimic AC should be 16", 16, mimic.AC);
+        assertTrue("Golden mimic HP >= 72", mimic.HP >= 72);
+        assertTrue("Golden mimic HP <= 156", mimic.HP <= 156);
+        assertEquals("Golden mimic alignment neutral", Char.Alignment.NEUTRAL, mimic.alignment);
+        assertEquals("Flat footed, so +16 to hit", 16, mimic.attackSkill(mimic));
+        // now switch to attack mode
+        mimic.alignment = Char.Alignment.ENEMY;
+        assertEquals("Golden mimic should now have +16 to hit", 16, mimic.attackSkill(mimic));
+        assertTrue("damage >= 11", mimic.damageRoll() >= 11);
+        assertTrue("damage <= 21", mimic.damageRoll() <= 21);
+    }
+
+    @Test
+    public void testCrystalMimic() {
+        CrystalMimic mimic = new CrystalMimic();
+        assertEquals("Crystal Mimic AC should be 16", 16, mimic.AC);
+        assertTrue("Crystal Mimic HP >= 96", mimic.HP >= 96);
+        assertTrue("Crystal Mimic HP <= 208", mimic.HP <= 208);
+        assertEquals("Crystal Mimic alignment neutral", Char.Alignment.NEUTRAL, mimic.alignment);
+        assertEquals("Flat footed, so +20 to hit", 20, mimic.attackSkill(mimic));
+        // now switch to attack mode
+        mimic.alignment = Char.Alignment.ENEMY;
+        assertEquals("Crystal Mimic should now have +20 to hit", 20, mimic.attackSkill(mimic));
+        assertTrue("damage >= 12", mimic.damageRoll() >= 12);
+        assertTrue("damage <= 22", mimic.damageRoll() <= 22);
+    }
+
+    @Test
+    public void testEbonyMimic() {
+        EbonyMimic mimic = new EbonyMimic();
+        assertEquals("Ebony Mimic AC should be 16", 16, mimic.AC);
+        assertTrue("Ebony mimic HP >= 72", mimic.HP >= 72);
+        assertTrue("Ebony mimic HP <= 156", mimic.HP <= 156);
+        assertEquals("Ebony Mimic alignment neutral", Char.Alignment.NEUTRAL, mimic.alignment);
+        assertEquals("Flat footed, so +23 to hit", 23, mimic.attackSkill(mimic));
+        // now switch to attack mode
+        mimic.alignment = Char.Alignment.ENEMY;
+        assertEquals("Ebony Mimic should now have +23 to hit", 23, mimic.attackSkill(mimic));
+        assertTrue("damage >= 12", mimic.damageRoll() >= 12);
+        assertTrue("damage <= 22", mimic.damageRoll() <= 22);
+    }
+
+    @Test
     public void testSlime() {
         Slime slime = new Slime();
         assertEquals("Slime AC should be 4", 4, slime.AC);
@@ -312,6 +362,20 @@ public class D20CombatTest {
         assertEquals("Slime should have +2 to hit", 2, slime.attackSkill(slime));
         assertTrue("damage >= 1", slime.damageRoll() >= 1);
         assertTrue("damage <= 6", slime.damageRoll() <= 6);
+    }
+
+    // ==================== BLACK PUDDING (Goo) ====================
+    @Test
+    public void testGoo() {
+        Goo pudding = new Goo();
+        assertEquals("Black Pudding AC should be 3", 3, pudding.AC);
+        // HP = 10d10+60, average 115; stronger bosses not active in tests (Dungeon.challenges = 0)
+        assertTrue("Black Pudding HP >= 70",  pudding.HP >= 70);
+        assertTrue("Black Pudding HP <= 160", pudding.HP <= 160);
+        assertEquals("Black Pudding should have +8 to hit (healthy)", 8, pudding.attackSkill(pudding));
+        // Damage: 2d6+4, range 6–16
+        assertTrue("damage >= 6",  pudding.damageRoll() >= 6);
+        assertTrue("damage <= 16", pudding.damageRoll() <= 16);
     }
 
     @Test

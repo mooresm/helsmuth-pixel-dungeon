@@ -48,13 +48,13 @@ public class DungeonDepthTest {
 
     @Test
     public void testDepth5IsLastLevel() {
-        assertEquals(LastLevel.class, Dungeon.levelClass(5));
+        assertEquals(LastLevel.class, Dungeon.levelClass(6));
     }
 
     @Test
-    public void testDepth6IsDeadEnd() {
+    public void testDepth7IsDeadEnd() {
         assertEquals("Dungeon is capped at depth 5",
-                DeadEndLevel.class, Dungeon.levelClass(6));
+                DeadEndLevel.class, Dungeon.levelClass(7));
     }
 
     @Test
@@ -104,8 +104,9 @@ public class DungeonDepthTest {
         assertFalse("Depth 4 is not a boss level", Dungeon.bossLevel(4));
         // Depth 5 returns true from the original method — that's fine because
         // LastLevel spawns nothing. Flag it so it's visible.
-        assertFalse("bossLevel(5) returns true per original logic — harmless " +
+        assertTrue("bossLevel(5) returns true per original logic — harmless " +
                         "because LastLevel.createMobs() is a no-op",
                 Dungeon.bossLevel(5));
+        assertFalse("Depth 6 is not a boss level", Dungeon.bossLevel(6));
     }
 }

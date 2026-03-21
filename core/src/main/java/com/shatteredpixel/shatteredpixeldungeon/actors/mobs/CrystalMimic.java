@@ -53,6 +53,27 @@ public class CrystalMimic extends Mimic {
 		spriteClass = MimicSprite.Crystal.class;
 
 		FLEEING = new Fleeing();
+
+		// adjusted for size and hit dice
+		STR = 30;
+		DEX = 10;
+		CON = 21;
+		AC = 10 + statBonus(DEX) + 8 - 2; // AC 16
+		HP = HT = 60 + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8);
+	}
+
+	@Override
+	public int attackSkill( Char target ) {
+		int toHit = 12 + statBonus(STR) - 2;
+		if (target != null && alignment == Alignment.NEUTRAL && target.invisible <= 0) {
+			toHit += Char.statBonus(target.DEX); // flat footed
+		}
+		return toHit;
+	}
+
+	@Override
+	public int damageRoll() {
+		return Random.IntRange(1, 6) + Random.IntRange(1, 6) + 10; // 2d6+10
 	}
 
 	@Override
@@ -89,19 +110,6 @@ public class CrystalMimic extends Mimic {
 			return desc;
 		} else {
 			return super.description();
-		}
-	}
-
-	//does not deal bonus damage, steals instead. See attackProc
-	@Override
-	public int damageRoll() {
-		if (alignment == Alignment.NEUTRAL) {
-			alignment = Alignment.ENEMY;
-			int dmg = super.damageRoll();
-			alignment = Alignment.NEUTRAL;
-			return dmg;
-		} else {
-			return super.damageRoll();
 		}
 	}
 

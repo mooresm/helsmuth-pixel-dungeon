@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
@@ -40,11 +41,33 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MimicSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Random;
 
 public class EbonyMimic extends Mimic {
 
 	{
 		spriteClass = MimicSprite.Ebony.class;
+
+		// adjusted for size and hit dice
+		STR = 31;
+		DEX = 10;
+		CON = 21;
+		AC = 10 + statBonus(DEX) + 8 - 2; // AC 16
+		HP = HT = 60 + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8);
+	}
+
+	@Override
+	public int attackSkill( Char target ) {
+		int toHit = 15 + statBonus(STR) - 2;
+		if (target != null && alignment == Alignment.NEUTRAL && target.invisible <= 0) {
+			toHit += Char.statBonus(target.DEX); // flat footed
+		}
+		return toHit;
+	}
+
+	@Override
+	public int damageRoll() {
+		return Random.IntRange(1, 6) + Random.IntRange(1, 6) + 10; // 2d6+10
 	}
 
 	@Override
@@ -82,15 +105,6 @@ public class EbonyMimic extends Mimic {
 		}
 		if (Actor.chars().contains(this) && Dungeon.level.map[pos] == Terrain.DOOR){
 			Door.enter( pos );
-		}
-	}
-
-	@Override
-	public int damageRoll() {
-		if (alignment == Alignment.NEUTRAL){
-			return Math.round(super.damageRoll()*2f); //BIG damage on surprise
-		} else {
-			return super.damageRoll();
 		}
 	}
 

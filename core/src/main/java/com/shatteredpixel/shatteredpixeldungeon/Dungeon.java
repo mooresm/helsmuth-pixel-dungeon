@@ -352,8 +352,9 @@ public class Dungeon {
 			case 1:
 			case 2:
 			case 3:
-			case 4:  return SewerLevel.class;
-			case 5:  return LastLevel.class;
+			case 4:
+			case 5:  return SewerLevel.class;
+			case 6:  return LastLevel.class;
 			default: return DeadEndLevel.class;
 		}
 	}
@@ -394,7 +395,7 @@ public class Dungeon {
 	}
 	
 	public static boolean bossLevel( int depth ) {
-		return depth == 6 || depth == 10 || depth == 15 || depth == 20 || depth == 25;
+		return depth == 5 || depth == 10 || depth == 15 || depth == 20 || depth == 25;
 	}
 
 	//value used for scaling of damage values and other effects.

@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
@@ -45,6 +46,27 @@ public class GoldenMimic extends Mimic {
 
 	{
 		spriteClass = MimicSprite.Golden.class;
+
+		// adjusted for size and hit dice
+		STR = 29;
+		DEX = 10;
+		CON = 21;
+		AC = 10 + statBonus(DEX) + 8 - 2; // AC 16
+		HP = HT = 60 + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8) + Random.IntRange(1, 8);
+	}
+
+	@Override
+	public int attackSkill( Char target ) {
+		int toHit = 9 + statBonus(STR) - 2;
+		if (target != null && alignment == Alignment.NEUTRAL && target.invisible <= 0) {
+			toHit += Char.statBonus(target.DEX); // flat footed
+		}
+		return toHit;
+	}
+
+	@Override
+	public int damageRoll() {
+		return Random.IntRange(1, 6) + Random.IntRange(1, 6) + 9; // 2d6+9
 	}
 
 	@Override

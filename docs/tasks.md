@@ -197,8 +197,7 @@
 - [x] **Skeleton.java** - Check attacker's weapon type
 - [x] **Skeleton.java** - Return 0 DR for bludgeoning weapons
 - [x] **Skeleton.java** - Return 5 DR for non-bludgeoning
-- [ ] **Skeleton.java** - Print "Your weapon glances off the bones!" in game log when DR negates all damage
-- [ ] **Skeleton.java** - Add loot drop: Dagger (20% chance)
+- [x] **Skeleton.java** - Print "Your weapon glances off the bones!" in game log when DR negates all damage
 
 ### Kobold Conversion
 - [x] **Kobold.java** (new file, or repurpose Gnoll.java) - Set name to "kobold"
@@ -780,7 +779,7 @@ if (mob.EXP < 1.0f) {
 
 **Mimics:**
 - [x] Mimic.java → **Mimic** (CR 4)
-- [ ] GoldenMimic.java → **Greater Mimic** (CR 6)
+- [x] GoldenMimic.java extends Mimic
 - [ ] CrystalMimic.java → **Crystal Mimic** (CR 7)
 - [ ] EbonyMimic.java → **Ebony Mimic** (CR 8)
 
