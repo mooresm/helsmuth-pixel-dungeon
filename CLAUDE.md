@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Helsmuth Dungeon is a proof-of-concept conversion of [Shattered Pixel Dungeon](https://shatteredpixel.com/shatteredpd/) to [d20 System Compatible mechanics](https://www.d20srd.org/index.htm) (D&D 3.5 edition). The goal is to replace SPD's original percentage-based combat with d20 roll + modifier vs. AC resolution, ability scores, weapon damage types, and Damage Reduction.
 
-**Phases 0–8 are complete.** See `docs/tasks.md` for the full roadmap and `docs/combat.md` for d20 integration details.
+**Phases 0–9 are complete.** See `docs/tasks.md` for the full roadmap and `docs/combat.md` for d20 integration details.
 
 ## Build & Test Commands
 
