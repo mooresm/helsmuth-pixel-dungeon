@@ -345,6 +345,8 @@ public class Hero extends Char {
 	public static void preview( GamesInProgress.Info info, Bundle bundle ) {
 		info.level = bundle.getInt( LEVEL );
 		info.str = bundle.getInt( STRENGTH );
+		info.ac = bundle.getInt( TAG_AC );
+		info.bab = bundle.getInt( ATTACK );
 		info.exp = bundle.getInt( EXPERIENCE );
 		info.hp = bundle.getInt( Char.TAG_HP );
 		info.ht = bundle.getInt( Char.TAG_HT );

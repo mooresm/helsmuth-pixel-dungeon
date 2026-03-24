@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -60,6 +61,7 @@ public class WndHero extends WndTabbed {
 	private StatsTab stats;
 	private TalentsTab talents;
 	private BuffsTab buffs;
+	private AbilityScoresTab abilityScores;
 
 	public static int lastIdx = 0;
 
@@ -80,7 +82,10 @@ public class WndHero extends WndTabbed {
 		add( buffs );
 		buffs.setRect(0, 0, WIDTH, HEIGHT);
 		buffs.setupList();
-		
+
+		abilityScores = new AbilityScoresTab();
+		add( abilityScores );
+
 		add( new IconTab( Icons.get(Icons.RANKINGS) ) {
 			protected void select( boolean value ) {
 				super.select( value );
@@ -106,6 +111,13 @@ public class WndHero extends WndTabbed {
 				super.select( value );
 				if (selected) lastIdx = 2;
 				buffs.visible = buffs.active = selected;
+			}
+		} );
+		add( new IconTab( Icons.get(Icons.STATS) ) {
+			protected void select( boolean value ) {
+				super.select( value );
+				if (selected) lastIdx = 3;
+				abilityScores.visible = abilityScores.active = selected;
 			}
 		} );
 
@@ -186,12 +198,11 @@ public class WndHero extends WndTabbed {
 
 			pos = title.bottom() + 2*GAP;
 
-			int strBonus = hero.STR() - hero.STR;
-			if (strBonus > 0)           statSlot( Messages.get(this, "str"), hero.STR + " + " + strBonus );
-			else if (strBonus < 0)      statSlot( Messages.get(this, "str"), hero.STR + " - " + -strBonus );
-			else                        statSlot( Messages.get(this, "str"), hero.STR() );
 			if (hero.shielding() > 0)   statSlot( Messages.get(this, "health"), hero.HP + "+" + hero.shielding() + "/" + hero.HT );
 			else                        statSlot( Messages.get(this, "health"), (hero.HP) + "/" + hero.HT );
+			statSlot( "AC",  Integer.toString( hero.AC ) );
+			String babStr = hero.attackSkill >= 0 ? "+" + hero.attackSkill : Integer.toString( hero.attackSkill );
+			statSlot( "BAB", babStr );
 			statSlot( Messages.get(this, "exp"), hero.exp + "/" + hero.maxExp() );
 
 			pos += GAP;
@@ -265,6 +276,67 @@ public class WndHero extends WndTabbed {
 
 	}
 	
+	private class AbilityScoresTab extends Group {
+
+		private static final int GAP = 6;
+
+		private float pos;
+
+		public AbilityScoresTab() {
+			Hero hero = Dungeon.hero;
+
+			pos = GAP;
+
+			abilityRow( "STR", hero.STR );
+			abilityRow( "DEX", hero.DEX );
+			abilityRow( "CON", hero.CON );
+			abilityRow( "INT", hero.INT );
+			abilityRow( "WIS", hero.WIS );
+			abilityRow( "CHA", hero.CHA );
+
+			pos += GAP;
+
+			statSlot( "AC",  Integer.toString( hero.AC ) );
+			String babStr = hero.attackSkill >= 0 ? "+" + hero.attackSkill : Integer.toString( hero.attackSkill );
+			statSlot( "BAB", babStr );
+
+			pos += GAP;
+		}
+
+		private void abilityRow( String name, int score ) {
+			int mod = Char.statBonus( score );
+			String modStr = (mod >= 0 ? "+" : "") + mod;
+			statSlot( name, score + " (" + modStr + ")" );
+		}
+
+		private void statSlot( String label, String value ) {
+			int size = 8;
+			RenderedTextBlock txt;
+			do {
+				txt = PixelScene.renderTextBlock( label, size );
+				size--;
+			} while (txt.width() >= WIDTH * 0.55f);
+			txt.setPos( 0, pos + (6 - txt.height()) / 2 );
+			PixelScene.align( txt );
+			add( txt );
+
+			size = 8;
+			do {
+				txt = PixelScene.renderTextBlock( value, size );
+				size--;
+			} while (txt.width() >= WIDTH * 0.45f);
+			txt.setPos( WIDTH * 0.55f, pos + (6 - txt.height()) / 2 );
+			PixelScene.align( txt );
+			add( txt );
+
+			pos += GAP + txt.height();
+		}
+
+		public float height() {
+			return pos;
+		}
+	}
+
 	private class BuffsTab extends Component {
 		
 		private static final int GAP = 2;

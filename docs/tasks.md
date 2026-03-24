@@ -351,24 +351,24 @@ if (mob.EXP < 1.0f) {
 ## Phase 8: UI Updates (6 hours)
 
 ### Hero Stats Window
-- [ ] **WndHero.java** - Add STR display with modifier
-- [ ] **WndHero.java** - Add DEX display with modifier
-- [ ] **WndHero.java** - Add CON display with modifier
-- [ ] **WndHero.java** - Add INT display with modifier
-- [ ] **WndHero.java** - Add WIS display with modifier
-- [ ] **WndHero.java** - Add CHA display with modifier
-- [ ] **WndHero.java** - Add AC display
-- [ ] **WndHero.java** - Add BAB display
+- [x] **WndHero.java** - Add STR display with modifier
+- [x] **WndHero.java** - Add DEX display with modifier
+- [x] **WndHero.java** - Add CON display with modifier
+- [x] **WndHero.java** - Add INT display with modifier
+- [x] **WndHero.java** - Add WIS display with modifier
+- [x] **WndHero.java** - Add CHA display with modifier
+- [x] **WndHero.java** - Add AC display
+- [x] **WndHero.java** - Add BAB display
 
 ### Status Display
-- [ ] **StatusPane.java** - Add AC display (replace old defense if needed)
+- [x] **WndGameInProgress.java** - Add AC, BAB display
 
 ### Welcome Message (Optional)
-- [ ] **WelcomeScene.java** - Add note about D&D conversion
+- [x] **WelcomeScene.java** - Add note about D&D conversion
 
 ### Validation
-- [ ] Manual testing: Open hero window, verify all stats visible
-- [ ] Manual testing: AC shows in status pane
+- [x] Manual testing: Open hero window, verify all stats visible
+- [x] Manual testing: AC shows in status pane
 
 ---
 
