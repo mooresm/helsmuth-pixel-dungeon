@@ -1,6 +1,6 @@
 # History of (Shattered) Pixel Dungeon
 
-A summary of the project's evolution based on the commit history of [helsmuth-pixel-dungeon](https://github.com/mooresm/helsmuth-pixel-dungeon), covering **8,737 commits** from July 2014 to March 2026.
+A summary of the project's evolution based on the commit history of [helsmuth-pixel-dungeon](https://github.com/mooresm/helsmuth-pixel-dungeon), covering **8,740 commits** from July 2014 to March 2026.
 
 Note that there are over 600 other known forks and mods of Pixel Dungeon, documented and available for download from [Snail's Pixel Dungeon Dump](https://pixeldungeon.barnitos.net).
 
@@ -96,7 +96,7 @@ The v1.x era focused on polish and platform expansion. **v1.2.0** (2022) added f
 |-------------------|---------|-----------------------------------------------------------------------------|
 | **Watabou**       | 10      | Original Pixel Dungeon creator (foundational commits carried into the fork) |
 | **00-Evan** | 8,691   | Primary developer of Shattered Pixel Dungeon                                |
-| **mooresm**   | 36      | Fork owner — d20 OGL 3.5 conversion project                                 |
+| **mooresm**   | 39      | Fork owner — d20 OGL 3.5 conversion project                                 |
 
 ---
 
@@ -127,4 +127,4 @@ The v1.x era focused on polish and platform expansion. **v1.2.0** (2022) added f
 | v3.2.0         | 2025     | Evan    | Thrown weapons rebuilt as upgradeable sets          |
 | v3.3.5         | Feb 2026 | Evan    | Latest upstream release                             |
 |                | Feb 2026 | Matt    | New fork for d20 System Compatible mechanics        |
-| v0.0.7 (fork)  | Mar 2026 | Matt    | Completed up to Phase 7 of minimal PoC              |
+| v0.0.7 (fork)  | Mar 2026 | Matt    | Completed up to Phase 9 of minimal PoC              |
